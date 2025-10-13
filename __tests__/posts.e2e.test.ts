@@ -1,6 +1,21 @@
 import request from "supertest";
 import {app} from "../src/setting";
 import {HTTP_STATUS} from "../src/enums/http-status";
+import {CreatePostDto} from "../src/dto/post/create-post.dto";
+
+const exampleCreatePost: CreatePostDto = {
+    "title": "Create Post",
+    "shortDescription": "Create description string",
+    "content": "Content example string",
+    "blogId": "1"
+}
+
+const exampleUpdatePost = {
+    "title": "string",
+    "shortDescription": "string",
+    "content": "string",
+    "blogId": "1"
+}
 
 describe('/posts', () => {
     beforeAll(async () => {

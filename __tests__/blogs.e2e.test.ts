@@ -44,6 +44,9 @@ describe('/videos', () => {
 
     it ('should update existing blog and return status 204', async () => {
         await request(app).put('/blogs/' + createBlogBody.id).send(exampleUpdateBlog).expect(HTTP_STATUS.NO_CONTENT_204);
+
+        await request(app).get(`/blogs/${createBlogBody.id}`).expect(HTTP_STATUS.OK_200, {id: createBlogBody.id, ...exampleUpdateBlog});
+
     })
 
     it ('should return status 404 for not-existing blog', async () => {
@@ -51,7 +54,9 @@ describe('/videos', () => {
     })
 
     it ('should remove existing blog and return status 204', async () => {
-        await request(app).delete('/blogs/' + createBlogBody.id).expect(HTTP_STATUS.NO_CONTENT_204);
+       await request(app).delete('/blogs/' + createBlogBody.id).expect(HTTP_STATUS.NO_CONTENT_204);
+
+        await request(app).get('/blogs').expect(HTTP_STATUS.OK_200, []);
     })
 
     it ('should return status 404 for not-existing blog', async () => {

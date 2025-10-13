@@ -40,7 +40,7 @@ export const blogsRepository = {
         }
 
 
-        db.blogs = db.blogs.filter((blog: ResponseBlogDto) => blog.id === id);
+        db.blogs = db.blogs.filter((blog: ResponseBlogDto) => blog.id !== id);
         return true;
     }
 }

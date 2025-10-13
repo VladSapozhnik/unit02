@@ -29,7 +29,7 @@ exports.blogsRepository = {
         if (!existBlog) {
             return false;
         }
-        db_1.db.blogs = db_1.db.blogs.filter((blog) => blog.id === id);
+        db_1.db.blogs = db_1.db.blogs.filter((blog) => blog.id !== id);
         return true;
     }
 };
