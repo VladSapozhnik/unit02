@@ -2,7 +2,7 @@ import {Router, Request, Response} from "express";
 import {blogsRepository} from "../repository/blogs.repository";
 import {ResponseBlogDto} from "../dto/blog/response-blog.dto";
 import {HTTP_STATUS} from "../enums/http-status";
-import { v4 as uuidv4 } from 'uuid';
+import {generateId} from "../constants/generate-id";
 
 export const blogsRouter: Router = Router();
 
@@ -13,15 +13,16 @@ blogsRouter.get('/', (req: Request, res: Response) => {
 })
 
 blogsRouter.post('/', (req: Request, res: Response) => {
-    const generateId: string = uuidv4();
-    const newBlog: boolean = blogsRepository.createBlog(req.body, generateId);
+    const randomId = generateId();
+
+    const newBlog: boolean = blogsRepository.createBlog(req.body, randomId);
 
     if (!newBlog) {
         res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
         return;
     }
 
-    const findBlog: ResponseBlogDto | undefined = blogsRepository.getBlogById(generateId)
+    const findBlog: ResponseBlogDto | undefined = blogsRepository.getBlogById(randomId)
 
     res.status(HTTP_STATUS.CREATED_201).send(findBlog);
 })

@@ -2,7 +2,7 @@ import {Router} from "express";
 import {postsRepository} from "../repository/posts.repository";
 import {HTTP_STATUS} from "../enums/http-status";
 import {ResponsePostDto} from "../dto/post/response-post.dto";
-import { v4 as uuidv4 } from 'uuid';
+import {generateId} from "../constants/generate-id";
 
 export const postsRouter: Router = Router();
 
@@ -13,15 +13,16 @@ postsRouter.get('/', (req, res) => {
 })
 
 postsRouter.post('/', (req, res) => {
-    const generateId: string = uuidv4();
-    const isCreated: boolean = postsRepository.createPost(req.body, generateId);
+    const randomId = generateId();
+
+    const isCreated: boolean = postsRepository.createPost(req.body, randomId);
 
     if (!isCreated) {
         res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
         return;
     }
 
-    const findPost: ResponsePostDto | undefined  = postsRepository.getPostById(generateId);
+    const findPost: ResponsePostDto | undefined  = postsRepository.getPostById(randomId);
 
     res.send(findPost);
 })

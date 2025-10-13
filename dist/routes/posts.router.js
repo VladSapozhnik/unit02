@@ -4,20 +4,20 @@ exports.postsRouter = void 0;
 const express_1 = require("express");
 const posts_repository_1 = require("../repository/posts.repository");
 const http_status_1 = require("../enums/http-status");
-const uuid_1 = require("uuid");
+const generate_id_1 = require("../constants/generate-id");
 exports.postsRouter = (0, express_1.Router)();
 exports.postsRouter.get('/', (req, res) => {
     const findPosts = posts_repository_1.postsRepository.getAllPosts();
     res.json(findPosts);
 });
 exports.postsRouter.post('/', (req, res) => {
-    const generateId = (0, uuid_1.v4)();
-    const isCreated = posts_repository_1.postsRepository.createPost(req.body, generateId);
+    const randomId = (0, generate_id_1.generateId)();
+    const isCreated = posts_repository_1.postsRepository.createPost(req.body, randomId);
     if (!isCreated) {
         res.sendStatus(http_status_1.HTTP_STATUS.BAD_REQUEST_400);
         return;
     }
-    const findPost = posts_repository_1.postsRepository.getPostById(generateId);
+    const findPost = posts_repository_1.postsRepository.getPostById(randomId);
     res.send(findPost);
 });
 exports.postsRouter.get('/:id', (req, res) => {
