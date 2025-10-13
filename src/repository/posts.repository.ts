@@ -11,13 +11,13 @@ export const postsRepository = {
     },
 
     createPost: (body: CreatePostDto, id: string): boolean => {
-        const findBlog: ResponseBlogDto | undefined  = blogsRepository.getBlogById(body.blogId);
+        const existBlog: ResponseBlogDto | undefined  = blogsRepository.getBlogById(body.blogId);
 
-        if (!findBlog) {
+        if (!existBlog) {
             return false;
         }
 
-        const newPost: ResponsePostDto = {id , ...body, blogName: findBlog.name}
+        const newPost: ResponsePostDto = {id , ...body, blogName: existBlog.name}
         db.posts.push(newPost)
 
         return true;

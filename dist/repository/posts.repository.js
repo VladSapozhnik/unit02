@@ -8,11 +8,11 @@ exports.postsRepository = {
         return db_1.db.posts.map((post) => post);
     },
     createPost: (body, id) => {
-        const findBlog = blogs_repository_1.blogsRepository.getBlogById(body.blogId);
-        if (!findBlog) {
+        const existBlog = blogs_repository_1.blogsRepository.getBlogById(body.blogId);
+        if (!existBlog) {
             return false;
         }
-        const newPost = Object.assign(Object.assign({ id }, body), { blogName: findBlog.name });
+        const newPost = Object.assign(Object.assign({ id }, body), { blogName: existBlog.name });
         db_1.db.posts.push(newPost);
         return true;
     },

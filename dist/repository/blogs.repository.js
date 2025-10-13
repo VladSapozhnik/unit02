@@ -15,9 +15,9 @@ exports.blogsRepository = {
         return db_1.db.blogs.find((blog) => blog.id === id);
     },
     updateBlog(id, body) {
-        const blog = this.getBlogById(id);
-        if (blog) {
-            Object.assign(blog, body);
+        const existBlog = this.getBlogById(id);
+        if (existBlog) {
+            Object.assign(existBlog, body);
             return true;
         }
         else {
@@ -25,8 +25,8 @@ exports.blogsRepository = {
         }
     },
     removeBlogById(id) {
-        const blog = this.getBlogById(id);
-        if (blog) {
+        const existBlog = this.getBlogById(id);
+        if (existBlog) {
             db_1.db.blogs = db_1.db.blogs.filter((blog) => blog.id === id);
             return true;
         }

@@ -22,10 +22,10 @@ export const blogsRepository = {
     },
 
     updateBlog (id: string, body: UpdateBlogDto): boolean {
-        const blog: ResponseBlogDto | undefined  = this.getBlogById(id);
+        const existBlog: ResponseBlogDto | undefined  = this.getBlogById(id);
 
-        if (blog) {
-            Object.assign(blog, body);
+        if (existBlog) {
+            Object.assign(existBlog, body);
             return true;
         } else {
             return false;
@@ -33,9 +33,9 @@ export const blogsRepository = {
     },
 
     removeBlogById (id: string): boolean {
-        const blog: ResponseBlogDto | undefined  = this.getBlogById(id);
+        const existBlog: ResponseBlogDto | undefined  = this.getBlogById(id);
 
-        if (blog) {
+        if (existBlog) {
             db.blogs = db.blogs.filter((blog: ResponseBlogDto) => blog.id === id);
             return true;
         } else {
