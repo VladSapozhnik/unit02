@@ -53,11 +53,10 @@ blogsRouter.put('/:id', (req: Request, res: Response) => {
 blogsRouter.delete('/:id', (req, res) => {
     const isDelete: boolean = blogsRepository.removeBlogById(req.params.id);
 
-    if (isDelete) {
-        res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
-        return;
-    } else {
+    if (!isDelete) {
         res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
         return;
     }
+
+    res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
 })

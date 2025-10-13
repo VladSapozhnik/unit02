@@ -26,12 +26,10 @@ exports.blogsRepository = {
     },
     removeBlogById(id) {
         const existBlog = this.getBlogById(id);
-        if (existBlog) {
-            db_1.db.blogs = db_1.db.blogs.filter((blog) => blog.id === id);
-            return true;
-        }
-        else {
+        if (!existBlog) {
             return false;
         }
+        db_1.db.blogs = db_1.db.blogs.filter((blog) => blog.id === id);
+        return true;
     }
 };

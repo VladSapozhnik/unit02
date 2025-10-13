@@ -35,11 +35,12 @@ export const blogsRepository = {
     removeBlogById (id: string): boolean {
         const existBlog: ResponseBlogDto | undefined  = this.getBlogById(id);
 
-        if (existBlog) {
-            db.blogs = db.blogs.filter((blog: ResponseBlogDto) => blog.id === id);
-            return true;
-        } else {
+        if (!existBlog) {
             return false;
         }
+
+
+        db.blogs = db.blogs.filter((blog: ResponseBlogDto) => blog.id === id);
+        return true;
     }
 }

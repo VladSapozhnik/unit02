@@ -43,12 +43,9 @@ exports.blogsRouter.put('/:id', (req, res) => {
 });
 exports.blogsRouter.delete('/:id', (req, res) => {
     const isDelete = blogs_repository_1.blogsRepository.removeBlogById(req.params.id);
-    if (isDelete) {
+    if (!isDelete) {
         res.sendStatus(http_status_1.HTTP_STATUS.NOT_FOUND_404);
         return;
     }
-    else {
-        res.sendStatus(http_status_1.HTTP_STATUS.NOT_FOUND_404);
-        return;
-    }
+    res.sendStatus(http_status_1.HTTP_STATUS.NO_CONTENT_204);
 });
