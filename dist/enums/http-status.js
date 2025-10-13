@@ -1,0 +1,11 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.HTTP_STATUS = void 0;
+var HTTP_STATUS;
+(function (HTTP_STATUS) {
+    HTTP_STATUS[HTTP_STATUS["OK_200"] = 200] = "OK_200";
+    HTTP_STATUS[HTTP_STATUS["CREATED_201"] = 201] = "CREATED_201";
+    HTTP_STATUS[HTTP_STATUS["NO_CONTENT_204"] = 204] = "NO_CONTENT_204";
+    HTTP_STATUS[HTTP_STATUS["BAD_REQUEST_400"] = 400] = "BAD_REQUEST_400";
+    HTTP_STATUS[HTTP_STATUS["NOT_FOUND_404"] = 404] = "NOT_FOUND_404";
+})(HTTP_STATUS || (exports.HTTP_STATUS = HTTP_STATUS = {}));

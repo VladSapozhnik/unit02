@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "name": "course it-incubator ",
+  "builds": [
+    { "src": "src/index.ts", "use": "@vercel/node" }
+  ],
+  "routes": [
+    { "src": "/(.*)", "dest": "src/index.ts" }
+  ]
+}
