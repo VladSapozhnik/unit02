@@ -24,7 +24,7 @@ postsRouter.post('/', (req, res) => {
 
     const findPost: ResponsePostDto | undefined  = postsRepository.getPostById(randomId);
 
-    res.send(findPost);
+    res.status(HTTP_STATUS.CREATED_201).send(findPost);
 })
 
 postsRouter.get('/:id', (req, res) => {

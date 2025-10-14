@@ -18,7 +18,7 @@ exports.postsRouter.post('/', (req, res) => {
         return;
     }
     const findPost = posts_repository_1.postsRepository.getPostById(randomId);
-    res.send(findPost);
+    res.status(http_status_1.HTTP_STATUS.CREATED_201).send(findPost);
 });
 exports.postsRouter.get('/:id', (req, res) => {
     const existPost = posts_repository_1.postsRepository.getPostById(req.params.id);

@@ -49,7 +49,7 @@ describe('/videos', () => {
 
     })
 
-    it ('should return status 404 for not-existing blog', async () => {
+    it ('should return status 404 if trying to update non-existing blog', async () => {
         await request(app).put('/blogs/' + -100).send(exampleUpdateBlog).expect(HTTP_STATUS.NOT_FOUND_404);
     })
 
@@ -59,7 +59,7 @@ describe('/videos', () => {
         await request(app).get('/blogs').expect(HTTP_STATUS.OK_200, []);
     })
 
-    it ('should return status 404 for not-existing blog', async () => {
+    it ('should return status 404 if trying to delete non-existing blog', async () => {
         await request(app).delete('/blogs/' + -100).expect(HTTP_STATUS.NOT_FOUND_404);
     })
 })
