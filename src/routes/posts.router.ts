@@ -1,18 +1,21 @@
-import {Router} from "express";
+import {Router, Request, Response} from "express";
 import {postsRepository} from "../repository/posts.repository";
 import {HTTP_STATUS} from "../enums/http-status";
 import {ResponsePostDto} from "../dto/post/response-post.dto";
 import {generateId} from "../constants/generate-id";
+import {basePostValidator} from "../validators/posts/base-post.validator";
+import {Result, validationResult} from "express-validator";
+import {inputValidationMiddleware} from "../middleware/input-validation.middleware";
 
 export const postsRouter: Router = Router();
 
-postsRouter.get('/', (req, res) => {
+postsRouter.get('/', (req: Request, res: Response) => {
     const findPosts: ResponsePostDto[] = postsRepository.getAllPosts();
 
     res.json(findPosts);
 })
 
-postsRouter.post('/', (req, res) => {
+postsRouter.post('/', basePostValidator, inputValidationMiddleware, (req: Request, res: Response) => {
     const randomId = generateId();
 
     const isCreated: boolean = postsRepository.createPost(req.body, randomId);
@@ -27,7 +30,7 @@ postsRouter.post('/', (req, res) => {
     res.status(HTTP_STATUS.CREATED_201).send(findPost);
 })
 
-postsRouter.get('/:id', (req, res) => {
+postsRouter.get('/:id', (req: Request, res: Response) => {
     const existPost: ResponsePostDto | undefined = postsRepository.getPostById(req.params.id);
 
     if (!existPost) {
@@ -38,7 +41,7 @@ postsRouter.get('/:id', (req, res) => {
     res.send(existPost);
 })
 
-postsRouter.put('/:id', (req, res) => {
+postsRouter.put('/:id', basePostValidator, inputValidationMiddleware, (req: Request, res: Response) => {
     const isUpdatedPost: boolean = postsRepository.updatePost(req.params.id, req.body);
 
     if (!isUpdatedPost) {
@@ -49,7 +52,7 @@ postsRouter.put('/:id', (req, res) => {
     res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
 })
 
-postsRouter.delete('/:id', (req, res) => {
+postsRouter.delete('/:id', (req: Request, res: Response) => {
     const isRemove: boolean = postsRepository.removePost(req.params.id);
 
     if (!isRemove) {

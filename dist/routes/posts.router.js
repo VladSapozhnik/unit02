@@ -5,12 +5,14 @@ const express_1 = require("express");
 const posts_repository_1 = require("../repository/posts.repository");
 const http_status_1 = require("../enums/http-status");
 const generate_id_1 = require("../constants/generate-id");
+const base_post_validator_1 = require("../validators/posts/base-post.validator");
+const input_validation_middleware_1 = require("../middleware/input-validation.middleware");
 exports.postsRouter = (0, express_1.Router)();
 exports.postsRouter.get('/', (req, res) => {
     const findPosts = posts_repository_1.postsRepository.getAllPosts();
     res.json(findPosts);
 });
-exports.postsRouter.post('/', (req, res) => {
+exports.postsRouter.post('/', base_post_validator_1.basePostValidator, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
     const randomId = (0, generate_id_1.generateId)();
     const isCreated = posts_repository_1.postsRepository.createPost(req.body, randomId);
     if (!isCreated) {
@@ -28,7 +30,7 @@ exports.postsRouter.get('/:id', (req, res) => {
     }
     res.send(existPost);
 });
-exports.postsRouter.put('/:id', (req, res) => {
+exports.postsRouter.put('/:id', base_post_validator_1.basePostValidator, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
     const isUpdatedPost = posts_repository_1.postsRepository.updatePost(req.params.id, req.body);
     if (!isUpdatedPost) {
         res.sendStatus(http_status_1.HTTP_STATUS.NOT_FOUND_404);
