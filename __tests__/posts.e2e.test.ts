@@ -5,6 +5,7 @@ import {CreateBlogDto} from "../src/dto/blog/create-blog.dto";
 import {CreatePostDto} from "../src/dto/post/create-post.dto";
 import {ResponsePostDto} from "../src/dto/post/response-post.dto";
 import {ResponseBlogDto} from "../src/dto/blog/response-blog.dto";
+import { type ErrorType } from "../src/middleware/input-validation.middleware"
 
 export const exampleCreateBlog: CreateBlogDto = {
     "name": "Name",
@@ -19,12 +20,33 @@ const exampleCreatePost: CreatePostDto = {
     "blogId": "1"
 }
 
+const exampleNonCreatePost: CreatePostDto = {
+    "title": "",
+    "shortDescription": "",
+    "content": "",
+    "blogId": ""
+}
+
 const exampleUpdatePost = {
     "title": "string",
     "shortDescription": "string",
     "content": "string",
     "blogId": "1"
 }
+
+const exampleNonUpdatePost: CreatePostDto = {
+    "title": "",
+    "shortDescription": "",
+    "content": "",
+    "blogId": ""
+}
+
+const validateErrors: ErrorType[] = [
+    { message: expect.any(String), field: expect.any(String) },
+    { message: expect.any(String), field: expect.any(String) },
+    { message: expect.any(String), field: expect.any(String) },
+    { message: expect.any(String), field: expect.any(String) },
+]
 
 describe('/posts', () => {
     beforeAll(async () => {
@@ -33,6 +55,13 @@ describe('/posts', () => {
 
     it ('should return status 200 and empty array', async () => {
         await request(app).get('/posts').expect(HTTP_STATUS.OK_200, [])
+    })
+
+
+    it('should return status 400 and array of errors when create post with invalid data', async () => {
+        const response = await request(app).post('/posts/').send(exampleNonCreatePost).expect(HTTP_STATUS.BAD_REQUEST_400);
+
+        expect(response.body.errorsMessages).toEqual(expect.arrayContaining(validateErrors));
     })
 
     let createPostBody: ResponsePostDto;
@@ -54,6 +83,7 @@ describe('/posts', () => {
         await request(app).get('/posts/' + -100).expect(HTTP_STATUS.NOT_FOUND_404);
     })
 
+
     let createBlogBody: ResponseBlogDto;
     it('should update existing post and return status 204', async () => {
         const responseBlog = await request(app).post('/blogs').send(exampleCreateBlog).expect(HTTP_STATUS.CREATED_201);
@@ -66,6 +96,12 @@ describe('/posts', () => {
         createPostBody = responseUpdatePost.body;
 
         expect(createPostBody).toEqual({id: expect.any(String), ...exampleUpdatePost, blogId: responseBlog.body.id, blogName: expect.any(String)});
+    })
+
+    it('should return status 400 and array of errors when update post with invalid data', async () => {
+        const response = await request(app).put('/posts/' + createBlogBody.id).send(exampleNonUpdatePost).expect(HTTP_STATUS.BAD_REQUEST_400);
+
+        expect(response.body.errorsMessages).toEqual(expect.arrayContaining(validateErrors));
     })
 
     it('should return status 404 if trying to update non-existing post', async () => {

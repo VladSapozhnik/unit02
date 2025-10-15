@@ -3,6 +3,8 @@ import {app} from "../src/setting";
 import {HTTP_STATUS} from "../src/enums/http-status";
 import {CreateBlogDto} from "../src/dto/blog/create-blog.dto";
 import {ResponseBlogDto} from "../src/dto/blog/response-blog.dto";
+import {UpdateBlogDto} from "../src/dto/blog/update-blog.dto";
+import type {ErrorType} from "../src/middleware/input-validation.middleware";
 
 const exampleCreateBlog: CreateBlogDto = {
     "name": "Name",
@@ -10,11 +12,29 @@ const exampleCreateBlog: CreateBlogDto = {
     "websiteUrl": "https://9.bnkqAJalm18cU8rsHdEqoUmUT2xh8Eb0h2a35xQiRR-UslhXAolExHnl.wKoraGI.HDtXk1.hZnv_1p4WqL5_Quj6f"
 }
 
-const exampleUpdateBlog = {
+const exampleNonCreateBlog: CreateBlogDto = {
+    "name": "",
+    "description": "",
+    "websiteUrl": ""
+}
+
+const exampleUpdateBlog: UpdateBlogDto = {
     "name": "New Blog",
     "description": "New description",
-    "websiteUrl": "https://zR7XcOZQX7T0RjeEzdCfMvXGqVNwS1CUbeY._JVMK4vpxapszIInxGPWIO4w-hJu60-Cr7hX9VORkBF7sIRNDEqkDB0d"
+    "websiteUrl": "https://www.google.com/"
 }
+
+const exampleNonUpdateBlog: UpdateBlogDto = {
+    "name": "",
+    "description": "",
+    "websiteUrl": ""
+}
+
+const validateErrors: ErrorType[] = [
+    { message: expect.any(String), field: expect.any(String) },
+    { message: expect.any(String), field: expect.any(String) },
+    { message: expect.any(String), field: expect.any(String) },
+]
 
 describe('/videos', () => {
     beforeAll(async () => {
@@ -23,6 +43,12 @@ describe('/videos', () => {
 
     it ('should return status 200 and empty array', async () => {
         await request(app).get('/blogs').expect(200, [])
+    })
+
+    it('should return status 400 and array of errors when create blog with invalid data', async () => {
+        const response = await request(app).post('/blogs').send(exampleNonCreateBlog).expect(HTTP_STATUS.BAD_REQUEST_400);
+
+        expect(response.body.errorsMessages).toEqual(expect.arrayContaining(validateErrors));
     })
 
     let createBlogBody: ResponseBlogDto;
@@ -40,6 +66,12 @@ describe('/videos', () => {
 
     it ('should return status 404 for not-existing blog', async () => {
         await request(app).get('/blogs/' + -100).expect(404)
+    })
+
+    it('should return status 400 and array of errors when update blog with invalid data', async () => {
+        const response = await request(app).put('/blogs/' + createBlogBody.id).send(exampleNonUpdateBlog).expect(HTTP_STATUS.BAD_REQUEST_400);
+
+        expect(response.body.errorsMessages).toEqual(expect.arrayContaining(validateErrors));
     })
 
     it ('should update existing blog and return status 204', async () => {

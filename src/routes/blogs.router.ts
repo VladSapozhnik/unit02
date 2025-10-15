@@ -4,7 +4,6 @@ import {ResponseBlogDto} from "../dto/blog/response-blog.dto";
 import {HTTP_STATUS} from "../enums/http-status";
 import {generateId} from "../constants/generate-id";
 import { baseBlogValidator } from "../validators/blogs/base-blog.validator";
-import { validationResult } from 'express-validator';
 import {inputValidationMiddleware} from "../middleware/input-validation.middleware";
 
 export const blogsRouter: Router = Router();
@@ -17,9 +16,6 @@ blogsRouter.get('/', (req: Request, res: Response) => {
 
 blogsRouter.post('/', baseBlogValidator, inputValidationMiddleware, (req: Request, res: Response) => {
     const randomId = generateId();
-    const errors = validationResult(req);
-
-    console.log(errors);
 
     const newBlog: boolean = blogsRepository.createBlog(req.body, randomId);
 

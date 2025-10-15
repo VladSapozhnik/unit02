@@ -2,7 +2,7 @@ import {Request, Response, NextFunction} from "express";
 import {Result, validationResult, ValidationError} from "express-validator";
 import {HTTP_STATUS} from "../enums/http-status";
 
-type ErrorType = {
+export type ErrorType = {
     message: string;
     field: string;
 }

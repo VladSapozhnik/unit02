@@ -6,7 +6,6 @@ const blogs_repository_1 = require("../repository/blogs.repository");
 const http_status_1 = require("../enums/http-status");
 const generate_id_1 = require("../constants/generate-id");
 const base_blog_validator_1 = require("../validators/blogs/base-blog.validator");
-const express_validator_1 = require("express-validator");
 const input_validation_middleware_1 = require("../middleware/input-validation.middleware");
 exports.blogsRouter = (0, express_1.Router)();
 exports.blogsRouter.get('/', (req, res) => {
@@ -15,8 +14,6 @@ exports.blogsRouter.get('/', (req, res) => {
 });
 exports.blogsRouter.post('/', base_blog_validator_1.baseBlogValidator, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
     const randomId = (0, generate_id_1.generateId)();
-    const errors = (0, express_validator_1.validationResult)(req);
-    console.log(errors);
     const newBlog = blogs_repository_1.blogsRepository.createBlog(req.body, randomId);
     if (!newBlog) {
         res.sendStatus(http_status_1.HTTP_STATUS.BAD_REQUEST_400);
