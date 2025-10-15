@@ -4,8 +4,8 @@ import {HTTP_STATUS} from "../enums/http-status";
 import {ResponsePostDto} from "../dto/post/response-post.dto";
 import {generateId} from "../constants/generate-id";
 import {basePostValidator} from "../validators/posts/base-post.validator";
-import {Result, validationResult} from "express-validator";
 import {inputValidationMiddleware} from "../middleware/input-validation.middleware";
+import {superAdminGuardMiddleware} from "../middleware/super-admin-guard.middleware";
 
 export const postsRouter: Router = Router();
 
@@ -15,7 +15,7 @@ postsRouter.get('/', (req: Request, res: Response) => {
     res.json(findPosts);
 })
 
-postsRouter.post('/', basePostValidator, inputValidationMiddleware, (req: Request, res: Response) => {
+postsRouter.post('/', superAdminGuardMiddleware, basePostValidator, inputValidationMiddleware, (req: Request, res: Response) => {
     const randomId = generateId();
 
     const isCreated: boolean = postsRepository.createPost(req.body, randomId);
@@ -41,7 +41,7 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
     res.send(existPost);
 })
 
-postsRouter.put('/:id', basePostValidator, inputValidationMiddleware, (req: Request, res: Response) => {
+postsRouter.put('/:id', superAdminGuardMiddleware, basePostValidator, inputValidationMiddleware, (req: Request, res: Response) => {
     const isUpdatedPost: boolean = postsRepository.updatePost(req.params.id, req.body);
 
     if (!isUpdatedPost) {
@@ -52,7 +52,7 @@ postsRouter.put('/:id', basePostValidator, inputValidationMiddleware, (req: Requ
     res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
 })
 
-postsRouter.delete('/:id', (req: Request, res: Response) => {
+postsRouter.delete('/:id', superAdminGuardMiddleware, (req: Request, res: Response) => {
     const isRemove: boolean = postsRepository.removePost(req.params.id);
 
     if (!isRemove) {

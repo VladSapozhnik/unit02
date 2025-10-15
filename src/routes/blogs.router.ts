@@ -5,6 +5,7 @@ import {HTTP_STATUS} from "../enums/http-status";
 import {generateId} from "../constants/generate-id";
 import { baseBlogValidator } from "../validators/blogs/base-blog.validator";
 import {inputValidationMiddleware} from "../middleware/input-validation.middleware";
+import {superAdminGuardMiddleware} from "../middleware/super-admin-guard.middleware";
 
 export const blogsRouter: Router = Router();
 
@@ -14,7 +15,7 @@ blogsRouter.get('/', (req: Request, res: Response) => {
     res.send(findBlogs);
 })
 
-blogsRouter.post('/', baseBlogValidator, inputValidationMiddleware, (req: Request, res: Response) => {
+blogsRouter.post('/', superAdminGuardMiddleware, baseBlogValidator, inputValidationMiddleware, (req: Request, res: Response) => {
     const randomId = generateId();
 
     const newBlog: boolean = blogsRepository.createBlog(req.body, randomId);
@@ -41,7 +42,7 @@ blogsRouter.get('/:id', (req: Request, res: Response) => {
     }
 })
 
-blogsRouter.put('/:id', baseBlogValidator, inputValidationMiddleware, (req: Request, res: Response) => {
+blogsRouter.put('/:id', superAdminGuardMiddleware, baseBlogValidator, inputValidationMiddleware, (req: Request, res: Response) => {
     const isUpdated: boolean = blogsRepository.updateBlog(req.params.id, req.body);
 
     if (isUpdated) {
@@ -52,7 +53,7 @@ blogsRouter.put('/:id', baseBlogValidator, inputValidationMiddleware, (req: Requ
     }
 })
 
-blogsRouter.delete('/:id', (req, res) => {
+blogsRouter.delete('/:id', superAdminGuardMiddleware, (req, res) => {
     const isDelete: boolean = blogsRepository.removeBlogById(req.params.id);
 
     if (!isDelete) {

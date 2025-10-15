@@ -7,12 +7,13 @@ const http_status_1 = require("../enums/http-status");
 const generate_id_1 = require("../constants/generate-id");
 const base_blog_validator_1 = require("../validators/blogs/base-blog.validator");
 const input_validation_middleware_1 = require("../middleware/input-validation.middleware");
+const super_admin_guard_middleware_1 = require("../middleware/super-admin-guard.middleware");
 exports.blogsRouter = (0, express_1.Router)();
 exports.blogsRouter.get('/', (req, res) => {
     const findBlogs = blogs_repository_1.blogsRepository.getBlogs();
     res.send(findBlogs);
 });
-exports.blogsRouter.post('/', base_blog_validator_1.baseBlogValidator, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
+exports.blogsRouter.post('/', super_admin_guard_middleware_1.superAdminGuardMiddleware, base_blog_validator_1.baseBlogValidator, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
     const randomId = (0, generate_id_1.generateId)();
     const newBlog = blogs_repository_1.blogsRepository.createBlog(req.body, randomId);
     if (!newBlog) {
@@ -33,7 +34,7 @@ exports.blogsRouter.get('/:id', (req, res) => {
         return;
     }
 });
-exports.blogsRouter.put('/:id', base_blog_validator_1.baseBlogValidator, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
+exports.blogsRouter.put('/:id', super_admin_guard_middleware_1.superAdminGuardMiddleware, base_blog_validator_1.baseBlogValidator, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
     const isUpdated = blogs_repository_1.blogsRepository.updateBlog(req.params.id, req.body);
     if (isUpdated) {
         res.sendStatus(http_status_1.HTTP_STATUS.NO_CONTENT_204);
@@ -43,7 +44,7 @@ exports.blogsRouter.put('/:id', base_blog_validator_1.baseBlogValidator, input_v
         res.sendStatus(http_status_1.HTTP_STATUS.NOT_FOUND_404);
     }
 });
-exports.blogsRouter.delete('/:id', (req, res) => {
+exports.blogsRouter.delete('/:id', super_admin_guard_middleware_1.superAdminGuardMiddleware, (req, res) => {
     const isDelete = blogs_repository_1.blogsRepository.removeBlogById(req.params.id);
     if (!isDelete) {
         res.sendStatus(http_status_1.HTTP_STATUS.NOT_FOUND_404);

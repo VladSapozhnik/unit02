@@ -5,6 +5,7 @@ import {CreateBlogDto} from "../src/dto/blog/create-blog.dto";
 import {ResponseBlogDto} from "../src/dto/blog/response-blog.dto";
 import {UpdateBlogDto} from "../src/dto/blog/update-blog.dto";
 import type {ErrorType} from "../src/middleware/input-validation.middleware";
+import {ADMIN_PASSWORD, ADMIN_USERNAME} from "../src/middleware/super-admin-guard.middleware";
 
 const exampleCreateBlog: CreateBlogDto = {
     "name": "Name",
@@ -46,14 +47,14 @@ describe('/videos', () => {
     })
 
     it('should return status 400 and array of errors when create blog with invalid data', async () => {
-        const response = await request(app).post('/blogs').send(exampleNonCreateBlog).expect(HTTP_STATUS.BAD_REQUEST_400);
+        const response = await request(app).post('/blogs').auth(ADMIN_USERNAME, ADMIN_PASSWORD).send(exampleNonCreateBlog).expect(HTTP_STATUS.BAD_REQUEST_400);
 
         expect(response.body.errorsMessages).toEqual(expect.arrayContaining(validateErrors));
     })
 
     let createBlogBody: ResponseBlogDto;
     it ('should create blog and return 201 with created blog body', async () => {
-        const response = await request(app).post('/blogs').send(exampleCreateBlog).expect(HTTP_STATUS.CREATED_201)
+        const response = await request(app).post('/blogs').auth(ADMIN_USERNAME, ADMIN_PASSWORD).send(exampleCreateBlog).expect(HTTP_STATUS.CREATED_201)
 
         createBlogBody = await response.body;
 
@@ -69,29 +70,29 @@ describe('/videos', () => {
     })
 
     it('should return status 400 and array of errors when update blog with invalid data', async () => {
-        const response = await request(app).put('/blogs/' + createBlogBody.id).send(exampleNonUpdateBlog).expect(HTTP_STATUS.BAD_REQUEST_400);
+        const response = await request(app).put('/blogs/' + createBlogBody.id).auth(ADMIN_USERNAME, ADMIN_PASSWORD).send(exampleNonUpdateBlog).expect(HTTP_STATUS.BAD_REQUEST_400);
 
         expect(response.body.errorsMessages).toEqual(expect.arrayContaining(validateErrors));
     })
 
     it ('should update existing blog and return status 204', async () => {
-        await request(app).put('/blogs/' + createBlogBody.id).send(exampleUpdateBlog).expect(HTTP_STATUS.NO_CONTENT_204);
+        await request(app).put('/blogs/' + createBlogBody.id).auth(ADMIN_USERNAME, ADMIN_PASSWORD).send(exampleUpdateBlog).expect(HTTP_STATUS.NO_CONTENT_204);
 
         await request(app).get(`/blogs/${createBlogBody.id}`).expect(HTTP_STATUS.OK_200, {id: createBlogBody.id, ...exampleUpdateBlog});
 
     })
 
     it ('should return status 404 if trying to update non-existing blog', async () => {
-        await request(app).put('/blogs/' + -100).send(exampleUpdateBlog).expect(HTTP_STATUS.NOT_FOUND_404);
+        await request(app).put('/blogs/' + -100).auth(ADMIN_USERNAME, ADMIN_PASSWORD).send(exampleUpdateBlog).expect(HTTP_STATUS.NOT_FOUND_404);
     })
 
     it ('should remove existing blog and return status 204', async () => {
-       await request(app).delete('/blogs/' + createBlogBody.id).expect(HTTP_STATUS.NO_CONTENT_204);
+       await request(app).delete('/blogs/' + createBlogBody.id).auth(ADMIN_USERNAME, ADMIN_PASSWORD).expect(HTTP_STATUS.NO_CONTENT_204);
 
         await request(app).get('/blogs').expect(HTTP_STATUS.OK_200, []);
     })
 
     it ('should return status 404 if trying to delete non-existing blog', async () => {
-        await request(app).delete('/blogs/' + -100).expect(HTTP_STATUS.NOT_FOUND_404);
+        await request(app).delete('/blogs/' + -100).auth(ADMIN_USERNAME, ADMIN_PASSWORD).expect(HTTP_STATUS.NOT_FOUND_404);
     })
 })
