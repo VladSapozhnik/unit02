@@ -6,6 +6,9 @@ import {generateId} from "../constants/generate-id";
 import {basePostValidator} from "../validators/posts/base-post.validator";
 import {inputValidationMiddleware} from "../middleware/input-validation.middleware";
 import {superAdminGuardMiddleware} from "../middleware/super-admin-guard.middleware";
+import {RequestWithBody, RequestWithParam, RequestWithParamAndBody} from "../types/request.type";
+import {UpdatePostDto} from "../dto/post/update-post.dto";
+import {CreatePostDto} from "../dto/post/create-post.dto";
 
 export const postsRouter: Router = Router();
 
@@ -15,7 +18,7 @@ postsRouter.get('/', (req: Request, res: Response) => {
     res.json(findPosts);
 })
 
-postsRouter.post('/', superAdminGuardMiddleware, basePostValidator, inputValidationMiddleware, (req: Request, res: Response) => {
+postsRouter.post('/', superAdminGuardMiddleware, basePostValidator, inputValidationMiddleware, (req: RequestWithBody<CreatePostDto>, res: Response) => {
     const randomId = generateId();
 
     const isCreated: boolean = postsRepository.createPost(req.body, randomId);
@@ -30,7 +33,7 @@ postsRouter.post('/', superAdminGuardMiddleware, basePostValidator, inputValidat
     res.status(HTTP_STATUS.CREATED_201).send(findPost);
 })
 
-postsRouter.get('/:id', (req: Request, res: Response) => {
+postsRouter.get('/:id', (req: RequestWithParam<{id: string}>, res: Response) => {
     const existPost: ResponsePostDto | undefined = postsRepository.getPostById(req.params.id);
 
     if (!existPost) {
@@ -41,7 +44,7 @@ postsRouter.get('/:id', (req: Request, res: Response) => {
     res.send(existPost);
 })
 
-postsRouter.put('/:id', superAdminGuardMiddleware, basePostValidator, inputValidationMiddleware, (req: Request, res: Response) => {
+postsRouter.put('/:id', superAdminGuardMiddleware, basePostValidator, inputValidationMiddleware, (req: RequestWithParamAndBody<{id: string}, UpdatePostDto>, res: Response) => {
     const isUpdatedPost: boolean = postsRepository.updatePost(req.params.id, req.body);
 
     if (!isUpdatedPost) {
@@ -52,7 +55,7 @@ postsRouter.put('/:id', superAdminGuardMiddleware, basePostValidator, inputValid
     res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
 })
 
-postsRouter.delete('/:id', superAdminGuardMiddleware, (req: Request, res: Response) => {
+postsRouter.delete('/:id', superAdminGuardMiddleware, (req: RequestWithParam<{id: string}>, res: Response) => {
     const isRemove: boolean = postsRepository.removePost(req.params.id);
 
     if (!isRemove) {

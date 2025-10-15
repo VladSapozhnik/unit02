@@ -4,8 +4,8 @@ import {HTTP_STATUS} from "../src/enums/http-status";
 import {CreateBlogDto} from "../src/dto/blog/create-blog.dto";
 import {ResponseBlogDto} from "../src/dto/blog/response-blog.dto";
 import {UpdateBlogDto} from "../src/dto/blog/update-blog.dto";
-import type {ErrorType} from "../src/middleware/input-validation.middleware";
 import {ADMIN_PASSWORD, ADMIN_USERNAME} from "../src/middleware/super-admin-guard.middleware";
+import {type ErrorType} from "../src/types/error.type";
 
 const exampleCreateBlog: CreateBlogDto = {
     "name": "Name",

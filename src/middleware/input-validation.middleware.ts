@@ -1,11 +1,7 @@
 import {Request, Response, NextFunction} from "express";
 import {Result, validationResult, ValidationError} from "express-validator";
 import {HTTP_STATUS} from "../enums/http-status";
-
-export type ErrorType = {
-    message: string;
-    field: string;
-}
+import {ErrorType} from "../types/error.type";
 
 export const inputValidationMiddleware = (req: Request, res: Response, next: NextFunction) => {
     const result: Result = validationResult(req);

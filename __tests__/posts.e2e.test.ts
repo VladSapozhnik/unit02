@@ -5,8 +5,8 @@ import {CreateBlogDto} from "../src/dto/blog/create-blog.dto";
 import {CreatePostDto} from "../src/dto/post/create-post.dto";
 import {ResponsePostDto} from "../src/dto/post/response-post.dto";
 import {ResponseBlogDto} from "../src/dto/blog/response-blog.dto";
-import { type ErrorType } from "../src/middleware/input-validation.middleware"
 import {ADMIN_PASSWORD, ADMIN_USERNAME} from "../src/middleware/super-admin-guard.middleware";
+import {type ErrorType} from "../src/types/error.type";
 
 export const exampleCreateBlog: CreateBlogDto = {
     "name": "Name",

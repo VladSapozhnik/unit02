@@ -6,6 +6,9 @@ import {generateId} from "../constants/generate-id";
 import { baseBlogValidator } from "../validators/blogs/base-blog.validator";
 import {inputValidationMiddleware} from "../middleware/input-validation.middleware";
 import {superAdminGuardMiddleware} from "../middleware/super-admin-guard.middleware";
+import {RequestWithBody, RequestWithParam, RequestWithParamAndBody} from "../types/request.type";
+import {CreateBlogDto} from "../dto/blog/create-blog.dto";
+import {UpdateBlogDto} from "../dto/blog/update-blog.dto";
 
 export const blogsRouter: Router = Router();
 
@@ -15,7 +18,7 @@ blogsRouter.get('/', (req: Request, res: Response) => {
     res.send(findBlogs);
 })
 
-blogsRouter.post('/', superAdminGuardMiddleware, baseBlogValidator, inputValidationMiddleware, (req: Request, res: Response) => {
+blogsRouter.post('/', superAdminGuardMiddleware, baseBlogValidator, inputValidationMiddleware, (req: RequestWithBody<CreateBlogDto>, res: Response) => {
     const randomId = generateId();
 
     const newBlog: boolean = blogsRepository.createBlog(req.body, randomId);
@@ -30,7 +33,7 @@ blogsRouter.post('/', superAdminGuardMiddleware, baseBlogValidator, inputValidat
     res.status(HTTP_STATUS.CREATED_201).send(findBlog);
 })
 
-blogsRouter.get('/:id', (req: Request, res: Response) => {
+blogsRouter.get('/:id', (req: RequestWithParam<{id: string}>, res: Response) => {
     const existBlog: ResponseBlogDto | undefined = blogsRepository.getBlogById(req.params.id);
 
     if (!existBlog) {
@@ -42,7 +45,7 @@ blogsRouter.get('/:id', (req: Request, res: Response) => {
     }
 })
 
-blogsRouter.put('/:id', superAdminGuardMiddleware, baseBlogValidator, inputValidationMiddleware, (req: Request, res: Response) => {
+blogsRouter.put('/:id', superAdminGuardMiddleware, baseBlogValidator, inputValidationMiddleware, (req: RequestWithParamAndBody<{id: string}, UpdateBlogDto>, res: Response) => {
     const isUpdated: boolean = blogsRepository.updateBlog(req.params.id, req.body);
 
     if (isUpdated) {
@@ -53,7 +56,7 @@ blogsRouter.put('/:id', superAdminGuardMiddleware, baseBlogValidator, inputValid
     }
 })
 
-blogsRouter.delete('/:id', superAdminGuardMiddleware, (req, res) => {
+blogsRouter.delete('/:id', superAdminGuardMiddleware, (req: RequestWithParam<{id: string}>, res: Response) => {
     const isDelete: boolean = blogsRepository.removeBlogById(req.params.id);
 
     if (!isDelete) {
