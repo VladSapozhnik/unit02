@@ -9,6 +9,7 @@ import {superAdminGuardMiddleware} from "../middleware/super-admin-guard.middlew
 import {RequestWithBody, RequestWithParam, RequestWithParamAndBody} from "../types/request.type";
 import {UpdatePostDto} from "../dto/post/update-post.dto";
 import {CreatePostDto} from "../dto/post/create-post.dto";
+import {QueryPostDto} from "../dto/post/query-post.dto";
 
 export const postsRouter: Router = Router();
 
@@ -33,7 +34,7 @@ postsRouter.post('/', superAdminGuardMiddleware, basePostValidator, inputValidat
     res.status(HTTP_STATUS.CREATED_201).send(findPost);
 })
 
-postsRouter.get('/:id', (req: RequestWithParam<{id: string}>, res: Response) => {
+postsRouter.get('/:id', (req: RequestWithParam<QueryPostDto>, res: Response) => {
     const existPost: ResponsePostDto | undefined = postsRepository.getPostById(req.params.id);
 
     if (!existPost) {
@@ -44,7 +45,7 @@ postsRouter.get('/:id', (req: RequestWithParam<{id: string}>, res: Response) => 
     res.send(existPost);
 })
 
-postsRouter.put('/:id', superAdminGuardMiddleware, basePostValidator, inputValidationMiddleware, (req: RequestWithParamAndBody<{id: string}, UpdatePostDto>, res: Response) => {
+postsRouter.put('/:id', superAdminGuardMiddleware, basePostValidator, inputValidationMiddleware, (req: RequestWithParamAndBody<QueryPostDto, UpdatePostDto>, res: Response) => {
     const isUpdatedPost: boolean = postsRepository.updatePost(req.params.id, req.body);
 
     if (!isUpdatedPost) {
@@ -55,7 +56,7 @@ postsRouter.put('/:id', superAdminGuardMiddleware, basePostValidator, inputValid
     res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
 })
 
-postsRouter.delete('/:id', superAdminGuardMiddleware, (req: RequestWithParam<{id: string}>, res: Response) => {
+postsRouter.delete('/:id', superAdminGuardMiddleware, (req: RequestWithParam<QueryPostDto>, res: Response) => {
     const isRemove: boolean = postsRepository.removePost(req.params.id);
 
     if (!isRemove) {

@@ -1,4 +1,4 @@
-export type QueryPost = {
+export type QueryPostDto = {
     /**
      * id of existing post
      */
