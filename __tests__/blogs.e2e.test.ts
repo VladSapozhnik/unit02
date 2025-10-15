@@ -37,6 +37,11 @@ const validateErrors: ErrorType[] = [
     { message: expect.any(String), field: expect.any(String) },
 ]
 
+const nonAuth = {
+    admin: 'no-auth',
+    password: 'no-auth'
+}
+
 describe('/videos', () => {
     beforeAll(async () => {
         await request(app).delete('/testing/all-data').expect(HTTP_STATUS.NO_CONTENT_204);
@@ -61,6 +66,10 @@ describe('/videos', () => {
         expect(createBlogBody).toEqual({id: expect.any(String), ...exampleCreateBlog});
     })
 
+    it ('should return 401 Unauthorized when creating a blog with invalid credentials', async () => {
+        await request(app).post('/blogs').auth(nonAuth.admin, nonAuth.password).send(exampleCreateBlog).expect(HTTP_STATUS.UNAUTHORIZED_401)
+    })
+
     it('should return object blog and return 200', async () => {
         await request(app).get('/blogs/' + createBlogBody.id).expect(200,  createBlogBody)
     });
@@ -75,6 +84,10 @@ describe('/videos', () => {
         expect(response.body.errorsMessages).toEqual(expect.arrayContaining(validateErrors));
     })
 
+    it('should return 401 Unauthorized when updating a blog with invalid credentials', async () => {
+        await request(app).put('/blogs/' + createBlogBody.id).auth(nonAuth.admin, nonAuth.password).send(exampleUpdateBlog).expect(HTTP_STATUS.UNAUTHORIZED_401);
+    })
+
     it ('should update existing blog and return status 204', async () => {
         await request(app).put('/blogs/' + createBlogBody.id).auth(ADMIN_USERNAME, ADMIN_PASSWORD).send(exampleUpdateBlog).expect(HTTP_STATUS.NO_CONTENT_204);
 
@@ -84,6 +97,10 @@ describe('/videos', () => {
 
     it ('should return status 404 if trying to update non-existing blog', async () => {
         await request(app).put('/blogs/' + -100).auth(ADMIN_USERNAME, ADMIN_PASSWORD).send(exampleUpdateBlog).expect(HTTP_STATUS.NOT_FOUND_404);
+    })
+
+    it ('should return 401 Unauthorized when deleting a blog with invalid credentials', async () => {
+        await request(app).delete('/blogs/' + createBlogBody.id).auth(nonAuth.admin, nonAuth.password).expect(HTTP_STATUS.UNAUTHORIZED_401);
     })
 
     it ('should remove existing blog and return status 204', async () => {

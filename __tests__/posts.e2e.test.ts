@@ -49,6 +49,11 @@ const validateErrors: ErrorType[] = [
     { message: expect.any(String), field: expect.any(String) },
 ]
 
+const nonAuth = {
+    admin: 'no-auth',
+    password: 'no-auth'
+}
+
 describe('/posts', () => {
     beforeAll(async () => {
         await request(app).delete('/testing/all-data').expect(HTTP_STATUS.NO_CONTENT_204);
@@ -57,7 +62,6 @@ describe('/posts', () => {
     it ('should return status 200 and empty array', async () => {
         await request(app).get('/posts').expect(HTTP_STATUS.OK_200, [])
     })
-
 
     it('should return status 400 and array of errors when create post with invalid data', async () => {
         const response = await request(app).post('/posts/').auth(ADMIN_USERNAME, ADMIN_PASSWORD).send(exampleNonCreatePost).expect(HTTP_STATUS.BAD_REQUEST_400);
@@ -68,12 +72,16 @@ describe('/posts', () => {
     let createPostBody: ResponsePostDto;
     it ('should create post and return 201 with created post body', async () => {
         const responseBlog = await request(app).post('/blogs').auth(ADMIN_USERNAME, ADMIN_PASSWORD).send(exampleCreateBlog).expect(HTTP_STATUS.CREATED_201);
-        // console.log(responseBlog.body.id);
+
         const responsePost = await request(app).post('/posts').auth(ADMIN_USERNAME, ADMIN_PASSWORD).send({...exampleCreatePost, blogId: responseBlog.body.id}).expect(HTTP_STATUS.CREATED_201);
 
         createPostBody = responsePost.body;
 
         expect(createPostBody).toEqual({id: expect.any(String), ...exampleCreatePost, blogId: responseBlog.body.id, blogName: expect.any(String)});
+    })
+
+    it ('should return 401 Unauthorized when creating a post with invalid credentials', async () => {
+        await request(app).post('/posts').auth(nonAuth.admin, nonAuth.password).send({...exampleCreatePost}).expect(HTTP_STATUS.UNAUTHORIZED_401);
     })
 
     it('should return object post and return 200', async () => {
@@ -99,6 +107,10 @@ describe('/posts', () => {
         expect(createPostBody).toEqual({id: expect.any(String), ...exampleUpdatePost, blogId: responseBlog.body.id, blogName: expect.any(String)});
     })
 
+    it('should return 401 Unauthorized when updating a post with invalid credentials', async () => {
+        await request(app).put('/posts/' + createBlogBody.id).auth(nonAuth.admin, nonAuth.password).send(exampleUpdatePost).expect(HTTP_STATUS.UNAUTHORIZED_401);
+    })
+
     it('should return status 400 and array of errors when update post with invalid data', async () => {
         const response = await request(app).put('/posts/' + createBlogBody.id).auth(ADMIN_USERNAME, ADMIN_PASSWORD).send(exampleNonUpdatePost).expect(HTTP_STATUS.BAD_REQUEST_400);
 
@@ -107,6 +119,10 @@ describe('/posts', () => {
 
     it('should return status 404 if trying to update non-existing post', async () => {
         await request(app).put('/posts/' + -100).auth(ADMIN_USERNAME, ADMIN_PASSWORD).send({...exampleUpdatePost, blogId: createBlogBody.id}).expect(HTTP_STATUS.NOT_FOUND_404);
+    })
+
+    it('should return 401 Unauthorized when deleting a post with invalid credentials', async () => {
+        await request(app).delete('/posts/' + createPostBody.id).auth(nonAuth.admin, nonAuth.password).expect(HTTP_STATUS.UNAUTHORIZED_401);
     })
 
     it('should remove existing post and return status 204', async () => {
