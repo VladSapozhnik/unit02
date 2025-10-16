@@ -7,6 +7,7 @@ import {UpdateBlogDto} from "../src/dto/blog/update-blog.dto";
 import {ADMIN_PASSWORD, ADMIN_USERNAME} from "../src/middleware/super-admin-guard.middleware";
 import {type ErrorType} from "../src/types/error.type";
 import {RouterPath} from "../src/constants/router-path";
+import BlogsTestManager from "./managers/blogs.test.manager";
 
 const exampleCreateBlog: CreateBlogDto = {
     "name": "Name",
@@ -60,9 +61,10 @@ describe('/videos', () => {
 
     let createBlogBody: ResponseBlogDto;
     it ('should create blog and return 201 with created blog body', async () => {
-        const response = await request(app).post(RouterPath.blogs).auth(ADMIN_USERNAME, ADMIN_PASSWORD).send(exampleCreateBlog).expect(HTTP_STATUS.CREATED_201)
+        // const response = await request(app).post(RouterPath.blogs).auth(ADMIN_USERNAME, ADMIN_PASSWORD).send(exampleCreateBlog).expect(HTTP_STATUS.CREATED_201)
 
-        createBlogBody = await response.body;
+        // createBlogBody = await response.body;
+        createBlogBody = await BlogsTestManager.createBlog(exampleCreateBlog)
 
         expect(createBlogBody).toEqual({id: expect.any(String), ...exampleCreateBlog});
     })
