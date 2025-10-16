@@ -6,10 +6,11 @@ const tsJestTransformCfg = createDefaultPreset().transform;
 
 module.exports = {
   testEnvironment: 'node',
-  testPathIgnorePatterns: [
-    '.*manager.ts$', // Игнорировать файлы, оканчивающиеся на manager.ts
-    '.*helper.ts$', // Игнорировать файлы, оканчивающиеся на helper.ts
-  ],
+  // testPathIgnorePatterns: [
+  //   '.*manager.ts$', // Игнорировать файлы, оканчивающиеся на manager.ts
+  //   '.*helper.ts$', // Игнорировать файлы, оканчивающиеся на helper.ts
+  // ],
+  testMatch: ['**/__tests__/**/*.spec.ts'],
   transform: {
     ...tsJestTransformCfg,
   },
