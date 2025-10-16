@@ -1,7 +1,12 @@
 import {ResponseBlogDto} from "../dto/blog/response-blog.dto";
 import {ResponsePostDto} from "../dto/post/response-post.dto";
 
-export const db: { blogs: ResponseBlogDto[], posts: ResponsePostDto[] } = {
+export type dbType = {
+    blogs: ResponseBlogDto[],
+    posts: ResponsePostDto[],
+}
+
+export const db: dbType = {
     blogs: [
         {
             "id": "1",
@@ -19,5 +24,5 @@ export const db: { blogs: ResponseBlogDto[], posts: ResponsePostDto[] } = {
             "blogId": "1",
             "blogName": "test post))"
         }
-    ]
+    ],
 }
