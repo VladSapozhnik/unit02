@@ -9,7 +9,9 @@
     "dev": "nodemon --inspect dist/index.js",
     "watch": "tsc -w",
     "build": "tsc",
-    "test": "jest -i --no-cache"
+    "test": "jest -i --no-cache",
+    "lint": "eslint --fix .",
+    "format": "prettier --write ."
   },
   "dependencies": {
     "dotenv": "^17.2.3",
@@ -26,7 +28,13 @@
     "supertest": "^7.1.4",
     "ts-jest": "^29.4.4",
     "ts-node": "^10.9.2",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "@typescript-eslint/eslint-plugin": "^8.24.0",
+    "@typescript-eslint/parser": "^8.24.0",
+    "eslint": "^9.20.1",
+    "eslint-config-prettier": "^10.0.1",
+    "eslint-plugin-prettier": "^5.2.3",
+    "prettier": "^3.5.0"
   },
   "nodemonConfig": {
     "ignore": [

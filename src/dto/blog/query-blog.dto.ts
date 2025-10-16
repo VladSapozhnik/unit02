@@ -1,6 +1,6 @@
 export type QueryBlogDto = {
-    /**
-     * id of existing blog
-     */
-    id: string;
-}
+  /**
+   * id of existing blog
+   */
+  id: string;
+};

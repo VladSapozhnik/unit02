@@ -1,6 +1,6 @@
 export type QueryPostDto = {
-    /**
-     * id of existing post
-     */
-    id: string,
-}
+  /**
+   * id of existing post
+   */
+  id: string;
+};
