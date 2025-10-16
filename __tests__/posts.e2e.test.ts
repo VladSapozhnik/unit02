@@ -7,6 +7,7 @@ import {ResponsePostDto} from "../src/dto/post/response-post.dto";
 import {ResponseBlogDto} from "../src/dto/blog/response-blog.dto";
 import {ADMIN_PASSWORD, ADMIN_USERNAME} from "../src/middleware/super-admin-guard.middleware";
 import {type ErrorType} from "../src/types/error.type";
+import {RouterPath} from "../src/constants/router-path";
 
 export const exampleCreateBlog: CreateBlogDto = {
     "name": "Name",
@@ -56,7 +57,7 @@ const nonAuth = {
 
 describe('/posts', () => {
     beforeAll(async () => {
-        await request(app).delete('/testing/all-data').expect(HTTP_STATUS.NO_CONTENT_204);
+        await request(app).delete(RouterPath.__tests__).expect(HTTP_STATUS.NO_CONTENT_204);
     })
 
     it ('should return status 200 and empty array', async () => {
@@ -64,16 +65,16 @@ describe('/posts', () => {
     })
 
     it('should return status 400 and array of errors when create post with invalid data', async () => {
-        const response = await request(app).post('/posts/').auth(ADMIN_USERNAME, ADMIN_PASSWORD).send(exampleNonCreatePost).expect(HTTP_STATUS.BAD_REQUEST_400);
+        const response = await request(app).post(RouterPath.posts).auth(ADMIN_USERNAME, ADMIN_PASSWORD).send(exampleNonCreatePost).expect(HTTP_STATUS.BAD_REQUEST_400);
 
         expect(response.body.errorsMessages).toEqual(expect.arrayContaining(validateErrors));
     })
 
     let createPostBody: ResponsePostDto;
     it ('should create post and return 201 with created post body', async () => {
-        const responseBlog = await request(app).post('/blogs').auth(ADMIN_USERNAME, ADMIN_PASSWORD).send(exampleCreateBlog).expect(HTTP_STATUS.CREATED_201);
+        const responseBlog = await request(app).post(RouterPath.blogs).auth(ADMIN_USERNAME, ADMIN_PASSWORD).send(exampleCreateBlog).expect(HTTP_STATUS.CREATED_201);
 
-        const responsePost = await request(app).post('/posts').auth(ADMIN_USERNAME, ADMIN_PASSWORD).send({...exampleCreatePost, blogId: responseBlog.body.id}).expect(HTTP_STATUS.CREATED_201);
+        const responsePost = await request(app).post(RouterPath.posts).auth(ADMIN_USERNAME, ADMIN_PASSWORD).send({...exampleCreatePost, blogId: responseBlog.body.id}).expect(HTTP_STATUS.CREATED_201);
 
         createPostBody = responsePost.body;
 
@@ -81,25 +82,25 @@ describe('/posts', () => {
     })
 
     it ('should return 401 Unauthorized when creating a post with invalid credentials', async () => {
-        await request(app).post('/posts').auth(nonAuth.admin, nonAuth.password).send({...exampleCreatePost}).expect(HTTP_STATUS.UNAUTHORIZED_401);
+        await request(app).post(RouterPath.posts).auth(nonAuth.admin, nonAuth.password).send({...exampleCreatePost}).expect(HTTP_STATUS.UNAUTHORIZED_401);
     })
 
     it('should return object post and return 200', async () => {
-        await request(app).get('/posts/' + createPostBody.id).expect(HTTP_STATUS.OK_200, createPostBody)
+        await request(app).get(RouterPath.posts + createPostBody.id).expect(HTTP_STATUS.OK_200, createPostBody)
     });
 
     it('should return status 404 for non-existing post', async () => {
-        await request(app).get('/posts/' + -100).expect(HTTP_STATUS.NOT_FOUND_404);
+        await request(app).get(RouterPath.posts + -100).expect(HTTP_STATUS.NOT_FOUND_404);
     })
 
 
     let createBlogBody: ResponseBlogDto;
     it('should update existing post and return status 204', async () => {
-        const responseBlog = await request(app).post('/blogs').auth(ADMIN_USERNAME, ADMIN_PASSWORD).send(exampleCreateBlog).expect(HTTP_STATUS.CREATED_201);
+        const responseBlog = await request(app).post(RouterPath.blogs).auth(ADMIN_USERNAME, ADMIN_PASSWORD).send(exampleCreateBlog).expect(HTTP_STATUS.CREATED_201);
 
-        await request(app).put('/posts/' + createPostBody.id).auth(ADMIN_USERNAME, ADMIN_PASSWORD).send({...exampleUpdatePost, blogId: responseBlog.body.id}).expect(HTTP_STATUS.NO_CONTENT_204);
+        await request(app).put(RouterPath.posts + createPostBody.id).auth(ADMIN_USERNAME, ADMIN_PASSWORD).send({...exampleUpdatePost, blogId: responseBlog.body.id}).expect(HTTP_STATUS.NO_CONTENT_204);
 
-        const responseUpdatePost = await request(app).get('/posts/' + createPostBody.id).expect(HTTP_STATUS.OK_200);
+        const responseUpdatePost = await request(app).get(RouterPath.posts + createPostBody.id).expect(HTTP_STATUS.OK_200);
 
         createBlogBody = responseBlog.body;
         createPostBody = responseUpdatePost.body;
@@ -108,30 +109,30 @@ describe('/posts', () => {
     })
 
     it('should return 401 Unauthorized when updating a post with invalid credentials', async () => {
-        await request(app).put('/posts/' + createBlogBody.id).auth(nonAuth.admin, nonAuth.password).send(exampleUpdatePost).expect(HTTP_STATUS.UNAUTHORIZED_401);
+        await request(app).put(RouterPath.posts + createBlogBody.id).auth(nonAuth.admin, nonAuth.password).send(exampleUpdatePost).expect(HTTP_STATUS.UNAUTHORIZED_401);
     })
 
     it('should return status 400 and array of errors when update post with invalid data', async () => {
-        const response = await request(app).put('/posts/' + createBlogBody.id).auth(ADMIN_USERNAME, ADMIN_PASSWORD).send(exampleNonUpdatePost).expect(HTTP_STATUS.BAD_REQUEST_400);
+        const response = await request(app).put(RouterPath.posts + createBlogBody.id).auth(ADMIN_USERNAME, ADMIN_PASSWORD).send(exampleNonUpdatePost).expect(HTTP_STATUS.BAD_REQUEST_400);
 
         expect(response.body.errorsMessages).toEqual(expect.arrayContaining(validateErrors));
     })
 
     it('should return status 404 if trying to update non-existing post', async () => {
-        await request(app).put('/posts/' + -100).auth(ADMIN_USERNAME, ADMIN_PASSWORD).send({...exampleUpdatePost, blogId: createBlogBody.id}).expect(HTTP_STATUS.NOT_FOUND_404);
+        await request(app).put(RouterPath.posts + -100).auth(ADMIN_USERNAME, ADMIN_PASSWORD).send({...exampleUpdatePost, blogId: createBlogBody.id}).expect(HTTP_STATUS.NOT_FOUND_404);
     })
 
     it('should return 401 Unauthorized when deleting a post with invalid credentials', async () => {
-        await request(app).delete('/posts/' + createPostBody.id).auth(nonAuth.admin, nonAuth.password).expect(HTTP_STATUS.UNAUTHORIZED_401);
+        await request(app).delete(RouterPath.posts + createPostBody.id).auth(nonAuth.admin, nonAuth.password).expect(HTTP_STATUS.UNAUTHORIZED_401);
     })
 
     it('should remove existing post and return status 204', async () => {
-        await request(app).delete('/posts/' + createPostBody.id).auth(ADMIN_USERNAME, ADMIN_PASSWORD).expect(HTTP_STATUS.NO_CONTENT_204);
+        await request(app).delete(RouterPath.posts + createPostBody.id).auth(ADMIN_USERNAME, ADMIN_PASSWORD).expect(HTTP_STATUS.NO_CONTENT_204);
 
-        await request(app).get('/posts/' + createPostBody.id).expect(HTTP_STATUS.NOT_FOUND_404);
+        await request(app).get(RouterPath.posts + createPostBody.id).expect(HTTP_STATUS.NOT_FOUND_404);
     })
 
     it('should return status 404 if trying to delete non-existing blog', async () => {
-        await request(app).delete('/posts/' + -100).auth(ADMIN_USERNAME, ADMIN_PASSWORD).expect(HTTP_STATUS.NOT_FOUND_404);
+        await request(app).delete(RouterPath.posts + -100).auth(ADMIN_USERNAME, ADMIN_PASSWORD).expect(HTTP_STATUS.NOT_FOUND_404);
     })
 })
