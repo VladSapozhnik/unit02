@@ -19,5 +19,5 @@ exports.db = {
             "blogId": "1",
             "blogName": "test post))"
         }
-    ]
+    ],
 };
