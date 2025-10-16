@@ -7,7 +7,7 @@ import {UpdateBlogDto} from "../src/dto/blog/update-blog.dto";
 import {ADMIN_PASSWORD, ADMIN_USERNAME} from "../src/middleware/super-admin-guard.middleware";
 import {type ErrorType} from "../src/types/error.type";
 import {RouterPath} from "../src/constants/router-path";
-import BlogsTestManager from "./managers/blogs.test.manager";
+import {BlogsTestManager} from "./managers/blogs.test.manager";
 
 const exampleCreateBlog: CreateBlogDto = {
     "name": "Name",
