@@ -21,7 +21,7 @@ export const exampleNonCreateBlog: CreateBlogDto = {
   websiteUrl: '',
 };
 
-export const createBlogE2e = async (
+export const createBlogE2eUtil = async (
   app: Express,
   statusCode: HTTP_STATUS,
 ): Promise<Response> => {

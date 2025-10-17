@@ -4,15 +4,15 @@ import { HTTP_STATUS } from '../src/enums/http-status';
 import { type ErrorType } from '../src/types/error.type';
 import { RouterPath } from '../src/constants/router-path';
 import {
-  createBlogE2e,
+  createBlogE2eUtil,
   exampleCreateBlog,
 } from './utils/blogs/create-blog.e2e.util';
 import express from 'express';
 import {
   exampleUpdateBlog,
-  updateBlogE2e,
+  updateBlogE2eUtil,
 } from './utils/blogs/update-blog.e2e.util';
-import { removeBlogE2e } from './utils/blogs/remove-blog.e2e.util';
+import { removeBlogE2eUtil } from './utils/blogs/remove-blog.e2e.util';
 import { getBlogByIdE2eUtil } from './utils/blogs/get-blog-by-id.e2e.util';
 import { clearDbE2eUtil } from './utils/clear-db.e2e.util';
 
@@ -36,7 +36,7 @@ describe('/videos', () => {
   });
 
   it('should return status 400 and array of errors when create blog with invalid data', async () => {
-    const response = await createBlogE2e(app, HTTP_STATUS.BAD_REQUEST_400);
+    const response = await createBlogE2eUtil(app, HTTP_STATUS.BAD_REQUEST_400);
 
     expect(response.body.errorsMessages).toEqual(
       expect.arrayContaining(validateErrors),
@@ -44,7 +44,7 @@ describe('/videos', () => {
   });
 
   it('should create blog and return 201 with created blog body', async () => {
-    const response = await createBlogE2e(app, HTTP_STATUS.CREATED_201);
+    const response = await createBlogE2eUtil(app, HTTP_STATUS.CREATED_201);
 
     expect(response.body).toEqual({
       id: expect.any(String),
@@ -53,11 +53,11 @@ describe('/videos', () => {
   });
 
   it('should return 401 Unauthorized when creating a blog with invalid credentials', async () => {
-    await createBlogE2e(app, HTTP_STATUS.UNAUTHORIZED_401);
+    await createBlogE2eUtil(app, HTTP_STATUS.UNAUTHORIZED_401);
   });
 
   it('should return object blog and return 200', async () => {
-    const response: Response = await createBlogE2e(
+    const response: Response = await createBlogE2eUtil(
       app,
       HTTP_STATUS.CREATED_201,
     );
@@ -71,7 +71,7 @@ describe('/videos', () => {
   });
 
   it('should return status 404 for not-existing blog', async () => {
-    const createBlogResponse: Response = await createBlogE2e(
+    const createBlogResponse: Response = await createBlogE2eUtil(
       app,
       HTTP_STATUS.CREATED_201,
     );
@@ -87,12 +87,12 @@ describe('/videos', () => {
   });
 
   it('should return status 400 and array of errors when update blog with invalid data', async () => {
-    const createBlogResponse: Response = await createBlogE2e(
+    const createBlogResponse: Response = await createBlogE2eUtil(
       app,
       HTTP_STATUS.CREATED_201,
     );
 
-    const invalidUpdateResponse: Response = await updateBlogE2e(
+    const invalidUpdateResponse: Response = await updateBlogE2eUtil(
       app,
       HTTP_STATUS.BAD_REQUEST_400,
       createBlogResponse.body.id,
@@ -111,12 +111,12 @@ describe('/videos', () => {
   });
 
   it('should return 401 Unauthorized when updating a blog with invalid credentials', async () => {
-    const createBlogResponse: Response = await createBlogE2e(
+    const createBlogResponse: Response = await createBlogE2eUtil(
       app,
       HTTP_STATUS.CREATED_201,
     );
 
-    await updateBlogE2e(
+    await updateBlogE2eUtil(
       app,
       HTTP_STATUS.UNAUTHORIZED_401,
       createBlogResponse.body.id,
@@ -131,12 +131,12 @@ describe('/videos', () => {
   });
 
   it('should update existing blog and return status 204', async () => {
-    const responseCreateBlog: Response = await createBlogE2e(
+    const responseCreateBlog: Response = await createBlogE2eUtil(
       app,
       HTTP_STATUS.CREATED_201,
     );
 
-    await updateBlogE2e(
+    await updateBlogE2eUtil(
       app,
       HTTP_STATUS.NO_CONTENT_204,
       responseCreateBlog.body.id,
@@ -154,12 +154,12 @@ describe('/videos', () => {
   });
 
   it('should return status 404 if trying to update non-existing blog', async () => {
-    const createBlogResponse: Response = await createBlogE2e(
+    const createBlogResponse: Response = await createBlogE2eUtil(
       app,
       HTTP_STATUS.CREATED_201,
     );
 
-    await updateBlogE2e(app, HTTP_STATUS.NOT_FOUND_404, -100);
+    await updateBlogE2eUtil(app, HTTP_STATUS.NOT_FOUND_404, -100);
 
     await getBlogByIdE2eUtil(
       app,
@@ -170,12 +170,12 @@ describe('/videos', () => {
   });
 
   it('should return 401 Unauthorized when deleting a blog with invalid credentials', async () => {
-    const createBlogResponse: Response = await createBlogE2e(
+    const createBlogResponse: Response = await createBlogE2eUtil(
       app,
       HTTP_STATUS.CREATED_201,
     );
 
-    await removeBlogE2e(
+    await removeBlogE2eUtil(
       app,
       HTTP_STATUS.UNAUTHORIZED_401,
       createBlogResponse.body.id,
@@ -190,12 +190,12 @@ describe('/videos', () => {
   });
 
   it('should remove existing blog and return status 204', async () => {
-    const createBlogResponse: Response = await createBlogE2e(
+    const createBlogResponse: Response = await createBlogE2eUtil(
       app,
       HTTP_STATUS.CREATED_201,
     );
 
-    await removeBlogE2e(
+    await removeBlogE2eUtil(
       app,
       HTTP_STATUS.NO_CONTENT_204,
       createBlogResponse.body.id,
@@ -210,12 +210,12 @@ describe('/videos', () => {
   });
 
   it('should return status 404 if trying to delete non-existing blog', async () => {
-    const createBlogResponse: Response = await createBlogE2e(
+    const createBlogResponse: Response = await createBlogE2eUtil(
       app,
       HTTP_STATUS.CREATED_201,
     );
 
-    await removeBlogE2e(app, HTTP_STATUS.NOT_FOUND_404, -100);
+    await removeBlogE2eUtil(app, HTTP_STATUS.NOT_FOUND_404, -100);
 
     await getBlogByIdE2eUtil(
       app,

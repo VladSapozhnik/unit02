@@ -8,7 +8,7 @@ import { HTTP_STATUS } from '../../../src/enums/http-status';
 import request from 'supertest';
 import { RouterPath } from '../../../src/constants/router-path';
 
-export const removeBlogE2e = async (
+export const removeBlogE2eUtil = async (
   app: Express,
   statusCode: HTTP_STATUS,
   id: string | number = -100,

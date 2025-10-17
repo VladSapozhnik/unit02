@@ -21,7 +21,7 @@ export const exampleNonUpdateBlog: UpdateBlogDto = {
   websiteUrl: '',
 };
 
-export const updateBlogE2e = async (
+export const updateBlogE2eUtil = async (
   app: Express,
   statusCode: HTTP_STATUS,
   id: string | number = -100,

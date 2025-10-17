@@ -7,7 +7,7 @@ import {
 } from '../../../src/middleware/super-admin-guard.middleware';
 import { HTTP_STATUS } from '../../../src/enums/http-status';
 import { CreatePostDto } from '../../../src/dto/post/create-post.dto';
-import { createBlogE2e } from '../blogs/create-blog.e2e.util';
+import { createBlogE2eUtil } from '../blogs/create-blog.e2e.util';
 
 const exampleCreatePost: CreatePostDto = {
   title: 'Create Post',
@@ -28,7 +28,7 @@ export const createPostAndBlogE2eUtil = async (
   statusCode: HTTP_STATUS,
   blogId: string | number | null = null,
 ): Promise<Response> => {
-  const responseBlog: Response = await createBlogE2e(
+  const responseBlog: Response = await createBlogE2eUtil(
     app,
     HTTP_STATUS.CREATED_201,
   );
