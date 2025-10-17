@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { app } from '../src/setting';
+import { setupApp } from '../src/setup-app';
 import { HTTP_STATUS } from '../src/enums/http-status';
 import { CreateBlogDto } from '../src/dto/blog/create-blog.dto';
 import { CreatePostDto } from '../src/dto/post/create-post.dto';
@@ -11,6 +11,7 @@ import {
 } from '../src/middleware/super-admin-guard.middleware';
 import { type ErrorType } from '../src/types/error.type';
 import { RouterPath } from '../src/constants/router-path';
+import express from 'express';
 
 export const exampleCreateBlog: CreateBlogDto = {
   name: 'Name',
@@ -60,6 +61,9 @@ const nonAuth = {
 };
 
 describe('/posts', () => {
+  const app = express();
+  setupApp(app);
+
   beforeAll(async () => {
     await request(app)
       .delete(RouterPath.__tests__)
