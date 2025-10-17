@@ -11,6 +11,7 @@ import {
   exampleUpdatePost,
   updatePostE2eUtil,
 } from './utils/posts/update-post.e2e.util';
+import { RouterPath } from '../src/constants/router-path';
 
 const validateErrors: ErrorType[] = [
   { message: expect.any(String), field: expect.any(String) },
@@ -19,7 +20,7 @@ const validateErrors: ErrorType[] = [
   { message: expect.any(String), field: expect.any(String) },
 ];
 
-describe('/posts', () => {
+describe('test' + RouterPath.posts, () => {
   const app = express();
   setupApp(app);
 

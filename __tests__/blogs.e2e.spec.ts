@@ -22,7 +22,7 @@ const validateErrors: ErrorType[] = [
   { message: expect.any(String), field: expect.any(String) },
 ];
 
-describe('/videos', () => {
+describe('test' + RouterPath.blogs, () => {
   const app = express();
 
   setupApp(app);
