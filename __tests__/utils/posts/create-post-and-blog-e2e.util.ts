@@ -7,6 +7,7 @@ import {
 } from '../../../src/middleware/super-admin-guard.middleware';
 import { HTTP_STATUS } from '../../../src/enums/http-status';
 import { CreatePostDto } from '../../../src/dto/post/create-post.dto';
+import { createBlogE2e } from '../blogs/create-blog.e2e.util';
 
 const exampleCreatePost: CreatePostDto = {
   title: 'Create Post',
@@ -22,12 +23,24 @@ const exampleNonCreatePost: CreatePostDto = {
   blogId: '',
 };
 
-export const createPostE2eUtil = async (
+export const createPostAndBlogE2eUtil = async (
   app: Express,
   statusCode: HTTP_STATUS,
+  blogId: string | number | null = null,
 ): Promise<Response> => {
+  const responseBlog: Response = await createBlogE2e(
+    app,
+    HTTP_STATUS.CREATED_201,
+  );
+  Object.assign(exampleCreatePost, { blogId: responseBlog.body.id });
+
   let username: string = ADMIN_USERNAME;
   let password: string = ADMIN_PASSWORD;
+
+  if (blogId !== null) {
+    Object.assign(exampleCreatePost, blogId);
+  }
+
   let body: CreatePostDto = exampleCreatePost;
 
   if (statusCode === HTTP_STATUS.UNAUTHORIZED_401) {

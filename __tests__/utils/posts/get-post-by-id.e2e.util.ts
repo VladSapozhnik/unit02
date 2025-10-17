@@ -8,8 +8,8 @@ import { ResponsePostDto } from '../../../src/dto/post/response-post.dto';
 export const getPostByIdE2eUtil = async (
   app: Express,
   statusCode: HTTP_STATUS,
-  id: string | number,
-  blog: ResponsePostDto | {} = {},
+  id: string | number = -100,
+  blog: ResponsePostDto | {},
 ): Promise<Response> => {
   let findBlog: ResponsePostDto | {} = blog;
 

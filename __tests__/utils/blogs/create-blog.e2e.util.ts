@@ -9,7 +9,7 @@ import { HTTP_STATUS } from '../../../src/enums/http-status';
 import { CreateBlogDto } from '../../../src/dto/blog/create-blog.dto';
 
 export const exampleCreateBlog: CreateBlogDto = {
-  name: 'Name',
+  name: 'Test Name',
   description: 'Description',
   websiteUrl:
     'https://9.bnkqAJalm18cU8rsHdEqoUmUT2xh8Eb0h2a35xQiRR-UslhXAolExHnl.wKoraGI.HDtXk1.hZnv_1p4WqL5_Quj6f',
