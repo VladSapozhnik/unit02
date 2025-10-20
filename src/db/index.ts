@@ -1,9 +1,9 @@
-import { ResponseBlogDto } from '../dto/blog/response-blog.dto';
-import { ResponsePostDto } from '../dto/post/response-post.dto';
+import { BlogType } from '../types/blog.type';
+import { PostType } from '../types/post.type';
 
 export type dbType = {
-  blogs: ResponseBlogDto[];
-  posts: ResponsePostDto[];
+  blogs: BlogType[];
+  posts: PostType[];
 };
 
 export const db: dbType = {

@@ -9,7 +9,7 @@ export const updateBlogController = async (
   req: RequestWithParamAndBody<QueryBlogDto, UpdateBlogDto>,
   res: Response,
 ) => {
-  const isUpdated: boolean = blogsRepository.updateBlog(
+  const isUpdated: boolean = await blogsRepository.updateBlog(
     req.params.id,
     req.body,
   );

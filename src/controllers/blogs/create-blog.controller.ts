@@ -4,7 +4,7 @@ import { generateId } from '../../constants/generate-id';
 import { blogsRepository } from '../../repository/blogs.repository';
 import { HTTP_STATUS } from '../../enums/http-status';
 import { CreateBlogDto } from '../../dto/blog/create-blog.dto';
-import { ResponseBlogDto } from '../../dto/blog/response-blog.dto';
+import { BlogType } from '../../types/blog.type';
 
 export const createBlogController = async (
   req: RequestWithBody<CreateBlogDto>,
@@ -12,15 +12,15 @@ export const createBlogController = async (
 ) => {
   const randomId = generateId();
 
-  const newBlog: boolean = blogsRepository.createBlog(req.body, randomId);
+  const newBlog: boolean = await blogsRepository.createBlog(req.body, randomId);
 
   if (!newBlog) {
     res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
     return;
   }
 
-  const findBlog: ResponseBlogDto | undefined =
-    blogsRepository.getBlogById(randomId);
+  const findBlog: BlogType | undefined =
+    await blogsRepository.getBlogById(randomId);
 
   res.status(HTTP_STATUS.CREATED_201).send(findBlog);
 };

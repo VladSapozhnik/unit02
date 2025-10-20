@@ -1,5 +1,14 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+export type PostType = {
+  /**
+   * response successfully created post
+   */
+  id: string;
+  title: string;
+  shortDescription: string;
+  content: string;
+  blogId: string;
+  blogName: string;
+};
 // {
 //   "id": "string",
 //   "title": "string",

@@ -3,15 +3,15 @@ import { HTTP_STATUS } from '../../../src/enums/http-status';
 import request from 'supertest';
 import { RouterPath } from '../../../src/constants/router-path';
 import { Response } from 'supertest';
-import { ResponsePostDto } from '../../../src/dto/post/response-post.dto';
+import { PostType } from '../../../src/types/post.type';
 
 export const getPostByIdE2eUtil = async (
   app: Express,
   statusCode: HTTP_STATUS,
   id: string | number = -100,
-  blog: ResponsePostDto | {},
+  blog: PostType | {},
 ): Promise<Response> => {
-  let findBlog: ResponsePostDto | {} = blog;
+  let findBlog: PostType | {} = blog;
 
   if (statusCode === HTTP_STATUS.NOT_FOUND_404) {
     findBlog = {};

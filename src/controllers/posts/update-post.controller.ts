@@ -9,7 +9,7 @@ export const updatePostController = async (
   req: RequestWithParamAndBody<QueryPostDto, UpdatePostDto>,
   res: Response,
 ) => {
-  const isUpdatedPost: boolean = postsRepository.updatePost(
+  const isUpdatedPost: boolean = await postsRepository.updatePost(
     req.params.id,
     req.body,
   );

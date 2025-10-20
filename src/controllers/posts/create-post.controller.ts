@@ -4,7 +4,7 @@ import { RequestWithBody } from '../../types/request.type';
 import { generateId } from '../../constants/generate-id';
 import { postsRepository } from '../../repository/posts.repository';
 import { HTTP_STATUS } from '../../enums/http-status';
-import { ResponsePostDto } from '../../dto/post/response-post.dto';
+import { PostType } from '../../types/post.type';
 
 export const createPostController = async (
   req: RequestWithBody<CreatePostDto>,
@@ -12,15 +12,18 @@ export const createPostController = async (
 ) => {
   const randomId = generateId();
 
-  const isCreated: boolean = postsRepository.createPost(req.body, randomId);
+  const isCreated: boolean = await postsRepository.createPost(
+    req.body,
+    randomId,
+  );
 
   if (!isCreated) {
     res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
     return;
   }
 
-  const findPost: ResponsePostDto | undefined =
-    postsRepository.getPostById(randomId);
+  const findPost: PostType | undefined =
+    await postsRepository.getPostById(randomId);
 
   res.status(HTTP_STATUS.CREATED_201).send(findPost);
 };

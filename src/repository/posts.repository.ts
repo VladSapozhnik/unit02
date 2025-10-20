@@ -1,17 +1,17 @@
 import { db } from '../db';
-import { ResponsePostDto } from '../dto/post/response-post.dto';
+import { PostType } from '../types/post.type';
 import { CreatePostDto } from '../dto/post/create-post.dto';
 import { blogsRepository } from './blogs.repository';
-import { ResponseBlogDto } from '../dto/blog/response-blog.dto';
+import { BlogType } from '../types/blog.type';
 import { UpdatePostDto } from '../dto/post/update-post.dto';
 
 export const postsRepository = {
-  getAllPosts: (): ResponsePostDto[] => {
-    return db.posts.map((post: ResponsePostDto) => post);
+  getAllPosts: (): PostType[] => {
+    return db.posts.map((post: PostType) => post);
   },
 
   createPost: (body: CreatePostDto, id: string): boolean => {
-    const existBlog: ResponseBlogDto | undefined = blogsRepository.getBlogById(
+    const existBlog: BlogType | undefined = blogsRepository.getBlogById(
       body.blogId,
     );
 
@@ -19,19 +19,19 @@ export const postsRepository = {
       return false;
     }
 
-    const newPost: ResponsePostDto = { id, ...body, blogName: existBlog.name };
+    const newPost: PostType = { id, ...body, blogName: existBlog.name };
     db.posts.push(newPost);
 
     return true;
   },
 
-  getPostById(id: string): ResponsePostDto | undefined {
-    return db.posts.find((blog: ResponsePostDto) => blog.id === id);
+  getPostById(id: string): PostType | undefined {
+    return db.posts.find((blog: PostType) => blog.id === id);
   },
 
-  updatePost(id: string, body: UpdatePostDto): boolean {
-    const existPost: ResponsePostDto | undefined =
-      postsRepository.getPostById(id);
+  async updatePost(id: string, body: UpdatePostDto): Promise<boolean> {
+    const existPost: PostType | undefined =
+      await postsRepository.getPostById(id);
 
     if (existPost) {
       Object.assign(existPost, body);
@@ -40,12 +40,12 @@ export const postsRepository = {
       return false;
     }
   },
-  removePost(id: string): boolean {
-    const existPost: ResponsePostDto | undefined =
-      postsRepository.getPostById(id);
+  async removePost(id: string): Promise<boolean> {
+    const existPost: PostType | undefined =
+      await postsRepository.getPostById(id);
 
     if (existPost) {
-      db.posts = db.posts.filter((post: ResponsePostDto) => post.id !== id);
+      db.posts = db.posts.filter((post: PostType) => post.id !== id);
       return true;
     } else {
       return false;

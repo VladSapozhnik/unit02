@@ -2,53 +2,17 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogsRouter = void 0;
 const express_1 = require("express");
-const blogs_repository_1 = require("../repository/blogs.repository");
-const http_status_1 = require("../enums/http-status");
-const generate_id_1 = require("../constants/generate-id");
 const base_blog_validator_1 = require("../validators/blogs/base-blog.validator");
 const input_validation_middleware_1 = require("../middleware/input-validation.middleware");
 const super_admin_guard_middleware_1 = require("../middleware/super-admin-guard.middleware");
+const get_all_controller_1 = require("../controllers/blogs/get-all.controller");
+const get_blog_by_id_controller_1 = require("../controllers/blogs/get-blog-by-id.controller");
+const create_blog_controller_1 = require("../controllers/blogs/create-blog.controller");
+const update_blog_controller_1 = require("../controllers/blogs/update-blog.controller");
+const remove_blog_controller_1 = require("../controllers/blogs/remove-blog.controller");
 exports.blogsRouter = (0, express_1.Router)();
-exports.blogsRouter.get('/', (req, res) => {
-    const findBlogs = blogs_repository_1.blogsRepository.getBlogs();
-    res.send(findBlogs);
-});
-exports.blogsRouter.post('/', super_admin_guard_middleware_1.superAdminGuardMiddleware, base_blog_validator_1.baseBlogValidator, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
-    const randomId = (0, generate_id_1.generateId)();
-    const newBlog = blogs_repository_1.blogsRepository.createBlog(req.body, randomId);
-    if (!newBlog) {
-        res.sendStatus(http_status_1.HTTP_STATUS.BAD_REQUEST_400);
-        return;
-    }
-    const findBlog = blogs_repository_1.blogsRepository.getBlogById(randomId);
-    res.status(http_status_1.HTTP_STATUS.CREATED_201).send(findBlog);
-});
-exports.blogsRouter.get('/:id', (req, res) => {
-    const existBlog = blogs_repository_1.blogsRepository.getBlogById(req.params.id);
-    if (!existBlog) {
-        res.sendStatus(http_status_1.HTTP_STATUS.NOT_FOUND_404);
-        return;
-    }
-    else {
-        res.send(existBlog);
-        return;
-    }
-});
-exports.blogsRouter.put('/:id', super_admin_guard_middleware_1.superAdminGuardMiddleware, base_blog_validator_1.baseBlogValidator, input_validation_middleware_1.inputValidationMiddleware, (req, res) => {
-    const isUpdated = blogs_repository_1.blogsRepository.updateBlog(req.params.id, req.body);
-    if (isUpdated) {
-        res.sendStatus(http_status_1.HTTP_STATUS.NO_CONTENT_204);
-        return;
-    }
-    else {
-        res.sendStatus(http_status_1.HTTP_STATUS.NOT_FOUND_404);
-    }
-});
-exports.blogsRouter.delete('/:id', super_admin_guard_middleware_1.superAdminGuardMiddleware, (req, res) => {
-    const isDelete = blogs_repository_1.blogsRepository.removeBlogById(req.params.id);
-    if (!isDelete) {
-        res.sendStatus(http_status_1.HTTP_STATUS.NOT_FOUND_404);
-        return;
-    }
-    res.sendStatus(http_status_1.HTTP_STATUS.NO_CONTENT_204);
-});
+exports.blogsRouter.get('/', get_all_controller_1.getAllBlogsController);
+exports.blogsRouter.post('/', super_admin_guard_middleware_1.superAdminGuardMiddleware, base_blog_validator_1.baseBlogValidator, input_validation_middleware_1.inputValidationMiddleware, create_blog_controller_1.createBlogController);
+exports.blogsRouter.get('/:id', get_blog_by_id_controller_1.getBlogByIdController);
+exports.blogsRouter.put('/:id', super_admin_guard_middleware_1.superAdminGuardMiddleware, base_blog_validator_1.baseBlogValidator, input_validation_middleware_1.inputValidationMiddleware, update_blog_controller_1.updateBlogController);
+exports.blogsRouter.delete('/:id', super_admin_guard_middleware_1.superAdminGuardMiddleware, remove_blog_controller_1.removeBlogController);

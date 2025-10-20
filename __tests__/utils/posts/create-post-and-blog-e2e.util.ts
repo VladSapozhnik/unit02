@@ -10,7 +10,7 @@ import { CreatePostDto } from '../../../src/dto/post/create-post.dto';
 import { createBlogE2eUtil } from '../blogs/create-blog.e2e.util';
 
 const exampleCreatePost: CreatePostDto = {
-  title: 'Create Post',
+  title: 'Create PostType',
   shortDescription: 'Create description string',
   content: 'Content example string',
   blogId: '1',

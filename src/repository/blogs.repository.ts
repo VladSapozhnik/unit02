@@ -1,14 +1,14 @@
-import { ResponseBlogDto } from '../dto/blog/response-blog.dto';
+import { BlogType } from '../types/blog.type';
 import { db } from '../db';
 import { CreateBlogDto } from '../dto/blog/create-blog.dto';
 import { UpdateBlogDto } from '../dto/blog/update-blog.dto';
 
 export const blogsRepository = {
-  getBlogs(): ResponseBlogDto[] {
-    return db.blogs.map((blog: ResponseBlogDto) => blog);
+  async getBlogs(): Promise<BlogType[]> {
+    return db.blogs.map((blog: BlogType) => blog);
   },
 
-  createBlog(body: CreateBlogDto, id: string): boolean {
+  async createBlog(body: CreateBlogDto, id: string): Promise<boolean> {
     const newBlog = { id, ...body };
 
     db.blogs.push(newBlog);
@@ -16,12 +16,12 @@ export const blogsRepository = {
     return true;
   },
 
-  getBlogById(id: string): ResponseBlogDto | undefined {
-    return db.blogs.find((blog: ResponseBlogDto) => blog.id === id);
+  getBlogById(id: string): BlogType | undefined {
+    return db.blogs.find((blog: BlogType) => blog.id === id);
   },
 
-  updateBlog(id: string, body: UpdateBlogDto): boolean {
-    const existBlog: ResponseBlogDto | undefined = this.getBlogById(id);
+  async updateBlog(id: string, body: UpdateBlogDto): Promise<boolean> {
+    const existBlog: BlogType | undefined = this.getBlogById(id);
 
     if (existBlog) {
       Object.assign(existBlog, body);
@@ -31,14 +31,14 @@ export const blogsRepository = {
     }
   },
 
-  removeBlogById(id: string): boolean {
-    const existBlog: ResponseBlogDto | undefined = this.getBlogById(id);
+  async removeBlogById(id: string): Promise<boolean> {
+    const existBlog: BlogType | undefined = await this.getBlogById(id);
 
     if (!existBlog) {
       return false;
     }
 
-    db.blogs = db.blogs.filter((blog: ResponseBlogDto) => blog.id !== id);
+    db.blogs = db.blogs.filter((blog: BlogType) => blog.id !== id);
     return true;
   },
 };

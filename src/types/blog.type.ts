@@ -1,5 +1,12 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
+export type BlogType = {
+  /**
+   * response successfully blog
+   */
+  id: string;
+  name: string;
+  description: string;
+  websiteUrl: string;
+};
 // {
 //   "id": "string",
 //   "name": "string",
