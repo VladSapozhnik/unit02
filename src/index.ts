@@ -1,12 +1,18 @@
 import 'dotenv/config';
 import { setupApp } from './setup-app';
-import express from 'express';
+import express, { type Express } from 'express';
+import { runDB } from './db/mango.db';
 const PORT: string | number = process.env.PORT || 3000;
 
-const app = express();
+const bootstrap = async () => {
+  const app: Express = express();
+  setupApp(app);
 
-setupApp(app);
+  // await runDB();
+  app.listen(PORT, () => {
+    console.log(`Listening on port ${PORT}`);
+  });
+  return app;
+};
 
-app.listen(PORT, () => {
-  console.log(`Listening on port ${PORT}`);
-});
+bootstrap();
