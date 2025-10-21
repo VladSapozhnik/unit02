@@ -2,7 +2,6 @@ export type BlogType = {
   /**
    * response successfully blog
    */
-  _id: string;
   name: string;
   description: string;
   websiteUrl: string;

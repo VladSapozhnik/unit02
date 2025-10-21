@@ -20,9 +20,10 @@ export const basePostValidator = [
     .isLength({ min: 2, max: 1000 })
     .withMessage('Content length must be between 2 and 1000'),
   body('blogId')
+    .exists()
+    .withMessage('blogId is required')
     .isString()
-    .withMessage('BlogId must be a string')
-    .trim()
-    .isLength({ min: 1 })
-    .withMessage('BlogId length must be min 1 symbol'),
+    .withMessage('blogId must be a string')
+    .isMongoId()
+    .withMessage('Incorrect format of ObjectId'),
 ];

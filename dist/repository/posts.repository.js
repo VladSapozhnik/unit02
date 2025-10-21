@@ -11,8 +11,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postsRepository = void 0;
 const blogs_repository_1 = require("./blogs.repository");
+const mongodb_1 = require("mongodb");
 const mango_db_1 = require("../db/mango.db");
-const generate_id_1 = require("../constants/generate-id");
 exports.postsRepository = {
     getAllPosts() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -21,19 +21,18 @@ exports.postsRepository = {
     },
     createPost(body) {
         return __awaiter(this, void 0, void 0, function* () {
-            const id = (0, generate_id_1.generateId)();
             const existBlog = yield blogs_repository_1.blogsRepository.getBlogById(body.blogId);
             if (!existBlog) {
                 return false;
             }
-            const postBody = Object.assign(Object.assign({ _id: id }, body), { blogName: existBlog.name, createdAt: new Date() });
-            yield mango_db_1.postCollection.insertOne(postBody);
-            return postBody;
+            const postBody = Object.assign(Object.assign({}, body), { blogName: existBlog.name, createdAt: new Date() });
+            const result = yield mango_db_1.postCollection.insertOne(postBody);
+            return Object.assign({ _id: result.insertedId }, postBody);
         });
     },
     getPostById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return yield mango_db_1.postCollection.findOne({ _id: id });
+            return yield mango_db_1.postCollection.findOne({ _id: new mongodb_1.ObjectId(id) });
         });
     },
     updatePost(id, body) {
@@ -42,13 +41,13 @@ exports.postsRepository = {
             if (!existBlog) {
                 return false;
             }
-            const result = yield mango_db_1.postCollection.updateOne({ _id: id }, { $set: Object.assign(Object.assign({}, body), { blogName: existBlog.name }) });
+            const result = yield mango_db_1.postCollection.updateOne({ _id: new mongodb_1.ObjectId(id) }, { $set: Object.assign(Object.assign({}, body), { blogName: existBlog.name }) });
             return result.matchedCount === 1;
         });
     },
     removePost(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield mango_db_1.postCollection.deleteOne({ _id: id });
+            const result = yield mango_db_1.postCollection.deleteOne({ _id: new mongodb_1.ObjectId(id) });
             return result.deletedCount === 1;
         });
     },

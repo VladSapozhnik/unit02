@@ -10,9 +10,10 @@ const create_post_controller_1 = require("../controllers/posts/create-post.contr
 const update_post_controller_1 = require("../controllers/posts/update-post.controller");
 const get_post_by_id_controller_1 = require("../controllers/posts/get-post-by-id.controller");
 const remove_post_controller_1 = require("../controllers/posts/remove-post.controller");
+const param_id_validator_1 = require("../validators/param-id.validator");
 exports.postsRouter = (0, express_1.Router)();
 exports.postsRouter.get('/', get_all_controller_1.getAllPostsController);
 exports.postsRouter.post('/', super_admin_guard_middleware_1.superAdminGuardMiddleware, base_post_validator_1.basePostValidator, input_validation_middleware_1.inputValidationMiddleware, create_post_controller_1.createPostController);
-exports.postsRouter.get('/:id', get_post_by_id_controller_1.getPostByIdController);
-exports.postsRouter.put('/:id', super_admin_guard_middleware_1.superAdminGuardMiddleware, base_post_validator_1.basePostValidator, input_validation_middleware_1.inputValidationMiddleware, update_post_controller_1.updatePostController);
-exports.postsRouter.delete('/:id', super_admin_guard_middleware_1.superAdminGuardMiddleware, remove_post_controller_1.removePostController);
+exports.postsRouter.get('/:id', param_id_validator_1.idParamValidator, input_validation_middleware_1.inputValidationMiddleware, get_post_by_id_controller_1.getPostByIdController);
+exports.postsRouter.put('/:id', super_admin_guard_middleware_1.superAdminGuardMiddleware, param_id_validator_1.idParamValidator, base_post_validator_1.basePostValidator, input_validation_middleware_1.inputValidationMiddleware, update_post_controller_1.updatePostController);
+exports.postsRouter.delete('/:id', super_admin_guard_middleware_1.superAdminGuardMiddleware, param_id_validator_1.idParamValidator, input_validation_middleware_1.inputValidationMiddleware, remove_post_controller_1.removePostController);

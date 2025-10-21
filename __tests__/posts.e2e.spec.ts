@@ -177,12 +177,11 @@ describe('test' + RouterPath.posts, () => {
       app,
       HTTP_STATUS.CREATED_201,
     );
-
-    await removePostE2eUtil(
+    +(await removePostE2eUtil(
       app,
       HTTP_STATUS.UNAUTHORIZED_401,
       responsePost.body._id,
-    );
+    ));
 
     await getPostByIdE2eUtil(
       app,

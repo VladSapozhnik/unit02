@@ -7,6 +7,7 @@ import { getBlogByIdController } from '../controllers/blogs/get-blog-by-id.contr
 import { createBlogController } from '../controllers/blogs/create-blog.controller';
 import { updateBlogController } from '../controllers/blogs/update-blog.controller';
 import { removeBlogController } from '../controllers/blogs/remove-blog.controller';
+import { idParamValidator } from '../validators/param-id.validator';
 
 export const blogsRouter: Router = Router();
 
@@ -20,14 +21,26 @@ blogsRouter.post(
   createBlogController,
 );
 
-blogsRouter.get('/:id', getBlogByIdController);
+blogsRouter.get(
+  '/:id',
+  idParamValidator,
+  inputValidationMiddleware,
+  getBlogByIdController,
+);
 
 blogsRouter.put(
   '/:id',
   superAdminGuardMiddleware,
+  idParamValidator,
   baseBlogValidator,
   inputValidationMiddleware,
   updateBlogController,
 );
 
-blogsRouter.delete('/:id', superAdminGuardMiddleware, removeBlogController);
+blogsRouter.delete(
+  '/:id',
+  superAdminGuardMiddleware,
+  idParamValidator,
+  inputValidationMiddleware,
+  removeBlogController,
+);

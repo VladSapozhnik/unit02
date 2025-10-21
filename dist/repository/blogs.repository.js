@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogsRepository = void 0;
 const mango_db_1 = require("../db/mango.db");
-const generate_id_1 = require("../constants/generate-id");
+const mongodb_1 = require("mongodb");
 exports.blogsRepository = {
     getBlogs() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -20,26 +20,25 @@ exports.blogsRepository = {
     },
     createBlog(body) {
         return __awaiter(this, void 0, void 0, function* () {
-            const id = (0, generate_id_1.generateId)();
-            const newBlog = Object.assign(Object.assign({ _id: id }, body), { createdAt: new Date(), isMembership: false });
-            yield mango_db_1.blogCollection.insertOne(newBlog);
-            return Object.assign({}, newBlog);
+            const newBlog = Object.assign(Object.assign({}, body), { createdAt: new Date(), isMembership: false });
+            const result = yield mango_db_1.blogCollection.insertOne(newBlog);
+            return Object.assign({ _id: result.insertedId }, newBlog);
         });
     },
     getBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            return mango_db_1.blogCollection.findOne({ _id: id });
+            return mango_db_1.blogCollection.findOne({ _id: new mongodb_1.ObjectId(id) });
         });
     },
     updateBlog(id, body) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield mango_db_1.blogCollection.updateOne({ _id: id }, { $set: body });
+            const result = yield mango_db_1.blogCollection.updateOne({ _id: new mongodb_1.ObjectId(id) }, { $set: body });
             return result.matchedCount === 1;
         });
     },
     removeBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const result = yield mango_db_1.blogCollection.deleteOne({ _id: id });
+            const result = yield mango_db_1.blogCollection.deleteOne({ _id: new mongodb_1.ObjectId(id) });
             return result.deletedCount === 1;
         });
     },
