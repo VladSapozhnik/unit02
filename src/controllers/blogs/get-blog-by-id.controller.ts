@@ -4,12 +4,13 @@ import { Response } from 'express';
 import { BlogType } from '../../types/blog.type';
 import { blogsRepository } from '../../repository/blogs.repository';
 import { HTTP_STATUS } from '../../enums/http-status';
+import { WithId } from 'mongodb';
 
 export const getBlogByIdController = async (
   req: RequestWithParam<QueryBlogDto>,
   res: Response,
 ) => {
-  const existBlog: BlogType | undefined = await blogsRepository.getBlogById(
+  const existBlog: WithId<BlogType> | null = await blogsRepository.getBlogById(
     req.params.id,
   );
 

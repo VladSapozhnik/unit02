@@ -10,46 +10,44 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.postsRepository = void 0;
-const db_1 = require("../db");
 const blogs_repository_1 = require("./blogs.repository");
+const mongodb_1 = require("mongodb");
+const mango_db_1 = require("../db/mango.db");
 exports.postsRepository = {
-    getAllPosts: () => {
-        return db_1.db.posts.map((post) => post);
+    getAllPosts() {
+        return __awaiter(this, void 0, void 0, function* () {
+            return mango_db_1.postCollection.find().toArray();
+        });
     },
-    createPost: (body, id) => {
-        const existBlog = blogs_repository_1.blogsRepository.getBlogById(body.blogId);
-        if (!existBlog) {
-            return false;
-        }
-        const newPost = Object.assign(Object.assign({ id }, body), { blogName: existBlog.name });
-        db_1.db.posts.push(newPost);
-        return true;
+    createPost(body) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const existBlog = yield blogs_repository_1.blogsRepository.getBlogById(body.blogId);
+            if (!existBlog) {
+                throw new Error('Post not existing');
+            }
+            const result = yield mango_db_1.postCollection.insertOne(Object.assign(Object.assign({}, body), { blogName: existBlog.name, createdAt: new Date() }));
+            return Object.assign(Object.assign({ _id: result.insertedId }, body), { blogName: existBlog.name });
+        });
     },
     getPostById(id) {
-        return db_1.db.posts.find((blog) => blog.id === id);
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield mango_db_1.postCollection.findOne({ _id: new mongodb_1.ObjectId(id) });
+        });
     },
     updatePost(id, body) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existPost = yield exports.postsRepository.getPostById(id);
-            if (existPost) {
-                Object.assign(existPost, body);
-                return true;
+            const existBlog = yield blogs_repository_1.blogsRepository.getBlogById(body.blogId);
+            if (!existBlog) {
+                throw new Error('Blog not existing');
             }
-            else {
-                return false;
-            }
+            const result = yield mango_db_1.postCollection.updateOne({ _id: new mongodb_1.ObjectId(id) }, Object.assign(Object.assign({}, body), { blogName: existBlog.name }));
+            return result.matchedCount === 1;
         });
     },
     removePost(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existPost = yield exports.postsRepository.getPostById(id);
-            if (existPost) {
-                db_1.db.posts = db_1.db.posts.filter((post) => post.id !== id);
-                return true;
-            }
-            else {
-                return false;
-            }
+            const result = yield mango_db_1.postCollection.deleteOne({ _id: new mongodb_1.ObjectId(id) });
+            return result.deletedCount === 1;
         });
     },
 };

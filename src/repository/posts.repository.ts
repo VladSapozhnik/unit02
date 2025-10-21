@@ -1,54 +1,56 @@
-import { db } from '../db';
 import { PostType } from '../types/post.type';
 import { CreatePostDto } from '../dto/post/create-post.dto';
 import { blogsRepository } from './blogs.repository';
 import { BlogType } from '../types/blog.type';
 import { UpdatePostDto } from '../dto/post/update-post.dto';
+import { InsertOneResult, ObjectId, WithId } from 'mongodb';
+import { postCollection } from '../db/mango.db';
 
 export const postsRepository = {
-  getAllPosts: (): PostType[] => {
-    return db.posts.map((post: PostType) => post);
+  async getAllPosts(): Promise<WithId<PostType>[]> {
+    return postCollection.find().toArray();
   },
 
-  createPost: (body: CreatePostDto, id: string): boolean => {
-    const existBlog: BlogType | undefined = blogsRepository.getBlogById(
-      body.blogId,
-    );
+  async createPost(body: CreatePostDto) {
+    const existBlog: WithId<BlogType> | null =
+      await blogsRepository.getBlogById(body.blogId);
 
     if (!existBlog) {
-      return false;
+      throw new Error('Post not existing');
     }
 
-    const newPost: PostType = { id, ...body, blogName: existBlog.name };
-    db.posts.push(newPost);
+    const result: InsertOneResult<WithId<PostType>> =
+      await postCollection.insertOne({
+        ...body,
+        blogName: existBlog.name,
+        createdAt: new Date(),
+      });
 
-    return true;
+    return { _id: result.insertedId, ...body, blogName: existBlog.name };
   },
 
-  getPostById(id: string): PostType | undefined {
-    return db.posts.find((blog: PostType) => blog.id === id);
+  async getPostById(id: string): Promise<WithId<PostType> | null> {
+    return await postCollection.findOne({ _id: new ObjectId(id) });
   },
 
   async updatePost(id: string, body: UpdatePostDto): Promise<boolean> {
-    const existPost: PostType | undefined =
-      await postsRepository.getPostById(id);
+    const existBlog: WithId<BlogType> | null =
+      await blogsRepository.getBlogById(body.blogId);
 
-    if (existPost) {
-      Object.assign(existPost, body);
-      return true;
-    } else {
-      return false;
+    if (!existBlog) {
+      throw new Error('Blog not existing');
     }
+
+    const result = await postCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { ...body, blogName: existBlog.name },
+    );
+
+    return result.matchedCount === 1;
   },
   async removePost(id: string): Promise<boolean> {
-    const existPost: PostType | undefined =
-      await postsRepository.getPostById(id);
+    const result = await postCollection.deleteOne({ _id: new ObjectId(id) });
 
-    if (existPost) {
-      db.posts = db.posts.filter((post: PostType) => post.id !== id);
-      return true;
-    } else {
-      return false;
-    }
+    return result.deletedCount === 1;
   },
 };

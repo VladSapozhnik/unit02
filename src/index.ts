@@ -8,7 +8,7 @@ const bootstrap = async () => {
   const app: Express = express();
   setupApp(app);
 
-  // await runDB();
+  await runDB();
   app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
   });

@@ -10,43 +10,36 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.blogsRepository = void 0;
-const db_1 = require("../db");
+const mango_db_1 = require("../db/mango.db");
+const mongodb_1 = require("mongodb");
 exports.blogsRepository = {
     getBlogs() {
         return __awaiter(this, void 0, void 0, function* () {
-            return db_1.db.blogs.map((blog) => blog);
+            return mango_db_1.blogCollection.find().toArray();
         });
     },
-    createBlog(body, id) {
+    createBlog(body) {
         return __awaiter(this, void 0, void 0, function* () {
-            const newBlog = Object.assign({ id }, body);
-            db_1.db.blogs.push(newBlog);
-            return true;
+            const newBlog = Object.assign(Object.assign({}, body), { createdAt: new Date(), isMembership: false });
+            const result = yield mango_db_1.blogCollection.insertOne(newBlog);
+            return Object.assign(Object.assign({}, newBlog), { _id: result.insertedId });
         });
     },
     getBlogById(id) {
-        return db_1.db.blogs.find((blog) => blog.id === id);
+        return __awaiter(this, void 0, void 0, function* () {
+            return mango_db_1.blogCollection.findOne({ _id: new mongodb_1.ObjectId(id) });
+        });
     },
     updateBlog(id, body) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existBlog = this.getBlogById(id);
-            if (existBlog) {
-                Object.assign(existBlog, body);
-                return true;
-            }
-            else {
-                return false;
-            }
+            const result = yield mango_db_1.blogCollection.updateOne({ _id: new mongodb_1.ObjectId(id) }, { $set: body });
+            return result.matchedCount === 1;
         });
     },
     removeBlogById(id) {
         return __awaiter(this, void 0, void 0, function* () {
-            const existBlog = yield this.getBlogById(id);
-            if (!existBlog) {
-                return false;
-            }
-            db_1.db.blogs = db_1.db.blogs.filter((blog) => blog.id !== id);
-            return true;
+            const result = yield mango_db_1.blogCollection.deleteOne({ _id: new mongodb_1.ObjectId(id) });
+            return result.deletedCount === 1;
         });
     },
 };
