@@ -10,14 +10,18 @@ export const createBlogController = async (
   req: RequestWithBody<CreateBlogDto>,
   res: Response,
 ) => {
-  const newBlog: WithId<BlogType> | null = await blogsRepository.createBlog(
-    req.body,
-  );
+  try {
+    const newBlog: WithId<BlogType> | null = await blogsRepository.createBlog(
+      req.body,
+    );
 
-  if (!newBlog) {
-    res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
-    return;
+    if (!newBlog) {
+      res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
+      return;
+    }
+
+    res.status(HTTP_STATUS.CREATED_201).send(newBlog);
+  } catch (e) {
+    res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
-
-  res.status(HTTP_STATUS.CREATED_201).send(newBlog);
 };

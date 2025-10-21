@@ -13,16 +13,12 @@ export const exampleCreateBlog = {
   description: 'Description',
   websiteUrl:
     'https://9.bnkqAJalm18cU8rsHdEqoUmUT2xh8Eb0h2a35xQiRR-UslhXAolExHnl.wKoraGI.HDtXk1.hZnv_1p4WqL5_Quj6f',
-  createdAt: new Date(),
-  isMembership: false,
 };
 
 export const exampleNonCreateBlog = {
   name: '',
   description: '',
   websiteUrl: '',
-  createdAt: new Date(),
-  isMembership: false,
 };
 
 export const createBlogE2eUtil = async (

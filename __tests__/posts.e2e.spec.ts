@@ -12,7 +12,8 @@ import {
   updatePostE2eUtil,
 } from './utils/posts/update-post.e2e.util';
 import { RouterPath } from '../src/constants/router-path';
-import { runDB } from '../src/db/mango.db';
+import { runDB, stopDB } from '../src/db/mango.db';
+import { settings } from '../src/settings/settings';
 
 const validateErrors: ErrorType[] = [
   { message: expect.any(String), field: expect.any(String) },
@@ -26,8 +27,13 @@ describe('test' + RouterPath.posts, () => {
   setupApp(app);
 
   beforeAll(async () => {
-    await runDB();
+    await runDB(settings.DB_URL_TESTING);
     await clearDbE2eUtil(app);
+  });
+
+  afterAll(async () => {
+    await clearDbE2eUtil(app);
+    await stopDB();
   });
 
   it('should return status 200 and empty array', async () => {
@@ -54,7 +60,7 @@ describe('test' + RouterPath.posts, () => {
     await getPostByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      responsePost.body.id,
+      responsePost.body._id,
       responsePost.body,
     );
   });
@@ -74,7 +80,7 @@ describe('test' + RouterPath.posts, () => {
     await getPostByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      responsePost.body.id,
+      responsePost.body._id,
       responsePost.body,
     );
   });
@@ -94,18 +100,14 @@ describe('test' + RouterPath.posts, () => {
     await updatePostE2eUtil(
       app,
       HTTP_STATUS.NO_CONTENT_204,
-      responsePost.body.id,
+      responsePost.body._id,
       responsePost.body.blogId,
     );
 
-    const updatedPost = {
+    await getPostByIdE2eUtil(app, HTTP_STATUS.OK_200, responsePost.body._id, {
       ...responsePost.body,
-      title: exampleUpdatePost.title,
-      shortDescription: exampleUpdatePost.shortDescription,
-      content: exampleUpdatePost.content,
-    };
-
-    await request(app).get('/posts/').expect(200, [updatedPost]);
+      ...exampleUpdatePost,
+    });
   });
 
   it('should return 401 Unauthorized when updating a post with invalid credentials', async () => {
@@ -117,14 +119,14 @@ describe('test' + RouterPath.posts, () => {
     await updatePostE2eUtil(
       app,
       HTTP_STATUS.UNAUTHORIZED_401,
-      responsePost.body.id,
+      responsePost.body._id,
       responsePost.body.blogId,
     );
 
     await getPostByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      responsePost.body.id,
+      responsePost.body._id,
       responsePost.body,
     );
   });
@@ -138,7 +140,7 @@ describe('test' + RouterPath.posts, () => {
     const responseUpdate: Response = await updatePostE2eUtil(
       app,
       HTTP_STATUS.BAD_REQUEST_400,
-      responsePost.body.id,
+      responsePost.body._id,
       responsePost.body.blogId,
     );
 
@@ -149,7 +151,7 @@ describe('test' + RouterPath.posts, () => {
     await getPostByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      responsePost.body.id,
+      responsePost.body._id,
       responsePost.body,
     );
   });
@@ -165,7 +167,7 @@ describe('test' + RouterPath.posts, () => {
     await getPostByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      responsePost.body.id,
+      responsePost.body._id,
       responsePost.body,
     );
   });
@@ -179,13 +181,13 @@ describe('test' + RouterPath.posts, () => {
     await removePostE2eUtil(
       app,
       HTTP_STATUS.UNAUTHORIZED_401,
-      responsePost.body.id,
+      responsePost.body._id,
     );
 
     await getPostByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      responsePost.body.id,
+      responsePost.body._id,
       responsePost.body,
     );
   });
@@ -199,13 +201,13 @@ describe('test' + RouterPath.posts, () => {
     await removePostE2eUtil(
       app,
       HTTP_STATUS.NO_CONTENT_204,
-      responsePost.body.id,
+      responsePost.body._id,
     );
 
     await getPostByIdE2eUtil(
       app,
       HTTP_STATUS.NOT_FOUND_404,
-      responsePost.body.id,
+      responsePost.body._id,
       {},
     );
   });
@@ -221,7 +223,7 @@ describe('test' + RouterPath.posts, () => {
     await getPostByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      responsePost.body.id,
+      responsePost.body._id,
       responsePost.body,
     );
   });

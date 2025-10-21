@@ -22,6 +22,6 @@ export const updatePostController = async (
 
     res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   } catch {
-    res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
+    res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
 };

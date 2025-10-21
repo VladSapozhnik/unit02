@@ -16,11 +16,12 @@ require("dotenv/config");
 const setup_app_1 = require("./setup-app");
 const express_1 = __importDefault(require("express"));
 const mango_db_1 = require("./db/mango.db");
+const settings_1 = require("./settings/settings");
 const PORT = process.env.PORT || 3000;
 const bootstrap = () => __awaiter(void 0, void 0, void 0, function* () {
     const app = (0, express_1.default)();
     (0, setup_app_1.setupApp)(app);
-    yield (0, mango_db_1.runDB)();
+    yield (0, mango_db_1.runDB)(settings_1.settings.DB_URL);
     app.listen(PORT, () => {
         console.log(`Listening on port ${PORT}`);
     });

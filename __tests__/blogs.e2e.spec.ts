@@ -15,7 +15,8 @@ import {
 import { removeBlogE2eUtil } from './utils/blogs/remove-blog.e2e.util';
 import { getBlogByIdE2eUtil } from './utils/blogs/get-blog-by-id.e2e.util';
 import { clearDbE2eUtil } from './utils/clear-db.e2e.util';
-import { runDB } from '../src/db/mango.db';
+import { runDB, stopDB } from '../src/db/mango.db';
+import { settings } from '../src/settings/settings';
 
 const validateErrors: ErrorType[] = [
   { message: expect.any(String), field: expect.any(String) },
@@ -29,8 +30,13 @@ describe('test' + RouterPath.blogs, () => {
   setupApp(app);
 
   beforeAll(async () => {
-    await runDB();
+    await runDB(settings.DB_URL_TESTING);
     await clearDbE2eUtil(app);
+  });
+
+  afterAll(async () => {
+    await clearDbE2eUtil(app);
+    await stopDB();
   });
 
   it('should return status 200 and empty array', async () => {
@@ -49,8 +55,10 @@ describe('test' + RouterPath.blogs, () => {
     const response = await createBlogE2eUtil(app, HTTP_STATUS.CREATED_201);
 
     expect(response.body).toEqual({
-      id: expect.any(String),
+      _id: expect.any(String),
+      createdAt: expect.any(String),
       ...exampleCreateBlog,
+      isMembership: expect.any(Boolean),
     });
   });
 
@@ -67,7 +75,7 @@ describe('test' + RouterPath.blogs, () => {
     await getBlogByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      response.body.id,
+      response.body._id,
       response.body,
     );
   });
@@ -83,7 +91,7 @@ describe('test' + RouterPath.blogs, () => {
     await getBlogByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      createBlogResponse.body.id,
+      createBlogResponse.body._id,
       createBlogResponse.body,
     );
   });
@@ -97,7 +105,7 @@ describe('test' + RouterPath.blogs, () => {
     const invalidUpdateResponse: Response = await updateBlogE2eUtil(
       app,
       HTTP_STATUS.BAD_REQUEST_400,
-      createBlogResponse.body.id,
+      createBlogResponse.body._id,
     );
 
     expect(invalidUpdateResponse.body.errorsMessages).toEqual(
@@ -107,7 +115,7 @@ describe('test' + RouterPath.blogs, () => {
     await getBlogByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      createBlogResponse.body.id,
+      createBlogResponse.body._id,
       createBlogResponse.body,
     );
   });
@@ -121,19 +129,19 @@ describe('test' + RouterPath.blogs, () => {
     await updateBlogE2eUtil(
       app,
       HTTP_STATUS.UNAUTHORIZED_401,
-      createBlogResponse.body.id,
+      createBlogResponse.body._id,
     );
 
     await getBlogByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      createBlogResponse.body.id,
+      createBlogResponse.body._id,
       createBlogResponse.body,
     );
   });
 
   it('should update existing blog and return status 204', async () => {
-    const responseCreateBlog: Response = await createBlogE2eUtil(
+    const createBlogResponse: Response = await createBlogE2eUtil(
       app,
       HTTP_STATUS.CREATED_201,
     );
@@ -141,16 +149,18 @@ describe('test' + RouterPath.blogs, () => {
     await updateBlogE2eUtil(
       app,
       HTTP_STATUS.NO_CONTENT_204,
-      responseCreateBlog.body.id,
+      createBlogResponse.body._id,
     );
 
     await getBlogByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      responseCreateBlog.body.id,
+      createBlogResponse.body._id,
       {
-        id: responseCreateBlog.body.id,
+        _id: createBlogResponse.body._id,
         ...exampleUpdateBlog,
+        createdAt: createBlogResponse.body.createdAt,
+        isMembership: createBlogResponse.body.isMembership,
       },
     );
   });
@@ -166,7 +176,7 @@ describe('test' + RouterPath.blogs, () => {
     await getBlogByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      createBlogResponse.body.id,
+      createBlogResponse.body._id,
       createBlogResponse.body,
     );
   });
@@ -180,13 +190,13 @@ describe('test' + RouterPath.blogs, () => {
     await removeBlogE2eUtil(
       app,
       HTTP_STATUS.UNAUTHORIZED_401,
-      createBlogResponse.body.id,
+      createBlogResponse.body._id,
     );
 
     await getBlogByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      createBlogResponse.body.id,
+      createBlogResponse.body._id,
       createBlogResponse.body,
     );
   });
@@ -200,13 +210,13 @@ describe('test' + RouterPath.blogs, () => {
     await removeBlogE2eUtil(
       app,
       HTTP_STATUS.NO_CONTENT_204,
-      createBlogResponse.body.id,
+      createBlogResponse.body._id,
     );
 
     await getBlogByIdE2eUtil(
       app,
       HTTP_STATUS.NOT_FOUND_404,
-      createBlogResponse.body.id,
+      createBlogResponse.body._id,
       createBlogResponse.body,
     );
   });
@@ -222,7 +232,7 @@ describe('test' + RouterPath.blogs, () => {
     await getBlogByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      createBlogResponse.body.id,
+      createBlogResponse.body._id,
       createBlogResponse.body,
     );
   });

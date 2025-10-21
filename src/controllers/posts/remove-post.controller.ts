@@ -8,12 +8,16 @@ export const removePostController = async (
   req: RequestWithParam<QueryPostDto>,
   res: Response,
 ) => {
-  const isRemove: boolean = await postsRepository.removePost(req.params.id);
+  try {
+    const isRemove: boolean = await postsRepository.removePost(req.params.id);
 
-  if (!isRemove) {
-    res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
-    return;
+    if (!isRemove) {
+      res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
+      return;
+    }
+
+    res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
+  } catch (e) {
+    res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
-
-  res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
 };

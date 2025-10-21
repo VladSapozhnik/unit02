@@ -4,7 +4,6 @@ import { postsRouter } from './routes/posts.router';
 import { HTTP_STATUS } from './enums/http-status';
 import { RouterPath } from './constants/router-path';
 import { blogCollection, postCollection } from './db/mango.db';
-import { PostType } from './types/post.type';
 
 export const app = express();
 export const setupApp = (app: Express) => {

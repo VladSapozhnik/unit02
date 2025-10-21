@@ -8,12 +8,18 @@ export const removeBlogController = async (
   req: RequestWithParam<QueryBlogDto>,
   res: Response,
 ) => {
-  const isDelete: boolean = await blogsRepository.removeBlogById(req.params.id);
+  try {
+    const isDelete: boolean = await blogsRepository.removeBlogById(
+      req.params.id,
+    );
 
-  if (!isDelete) {
-    res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
-    return;
+    if (!isDelete) {
+      res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
+      return;
+    }
+
+    res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
+  } catch (e) {
+    res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
-
-  res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
 };

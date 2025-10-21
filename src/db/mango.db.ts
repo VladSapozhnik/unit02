@@ -10,8 +10,8 @@ export let client: MongoClient;
 export let blogCollection: Collection<BlogType>;
 export let postCollection: Collection<PostType>;
 
-export async function runDB(): Promise<void> {
-  client = new MongoClient(settings.DB_URL);
+export async function runDB(db_url: string): Promise<void> {
+  client = new MongoClient(db_url);
 
   const db: Db = client.db(settings.DB_NAME);
 

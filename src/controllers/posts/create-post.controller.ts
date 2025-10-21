@@ -11,8 +11,12 @@ export const createPostController = async (
   try {
     const post = await postsRepository.createPost(req.body);
 
+    if (!post) {
+      res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
+    }
+
     res.status(HTTP_STATUS.CREATED_201).send(post);
   } catch {
-    res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
+    res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
 };

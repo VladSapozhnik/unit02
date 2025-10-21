@@ -32,7 +32,7 @@ export const createPostAndBlogE2eUtil = async (
     app,
     HTTP_STATUS.CREATED_201,
   );
-  Object.assign(exampleCreatePost, { blogId: responseBlog.body.id });
+  Object.assign(exampleCreatePost, { blogId: responseBlog.body._id });
 
   let username: string = ADMIN_USERNAME;
   let password: string = ADMIN_PASSWORD;

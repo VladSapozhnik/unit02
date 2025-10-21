@@ -10,14 +10,17 @@ export const getPostByIdController = async (
   req: RequestWithParam<QueryPostDto>,
   res: Response,
 ) => {
-  const existPost: WithId<PostType> | null = await postsRepository.getPostById(
-    req.params.id,
-  );
+  try {
+    const existPost: WithId<PostType> | null =
+      await postsRepository.getPostById(req.params.id);
 
-  if (!existPost) {
-    res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
-    return;
+    if (!existPost) {
+      res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
+      return;
+    }
+
+    res.send(existPost);
+  } catch (e) {
+    res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
-
-  res.send(existPost);
 };

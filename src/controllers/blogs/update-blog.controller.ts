@@ -9,15 +9,19 @@ export const updateBlogController = async (
   req: RequestWithParamAndBody<QueryBlogDto, UpdateBlogDto>,
   res: Response,
 ) => {
-  const isUpdated: boolean = await blogsRepository.updateBlog(
-    req.params.id,
-    req.body,
-  );
+  try {
+    const isUpdated: boolean = await blogsRepository.updateBlog(
+      req.params.id,
+      req.body,
+    );
 
-  if (isUpdated) {
-    res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
-    return;
-  } else {
-    res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
+    if (isUpdated) {
+      res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
+      return;
+    } else {
+      res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
+    }
+  } catch (e) {
+    res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
 };

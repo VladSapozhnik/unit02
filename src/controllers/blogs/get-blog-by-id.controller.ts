@@ -10,15 +10,18 @@ export const getBlogByIdController = async (
   req: RequestWithParam<QueryBlogDto>,
   res: Response,
 ) => {
-  const existBlog: WithId<BlogType> | null = await blogsRepository.getBlogById(
-    req.params.id,
-  );
+  try {
+    const existBlog: WithId<BlogType> | null =
+      await blogsRepository.getBlogById(req.params.id);
 
-  if (!existBlog) {
-    res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
-    return;
-  } else {
-    res.send(existBlog);
-    return;
+    if (!existBlog) {
+      res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
+      return;
+    } else {
+      res.send(existBlog);
+      return;
+    }
+  } catch (e) {
+    res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
 };
