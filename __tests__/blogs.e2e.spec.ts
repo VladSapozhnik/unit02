@@ -17,6 +17,9 @@ import { getBlogByIdE2eUtil } from './utils/blogs/get-blog-by-id.e2e.util';
 import { clearDbE2eUtil } from './utils/clear-db.e2e.util';
 import { runDB, stopDB } from '../src/db/mango.db';
 import { settings } from '../src/settings/settings';
+import { ObjectId } from 'mongodb';
+
+export const ObjectIdValid = '68f7b37aec3bd9b7be0c000c';
 
 const validateErrors: ErrorType[] = [
   { message: expect.any(String), field: expect.any(String) },
@@ -86,7 +89,7 @@ describe('test' + RouterPath.blogs, () => {
       HTTP_STATUS.CREATED_201,
     );
 
-    await getBlogByIdE2eUtil(app, HTTP_STATUS.NOT_FOUND_404, -100);
+    await getBlogByIdE2eUtil(app, HTTP_STATUS.NOT_FOUND_404, ObjectIdValid);
 
     await getBlogByIdE2eUtil(
       app,
@@ -171,7 +174,7 @@ describe('test' + RouterPath.blogs, () => {
       HTTP_STATUS.CREATED_201,
     );
 
-    await updateBlogE2eUtil(app, HTTP_STATUS.NOT_FOUND_404, -100);
+    await updateBlogE2eUtil(app, HTTP_STATUS.NOT_FOUND_404, ObjectIdValid);
 
     await getBlogByIdE2eUtil(
       app,
@@ -227,7 +230,7 @@ describe('test' + RouterPath.blogs, () => {
       HTTP_STATUS.CREATED_201,
     );
 
-    await removeBlogE2eUtil(app, HTTP_STATUS.NOT_FOUND_404, -100);
+    await removeBlogE2eUtil(app, HTTP_STATUS.NOT_FOUND_404, ObjectIdValid);
 
     await getBlogByIdE2eUtil(
       app,

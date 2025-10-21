@@ -14,6 +14,7 @@ import {
 import { RouterPath } from '../src/constants/router-path';
 import { runDB, stopDB } from '../src/db/mango.db';
 import { settings } from '../src/settings/settings';
+import { ObjectIdValid } from './blogs.e2e.spec';
 
 const validateErrors: ErrorType[] = [
   { message: expect.any(String), field: expect.any(String) },
@@ -68,7 +69,7 @@ describe('test' + RouterPath.posts, () => {
   it('should return 401 Unauthorized when creating a post with invalid credentials', async () => {
     await createPostAndBlogE2eUtil(app, HTTP_STATUS.UNAUTHORIZED_401);
 
-    await getPostByIdE2eUtil(app, HTTP_STATUS.NOT_FOUND_404, -100, {});
+    await getPostByIdE2eUtil(app, HTTP_STATUS.NOT_FOUND_404, ObjectIdValid, {});
   });
 
   it('should return object post and return 200', async () => {
@@ -88,7 +89,7 @@ describe('test' + RouterPath.posts, () => {
   it('should return status 404 for non-existing post', async () => {
     await createPostAndBlogE2eUtil(app, HTTP_STATUS.CREATED_201);
 
-    await getPostByIdE2eUtil(app, HTTP_STATUS.NOT_FOUND_404, -100, {});
+    await getPostByIdE2eUtil(app, HTTP_STATUS.NOT_FOUND_404, ObjectIdValid, {});
   });
 
   it('should update existing post and return status 204', async () => {
@@ -162,7 +163,12 @@ describe('test' + RouterPath.posts, () => {
       HTTP_STATUS.CREATED_201,
     );
 
-    await updatePostE2eUtil(app, HTTP_STATUS.NOT_FOUND_404, -100, -100);
+    await updatePostE2eUtil(
+      app,
+      HTTP_STATUS.NOT_FOUND_404,
+      responsePost.body._id,
+      ObjectIdValid,
+    );
 
     await getPostByIdE2eUtil(
       app,
@@ -217,7 +223,7 @@ describe('test' + RouterPath.posts, () => {
       HTTP_STATUS.CREATED_201,
     );
 
-    await removePostE2eUtil(app, HTTP_STATUS.NOT_FOUND_404, -100);
+    await removePostE2eUtil(app, HTTP_STATUS.NOT_FOUND_404, ObjectIdValid);
 
     await getPostByIdE2eUtil(
       app,
