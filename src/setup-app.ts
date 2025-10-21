@@ -2,8 +2,9 @@ import express, { type Request, type Response, type Express } from 'express';
 import { blogsRouter } from './routes/blogs.router';
 import { postsRouter } from './routes/posts.router';
 import { HTTP_STATUS } from './enums/http-status';
-// import { db } from './db';
 import { RouterPath } from './constants/router-path';
+import { blogCollection, postCollection } from './db/mango.db';
+import { PostType } from './types/post.type';
 
 export const app = express();
 export const setupApp = (app: Express) => {
@@ -16,9 +17,12 @@ export const setupApp = (app: Express) => {
   app.use(RouterPath.blogs, blogsRouter);
   app.use(RouterPath.posts, postsRouter);
 
-  app.delete(RouterPath.__tests__, (req: Request, res: Response) => {
-    // db.posts = [];
-    // db.blogs = [];
+  app.delete(RouterPath.__tests__, async (req: Request, res: Response) => {
+    await Promise.all([
+      blogCollection.deleteMany(),
+      postCollection.deleteMany(),
+    ]);
+
     res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   });
 

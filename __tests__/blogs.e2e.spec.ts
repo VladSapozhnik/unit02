@@ -15,6 +15,7 @@ import {
 import { removeBlogE2eUtil } from './utils/blogs/remove-blog.e2e.util';
 import { getBlogByIdE2eUtil } from './utils/blogs/get-blog-by-id.e2e.util';
 import { clearDbE2eUtil } from './utils/clear-db.e2e.util';
+import { runDB } from '../src/db/mango.db';
 
 const validateErrors: ErrorType[] = [
   { message: expect.any(String), field: expect.any(String) },
@@ -27,7 +28,8 @@ describe('test' + RouterPath.blogs, () => {
 
   setupApp(app);
 
-  beforeEach(async () => {
+  beforeAll(async () => {
+    await runDB();
     await clearDbE2eUtil(app);
   });
 

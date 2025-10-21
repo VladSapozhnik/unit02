@@ -43,7 +43,7 @@ export const postsRepository = {
 
     const result = await postCollection.updateOne(
       { _id: new ObjectId(id) },
-      { ...body, blogName: existBlog.name },
+      { $set: { ...body, blogName: existBlog.name } },
     );
 
     return result.matchedCount === 1;

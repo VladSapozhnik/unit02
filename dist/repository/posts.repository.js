@@ -40,7 +40,7 @@ exports.postsRepository = {
             if (!existBlog) {
                 throw new Error('Blog not existing');
             }
-            const result = yield mango_db_1.postCollection.updateOne({ _id: new mongodb_1.ObjectId(id) }, Object.assign(Object.assign({}, body), { blogName: existBlog.name }));
+            const result = yield mango_db_1.postCollection.updateOne({ _id: new mongodb_1.ObjectId(id) }, { $set: Object.assign(Object.assign({}, body), { blogName: existBlog.name }) });
             return result.matchedCount === 1;
         });
     },
