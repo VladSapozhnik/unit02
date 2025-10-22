@@ -8,6 +8,7 @@ import { HTTP_STATUS } from '../../../src/enums/http-status';
 import { UpdateBlogDto } from '../../../src/dto/blog/update-blog.dto';
 import request from 'supertest';
 import { RouterPath } from '../../../src/constants/router-path';
+import { ObjectIdValid } from '../../blogs.e2e.spec';
 
 export const exampleUpdateBlog: UpdateBlogDto = {
   name: 'New Blog',
@@ -24,7 +25,7 @@ export const exampleNonUpdateBlog: UpdateBlogDto = {
 export const updateBlogE2eUtil = async (
   app: Express,
   statusCode: HTTP_STATUS,
-  id: string | number = -100,
+  id: string | number = ObjectIdValid,
 ): Promise<Response> => {
   let username: string = ADMIN_USERNAME;
   let password: string = ADMIN_PASSWORD;
@@ -35,7 +36,7 @@ export const updateBlogE2eUtil = async (
     password = 'not authorized';
   }
 
-  if (statusCode === HTTP_STATUS.BAD_REQUEST_400 && id !== -100) {
+  if (statusCode === HTTP_STATUS.BAD_REQUEST_400 && id !== ObjectIdValid) {
     body = exampleNonUpdateBlog;
   }
 

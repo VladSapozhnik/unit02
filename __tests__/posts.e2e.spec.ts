@@ -61,7 +61,7 @@ describe('test' + RouterPath.posts, () => {
     await getPostByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      responsePost.body._id,
+      responsePost.body.id,
       responsePost.body,
     );
   });
@@ -81,7 +81,7 @@ describe('test' + RouterPath.posts, () => {
     await getPostByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      responsePost.body._id,
+      responsePost.body.id,
       responsePost.body,
     );
   });
@@ -101,11 +101,11 @@ describe('test' + RouterPath.posts, () => {
     await updatePostE2eUtil(
       app,
       HTTP_STATUS.NO_CONTENT_204,
-      responsePost.body._id,
+      responsePost.body.id,
       responsePost.body.blogId,
     );
 
-    await getPostByIdE2eUtil(app, HTTP_STATUS.OK_200, responsePost.body._id, {
+    await getPostByIdE2eUtil(app, HTTP_STATUS.OK_200, responsePost.body.id, {
       ...responsePost.body,
       ...exampleUpdatePost,
     });
@@ -120,14 +120,14 @@ describe('test' + RouterPath.posts, () => {
     await updatePostE2eUtil(
       app,
       HTTP_STATUS.UNAUTHORIZED_401,
-      responsePost.body._id,
+      responsePost.body.id,
       responsePost.body.blogId,
     );
 
     await getPostByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      responsePost.body._id,
+      responsePost.body.id,
       responsePost.body,
     );
   });
@@ -141,7 +141,7 @@ describe('test' + RouterPath.posts, () => {
     const responseUpdate: Response = await updatePostE2eUtil(
       app,
       HTTP_STATUS.BAD_REQUEST_400,
-      responsePost.body._id,
+      responsePost.body.id,
       responsePost.body.blogId,
     );
 
@@ -152,7 +152,7 @@ describe('test' + RouterPath.posts, () => {
     await getPostByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      responsePost.body._id,
+      responsePost.body.id,
       responsePost.body,
     );
   });
@@ -166,14 +166,14 @@ describe('test' + RouterPath.posts, () => {
     await updatePostE2eUtil(
       app,
       HTTP_STATUS.NOT_FOUND_404,
-      responsePost.body._id,
+      responsePost.body.id,
       ObjectIdValid,
     );
 
     await getPostByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      responsePost.body._id,
+      responsePost.body.id,
       responsePost.body,
     );
   });
@@ -186,13 +186,13 @@ describe('test' + RouterPath.posts, () => {
     +(await removePostE2eUtil(
       app,
       HTTP_STATUS.UNAUTHORIZED_401,
-      responsePost.body._id,
+      responsePost.body.id,
     ));
 
     await getPostByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      responsePost.body._id,
+      responsePost.body.id,
       responsePost.body,
     );
   });
@@ -206,13 +206,13 @@ describe('test' + RouterPath.posts, () => {
     await removePostE2eUtil(
       app,
       HTTP_STATUS.NO_CONTENT_204,
-      responsePost.body._id,
+      responsePost.body.id,
     );
 
     await getPostByIdE2eUtil(
       app,
       HTTP_STATUS.NOT_FOUND_404,
-      responsePost.body._id,
+      responsePost.body.id,
       {},
     );
   });
@@ -228,7 +228,7 @@ describe('test' + RouterPath.posts, () => {
     await getPostByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      responsePost.body._id,
+      responsePost.body.id,
       responsePost.body,
     );
   });

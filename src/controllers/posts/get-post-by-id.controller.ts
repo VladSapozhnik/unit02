@@ -5,6 +5,7 @@ import { PostType } from '../../types/post.type';
 import { postsRepository } from '../../repository/posts.repository';
 import { HTTP_STATUS } from '../../enums/http-status';
 import { WithId } from 'mongodb';
+import { postMapper } from '../../mappers/posts.mapper';
 
 export const getPostByIdController = async (
   req: RequestWithParam<QueryPostDto>,
@@ -19,7 +20,7 @@ export const getPostByIdController = async (
       return;
     }
 
-    res.send(existPost);
+    res.send(postMapper(existPost));
   } catch (e) {
     res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }

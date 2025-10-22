@@ -17,7 +17,6 @@ import { getBlogByIdE2eUtil } from './utils/blogs/get-blog-by-id.e2e.util';
 import { clearDbE2eUtil } from './utils/clear-db.e2e.util';
 import { runDB, stopDB } from '../src/db/mango.db';
 import { settings } from '../src/settings/settings';
-import { ObjectId } from 'mongodb';
 
 export const ObjectIdValid = '68f7b37aec3bd9b7be0c000c';
 
@@ -58,7 +57,7 @@ describe('test' + RouterPath.blogs, () => {
     const response = await createBlogE2eUtil(app, HTTP_STATUS.CREATED_201);
 
     expect(response.body).toEqual({
-      _id: expect.any(String),
+      id: expect.any(String),
       createdAt: expect.any(String),
       ...exampleCreateBlog,
       isMembership: expect.any(Boolean),
@@ -78,7 +77,7 @@ describe('test' + RouterPath.blogs, () => {
     await getBlogByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      response.body._id,
+      response.body.id,
       response.body,
     );
   });
@@ -94,7 +93,7 @@ describe('test' + RouterPath.blogs, () => {
     await getBlogByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      createBlogResponse.body._id,
+      createBlogResponse.body.id,
       createBlogResponse.body,
     );
   });
@@ -108,7 +107,7 @@ describe('test' + RouterPath.blogs, () => {
     const invalidUpdateResponse: Response = await updateBlogE2eUtil(
       app,
       HTTP_STATUS.BAD_REQUEST_400,
-      createBlogResponse.body._id,
+      createBlogResponse.body.id,
     );
 
     expect(invalidUpdateResponse.body.errorsMessages).toEqual(
@@ -118,7 +117,7 @@ describe('test' + RouterPath.blogs, () => {
     await getBlogByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      createBlogResponse.body._id,
+      createBlogResponse.body.id,
       createBlogResponse.body,
     );
   });
@@ -132,13 +131,13 @@ describe('test' + RouterPath.blogs, () => {
     await updateBlogE2eUtil(
       app,
       HTTP_STATUS.UNAUTHORIZED_401,
-      createBlogResponse.body._id,
+      createBlogResponse.body.id,
     );
 
     await getBlogByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      createBlogResponse.body._id,
+      createBlogResponse.body.id,
       createBlogResponse.body,
     );
   });
@@ -152,15 +151,15 @@ describe('test' + RouterPath.blogs, () => {
     await updateBlogE2eUtil(
       app,
       HTTP_STATUS.NO_CONTENT_204,
-      createBlogResponse.body._id,
+      createBlogResponse.body.id,
     );
 
     await getBlogByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      createBlogResponse.body._id,
+      createBlogResponse.body.id,
       {
-        _id: createBlogResponse.body._id,
+        id: createBlogResponse.body.id,
         ...exampleUpdateBlog,
         createdAt: createBlogResponse.body.createdAt,
         isMembership: createBlogResponse.body.isMembership,
@@ -179,7 +178,7 @@ describe('test' + RouterPath.blogs, () => {
     await getBlogByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      createBlogResponse.body._id,
+      createBlogResponse.body.id,
       createBlogResponse.body,
     );
   });
@@ -193,13 +192,13 @@ describe('test' + RouterPath.blogs, () => {
     await removeBlogE2eUtil(
       app,
       HTTP_STATUS.UNAUTHORIZED_401,
-      createBlogResponse.body._id,
+      createBlogResponse.body.id,
     );
 
     await getBlogByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      createBlogResponse.body._id,
+      createBlogResponse.body.id,
       createBlogResponse.body,
     );
   });
@@ -213,13 +212,13 @@ describe('test' + RouterPath.blogs, () => {
     await removeBlogE2eUtil(
       app,
       HTTP_STATUS.NO_CONTENT_204,
-      createBlogResponse.body._id,
+      createBlogResponse.body.id,
     );
 
     await getBlogByIdE2eUtil(
       app,
       HTTP_STATUS.NOT_FOUND_404,
-      createBlogResponse.body._id,
+      createBlogResponse.body.id,
       createBlogResponse.body,
     );
   });
@@ -235,7 +234,7 @@ describe('test' + RouterPath.blogs, () => {
     await getBlogByIdE2eUtil(
       app,
       HTTP_STATUS.OK_200,
-      createBlogResponse.body._id,
+      createBlogResponse.body.id,
       createBlogResponse.body,
     );
   });

@@ -6,19 +6,22 @@ import { ObjectId, UpdateResult, WithId } from 'mongodb';
 
 export const blogsRepository = {
   async getBlogs(): Promise<WithId<BlogType>[]> {
-    return blogCollection.find().toArray();
+    return await blogCollection.find().toArray();
   },
 
-  async createBlog(body: CreateBlogDto): Promise<WithId<BlogType> | null> {
+  async createBlog(body: CreateBlogDto): Promise<WithId<BlogType>> {
     const newBlog = {
       ...body,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
       isMembership: false,
     };
 
     const result = await blogCollection.insertOne(newBlog);
 
-    return { _id: result.insertedId, ...newBlog };
+    return {
+      _id: result.insertedId,
+      ...newBlog,
+    };
   },
 
   async getBlogById(id: string): Promise<WithId<BlogType> | null> {

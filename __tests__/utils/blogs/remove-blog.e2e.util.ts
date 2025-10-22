@@ -7,11 +7,12 @@ import {
 import { HTTP_STATUS } from '../../../src/enums/http-status';
 import request from 'supertest';
 import { RouterPath } from '../../../src/constants/router-path';
+import { ObjectIdValid } from '../../blogs.e2e.spec';
 
 export const removeBlogE2eUtil = async (
   app: Express,
   statusCode: HTTP_STATUS,
-  id: string | number = -100,
+  id: string | number = ObjectIdValid,
 ): Promise<Response> => {
   let username: string = ADMIN_USERNAME;
   let password: string = ADMIN_PASSWORD;

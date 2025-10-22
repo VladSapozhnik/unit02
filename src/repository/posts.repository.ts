@@ -12,8 +12,9 @@ export const postsRepository = {
   },
 
   async createPost(body: CreatePostDto): Promise<WithId<PostType> | boolean> {
-    const existBlog: WithId<BlogType> | null =
-      await blogsRepository.getBlogById(body.blogId);
+    const existBlog: BlogType | null = await blogsRepository.getBlogById(
+      body.blogId,
+    );
 
     if (!existBlog) {
       return false;
@@ -22,7 +23,7 @@ export const postsRepository = {
     const postBody = {
       ...body,
       blogName: existBlog.name,
-      createdAt: new Date(),
+      createdAt: new Date().toISOString(),
     };
 
     const result: InsertOneResult<WithId<PostType>> =
