@@ -28,7 +28,7 @@ describe('test' + RouterPath.posts, () => {
   setupApp(app);
 
   beforeAll(async () => {
-    await runDB(settings.DB_URL_TESTING);
+    await runDB(settings.MONGO_URI_TESTING);
     await clearDbE2eUtil(app);
   });
 

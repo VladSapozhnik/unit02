@@ -9,7 +9,7 @@ const bootstrap = async () => {
   const app: Express = express();
   setupApp(app);
 
-  await runDB(settings.DB_URL);
+  await runDB(settings.MONGO_URI);
   app.listen(PORT, () => {
     console.log(`Listening on port ${PORT}`);
   });
