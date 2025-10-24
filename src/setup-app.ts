@@ -1,9 +1,9 @@
 import express, { type Request, type Response, type Express } from 'express';
-import { blogsRouter } from './routes/blogs.router';
-import { postsRouter } from './routes/posts.router';
-import { HTTP_STATUS } from './enums/http-status';
-import { RouterPath } from './constants/router-path';
-import { blogCollection, postCollection } from './db/mango.db';
+import { blogsRouter } from './modules/blogs/routes/blogs.router';
+import { postsRouter } from './modules/posts/routes/posts.router';
+import { HTTP_STATUS } from './core/enums/http-status';
+import { RouterPath } from './core/constants/router-path';
+import { blogCollection, postCollection } from './core/db/mango.db';
 
 export const app = express();
 export const setupApp = (app: Express) => {

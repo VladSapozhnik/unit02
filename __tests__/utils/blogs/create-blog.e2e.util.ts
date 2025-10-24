@@ -1,12 +1,12 @@
 import request, { Response } from 'supertest';
 import { Express } from 'express';
-import { RouterPath } from '../../../src/constants/router-path';
+import { RouterPath } from '../../../src/core/constants/router-path';
 import {
   ADMIN_PASSWORD,
   ADMIN_USERNAME,
-} from '../../../src/middleware/super-admin-guard.middleware';
-import { HTTP_STATUS } from '../../../src/enums/http-status';
-import { CreateBlogDto } from '../../../src/dto/blog/create-blog.dto';
+} from '../../../src/core/middleware/super-admin-guard.middleware';
+import { HTTP_STATUS } from '../../../src/core/enums/http-status';
+import { CreateBlogDto } from '../../../src/modules/blogs/dto/create-blog.dto';
 
 export const exampleCreateBlog = {
   name: 'Test Name',

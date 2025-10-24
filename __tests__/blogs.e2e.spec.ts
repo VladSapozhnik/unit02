@@ -1,8 +1,8 @@
 import request, { type Response } from 'supertest';
 import { setupApp } from '../src/setup-app';
-import { HTTP_STATUS } from '../src/enums/http-status';
-import { type ErrorType } from '../src/types/error.type';
-import { RouterPath } from '../src/constants/router-path';
+import { HTTP_STATUS } from '../src/core/enums/http-status';
+import { type ErrorType } from '../src/core/types/error.type';
+import { RouterPath } from '../src/core/constants/router-path';
 import {
   createBlogE2eUtil,
   exampleCreateBlog,
@@ -15,8 +15,8 @@ import {
 import { removeBlogE2eUtil } from './utils/blogs/remove-blog.e2e.util';
 import { getBlogByIdE2eUtil } from './utils/blogs/get-blog-by-id.e2e.util';
 import { clearDbE2eUtil } from './utils/clear-db.e2e.util';
-import { runDB, stopDB } from '../src/db/mango.db';
-import { settings } from '../src/settings/settings';
+import { runDB, stopDB } from '../src/core/db/mango.db';
+import { settings } from '../src/core/settings/settings';
 
 export const ObjectIdValid = '68f7b37aec3bd9b7be0c000c';
 
@@ -45,7 +45,7 @@ describe('test' + RouterPath.blogs, () => {
     await request(app).get(RouterPath.blogs).expect(200, []);
   });
 
-  it('should return status 400 and array of errors when create blog with invalid data', async () => {
+  it('should return status 400 and array of errors when create dto with invalid data', async () => {
     const response = await createBlogE2eUtil(app, HTTP_STATUS.BAD_REQUEST_400);
 
     expect(response.body.errorsMessages).toEqual(
@@ -53,7 +53,7 @@ describe('test' + RouterPath.blogs, () => {
     );
   });
 
-  it('should create blog and return 201 with created blog body', async () => {
+  it('should create dto and return 201 with created dto body', async () => {
     const response = await createBlogE2eUtil(app, HTTP_STATUS.CREATED_201);
 
     expect(response.body).toEqual({
@@ -64,11 +64,11 @@ describe('test' + RouterPath.blogs, () => {
     });
   });
 
-  it('should return 401 Unauthorized when creating a blog with invalid credentials', async () => {
+  it('should return 401 Unauthorized when creating a dto with invalid credentials', async () => {
     await createBlogE2eUtil(app, HTTP_STATUS.UNAUTHORIZED_401);
   });
 
-  it('should return object blog and return 200', async () => {
+  it('should return object dto and return 200', async () => {
     const response: Response = await createBlogE2eUtil(
       app,
       HTTP_STATUS.CREATED_201,
@@ -82,7 +82,7 @@ describe('test' + RouterPath.blogs, () => {
     );
   });
 
-  it('should return status 404 for not-existing blog', async () => {
+  it('should return status 404 for not-existing dto', async () => {
     const createBlogResponse: Response = await createBlogE2eUtil(
       app,
       HTTP_STATUS.CREATED_201,
@@ -98,7 +98,7 @@ describe('test' + RouterPath.blogs, () => {
     );
   });
 
-  it('should return status 400 and array of errors when update blog with invalid data', async () => {
+  it('should return status 400 and array of errors when update dto with invalid data', async () => {
     const createBlogResponse: Response = await createBlogE2eUtil(
       app,
       HTTP_STATUS.CREATED_201,
@@ -122,7 +122,7 @@ describe('test' + RouterPath.blogs, () => {
     );
   });
 
-  it('should return 401 Unauthorized when updating a blog with invalid credentials', async () => {
+  it('should return 401 Unauthorized when updating a dto with invalid credentials', async () => {
     const createBlogResponse: Response = await createBlogE2eUtil(
       app,
       HTTP_STATUS.CREATED_201,
@@ -142,7 +142,7 @@ describe('test' + RouterPath.blogs, () => {
     );
   });
 
-  it('should update existing blog and return status 204', async () => {
+  it('should update existing dto and return status 204', async () => {
     const createBlogResponse: Response = await createBlogE2eUtil(
       app,
       HTTP_STATUS.CREATED_201,
@@ -167,7 +167,7 @@ describe('test' + RouterPath.blogs, () => {
     );
   });
 
-  it('should return status 404 if trying to update non-existing blog', async () => {
+  it('should return status 404 if trying to update non-existing dto', async () => {
     const createBlogResponse: Response = await createBlogE2eUtil(
       app,
       HTTP_STATUS.CREATED_201,
@@ -183,7 +183,7 @@ describe('test' + RouterPath.blogs, () => {
     );
   });
 
-  it('should return 401 Unauthorized when deleting a blog with invalid credentials', async () => {
+  it('should return 401 Unauthorized when deleting a dto with invalid credentials', async () => {
     const createBlogResponse: Response = await createBlogE2eUtil(
       app,
       HTTP_STATUS.CREATED_201,
@@ -203,7 +203,7 @@ describe('test' + RouterPath.blogs, () => {
     );
   });
 
-  it('should remove existing blog and return status 204', async () => {
+  it('should remove existing dto and return status 204', async () => {
     const createBlogResponse: Response = await createBlogE2eUtil(
       app,
       HTTP_STATUS.CREATED_201,
@@ -223,7 +223,7 @@ describe('test' + RouterPath.blogs, () => {
     );
   });
 
-  it('should return status 404 if trying to delete non-existing blog', async () => {
+  it('should return status 404 if trying to delete non-existing dto', async () => {
     const createBlogResponse: Response = await createBlogE2eUtil(
       app,
       HTTP_STATUS.CREATED_201,

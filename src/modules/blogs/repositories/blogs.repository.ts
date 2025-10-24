@@ -1,0 +1,45 @@
+import { BlogType } from '../types/blog.type';
+import { CreateBlogDto } from '../dto/create-blog.dto';
+import { UpdateBlogDto } from '../dto/update-blog.dto';
+import { blogCollection } from '../../../core/db/mango.db';
+import { ObjectId, UpdateResult, WithId } from 'mongodb';
+
+export const blogsRepository = {
+  async getBlogs(): Promise<WithId<BlogType>[]> {
+    return await blogCollection.find().toArray();
+  },
+
+  async createBlog(body: CreateBlogDto): Promise<WithId<BlogType>> {
+    const newBlog = {
+      ...body,
+      createdAt: new Date().toISOString(),
+      isMembership: false,
+    };
+
+    const result = await blogCollection.insertOne(newBlog);
+
+    return {
+      _id: result.insertedId,
+      ...newBlog,
+    };
+  },
+
+  async getBlogById(id: string): Promise<WithId<BlogType> | null> {
+    return blogCollection.findOne({ _id: new ObjectId(id) });
+  },
+
+  async updateBlog(id: string, body: UpdateBlogDto): Promise<boolean> {
+    const result: UpdateResult<BlogType> = await blogCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: body },
+    );
+
+    return result.matchedCount === 1;
+  },
+
+  async removeBlogById(id: string): Promise<boolean> {
+    const result = await blogCollection.deleteOne({ _id: new ObjectId(id) });
+
+    return result.deletedCount === 1;
+  },
+};

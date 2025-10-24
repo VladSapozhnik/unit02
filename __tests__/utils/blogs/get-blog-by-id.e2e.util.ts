@@ -1,8 +1,8 @@
 import { Express } from 'express';
-import { HTTP_STATUS } from '../../../src/enums/http-status';
+import { HTTP_STATUS } from '../../../src/core/enums/http-status';
 import request from 'supertest';
-import { RouterPath } from '../../../src/constants/router-path';
-import { BlogType } from '../../../src/types/blog.type';
+import { RouterPath } from '../../../src/core/constants/router-path';
+import { BlogType } from '../../../src/modules/blogs/types/blog.type';
 import { Response } from 'supertest';
 
 export const getBlogByIdE2eUtil = async (

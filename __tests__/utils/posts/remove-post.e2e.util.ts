@@ -3,10 +3,10 @@ import { Response } from 'supertest';
 import {
   ADMIN_PASSWORD,
   ADMIN_USERNAME,
-} from '../../../src/middleware/super-admin-guard.middleware';
-import { HTTP_STATUS } from '../../../src/enums/http-status';
+} from '../../../src/core/middleware/super-admin-guard.middleware';
+import { HTTP_STATUS } from '../../../src/core/enums/http-status';
 import request from 'supertest';
-import { RouterPath } from '../../../src/constants/router-path';
+import { RouterPath } from '../../../src/core/constants/router-path';
 
 export const removePostE2eUtil = async (
   app: Express,

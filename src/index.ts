@@ -1,8 +1,8 @@
 import 'dotenv/config';
 import { setupApp } from './setup-app';
 import express, { type Express } from 'express';
-import { runDB } from './db/mango.db';
-import { settings } from './settings/settings';
+import { runDB } from './core/db/mango.db';
+import { settings } from './core/settings/settings';
 const PORT: string | number = process.env.PORT || 3000;
 
 const bootstrap = async () => {

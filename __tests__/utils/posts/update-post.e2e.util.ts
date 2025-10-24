@@ -3,11 +3,11 @@ import request, { Response } from 'supertest';
 import {
   ADMIN_PASSWORD,
   ADMIN_USERNAME,
-} from '../../../src/middleware/super-admin-guard.middleware';
-import { HTTP_STATUS } from '../../../src/enums/http-status';
-import { RouterPath } from '../../../src/constants/router-path';
-import { CreatePostDto } from '../../../src/dto/post/create-post.dto';
-import { UpdatePostDto } from '../../../src/dto/post/update-post.dto';
+} from '../../../src/core/middleware/super-admin-guard.middleware';
+import { HTTP_STATUS } from '../../../src/core/enums/http-status';
+import { RouterPath } from '../../../src/core/constants/router-path';
+import { CreatePostDto } from '../../../src/modules/posts/dto/create-post.dto';
+import { UpdatePostDto } from '../../../src/modules/posts/dto/update-post.dto';
 
 export const exampleUpdatePost: CreatePostDto = {
   title: 'new string',
