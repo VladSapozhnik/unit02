@@ -11,25 +11,20 @@ export const postsRepository = {
     return postCollection.find().toArray();
   },
 
-  async createPost(body: CreatePostDto): Promise<WithId<PostType> | boolean> {
-    const existBlog: BlogType | null = await blogsRepository.getBlogById(
-      body.blogId,
-    );
-
-    if (!existBlog) {
-      return false;
-    }
-
+  async createPost(
+    body: CreatePostDto,
+    blogName: string,
+  ): Promise<WithId<PostType> | boolean> {
     const postBody = {
       ...body,
-      blogName: existBlog.name,
+      blogName: blogName,
       createdAt: new Date().toISOString(),
     };
 
     const result: InsertOneResult<WithId<PostType>> =
       await postCollection.insertOne(postBody);
 
-    return { _id: result.insertedId, ...postBody };
+    return result.insertedId ? { _id: result.insertedId, ...postBody } : false;
   },
 
   async getPostById(id: string): Promise<WithId<PostType> | null> {
