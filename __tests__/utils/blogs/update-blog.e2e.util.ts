@@ -4,7 +4,7 @@ import {
   ADMIN_PASSWORD,
   ADMIN_USERNAME,
 } from '../../../src/core/middleware/super-admin-guard.middleware';
-import { HTTP_STATUS } from '../../../src/core/enums/http-status';
+import { HTTP_STATUS } from '../../../src/core/enums/http-status.enum';
 import { UpdateBlogDto } from '../../../src/modules/blogs/dto/update-blog.dto';
 import request from 'supertest';
 import { RouterPath } from '../../../src/core/constants/router-path';

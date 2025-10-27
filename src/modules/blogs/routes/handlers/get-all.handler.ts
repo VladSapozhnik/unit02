@@ -1,7 +1,7 @@
 import { Request, Response } from 'express';
 import { BlogType } from '../../types/blog.type';
 import { WithId } from 'mongodb';
-import { HTTP_STATUS } from '../../../../core/enums/http-status';
+import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { blogMapper } from '../mappers/blog.mapper';
 import { blogsService } from '../../application/blogs.service';
 

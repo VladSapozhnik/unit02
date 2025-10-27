@@ -4,7 +4,7 @@ import {
   ADMIN_PASSWORD,
   ADMIN_USERNAME,
 } from '../../../src/core/middleware/super-admin-guard.middleware';
-import { HTTP_STATUS } from '../../../src/core/enums/http-status';
+import { HTTP_STATUS } from '../../../src/core/enums/http-status.enum';
 import { RouterPath } from '../../../src/core/constants/router-path';
 import { CreatePostDto } from '../../../src/modules/posts/dto/create-post.dto';
 import { UpdatePostDto } from '../../../src/modules/posts/dto/update-post.dto';

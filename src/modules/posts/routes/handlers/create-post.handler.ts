@@ -1,7 +1,7 @@
 import { Response } from 'express';
 import { CreatePostDto } from '../../dto/create-post.dto';
 import { RequestWithBody } from '../../../../core/types/request.type';
-import { HTTP_STATUS } from '../../../../core/enums/http-status';
+import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { postMapper } from '../mappers/posts.mapper';
 import { WithId } from 'mongodb';
 import { PostType } from '../../types/post.type';

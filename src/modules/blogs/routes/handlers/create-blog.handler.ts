@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { RequestWithBody } from '../../../../core/types/request.type';
-import { HTTP_STATUS } from '../../../../core/enums/http-status';
+import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { CreateBlogDto } from '../../dto/create-blog.dto';
 import { BlogType } from '../../types/blog.type';
 import { blogMapper } from '../mappers/blog.mapper';

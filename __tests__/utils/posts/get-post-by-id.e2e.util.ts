@@ -1,5 +1,5 @@
 import { Express } from 'express';
-import { HTTP_STATUS } from '../../../src/core/enums/http-status';
+import { HTTP_STATUS } from '../../../src/core/enums/http-status.enum';
 import request from 'supertest';
 import { RouterPath } from '../../../src/core/constants/router-path';
 import { Response } from 'supertest';

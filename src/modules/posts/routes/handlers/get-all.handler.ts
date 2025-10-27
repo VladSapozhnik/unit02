@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
 import { PostType } from '../../types/post.type';
-import { HTTP_STATUS } from '../../../../core/enums/http-status';
+import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { postMapper } from '../mappers/posts.mapper';
 import { WithId } from 'mongodb';
 import { postsService } from '../../application/posts.service';

@@ -2,7 +2,7 @@ import { Response } from 'express';
 import { RequestWithParamAndBody } from '../../../../core/types/request.type';
 import { QueryBlogDto } from '../../dto/query-blog.dto';
 import { UpdateBlogDto } from '../../dto/update-blog.dto';
-import { HTTP_STATUS } from '../../../../core/enums/http-status';
+import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { blogsService } from '../../application/blogs.service';
 
 export const updateBlogHandler = async (

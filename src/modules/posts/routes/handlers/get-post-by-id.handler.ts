@@ -2,7 +2,7 @@ import { Response } from 'express';
 import { RequestWithParam } from '../../../../core/types/request.type';
 import { QueryPostDto } from '../../dto/query-post.dto';
 import { PostType } from '../../types/post.type';
-import { HTTP_STATUS } from '../../../../core/enums/http-status';
+import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { WithId } from 'mongodb';
 import { postMapper } from '../mappers/posts.mapper';
 import { postsService } from '../../application/posts.service';

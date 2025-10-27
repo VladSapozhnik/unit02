@@ -1,7 +1,7 @@
 import express, { type Request, type Response, type Express } from 'express';
 import { blogsRouter } from './modules/blogs/routes/blogs.router';
 import { postsRouter } from './modules/posts/routes/posts.router';
-import { HTTP_STATUS } from './core/enums/http-status';
+import { HTTP_STATUS } from './core/enums/http-status.enum';
 import { RouterPath } from './core/constants/router-path';
 import { blogCollection, postCollection } from './core/db/mango.db';
 

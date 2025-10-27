@@ -3,7 +3,7 @@ import { RequestWithParamAndBody } from '../../../../core/types/request.type';
 import { QueryPostDto } from '../../dto/query-post.dto';
 import { UpdatePostDto } from '../../dto/update-post.dto';
 import { postsRepository } from '../../repositories/posts.repository';
-import { HTTP_STATUS } from '../../../../core/enums/http-status';
+import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { postsService } from '../../application/posts.service';
 
 export const updatePostHandler = async (

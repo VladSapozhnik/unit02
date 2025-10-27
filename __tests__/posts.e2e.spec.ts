@@ -1,6 +1,6 @@
 import request, { Response } from 'supertest';
 import { setupApp } from '../src/setup-app';
-import { HTTP_STATUS } from '../src/core/enums/http-status';
+import { HTTP_STATUS } from '../src/core/enums/http-status.enum';
 import { type ErrorType } from '../src/core/types/error.type';
 import express from 'express';
 import { clearDbE2eUtil } from './utils/clear-db.e2e.util';

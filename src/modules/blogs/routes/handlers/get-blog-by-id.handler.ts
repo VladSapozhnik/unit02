@@ -2,7 +2,7 @@ import { RequestWithParam } from '../../../../core/types/request.type';
 import { QueryBlogDto } from '../../dto/query-blog.dto';
 import { Response } from 'express';
 import { BlogType } from '../../types/blog.type';
-import { HTTP_STATUS } from '../../../../core/enums/http-status';
+import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { WithId } from 'mongodb';
 import { blogMapper } from '../mappers/blog.mapper';
 import { blogsService } from '../../application/blogs.service';

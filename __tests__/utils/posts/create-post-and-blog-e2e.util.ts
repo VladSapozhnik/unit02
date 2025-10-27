@@ -5,7 +5,7 @@ import {
   ADMIN_PASSWORD,
   ADMIN_USERNAME,
 } from '../../../src/core/middleware/super-admin-guard.middleware';
-import { HTTP_STATUS } from '../../../src/core/enums/http-status';
+import { HTTP_STATUS } from '../../../src/core/enums/http-status.enum';
 import { CreatePostDto } from '../../../src/modules/posts/dto/create-post.dto';
 import { createBlogE2eUtil } from '../blogs/create-blog.e2e.util';
 
