@@ -4,7 +4,7 @@ import { Response } from 'express';
 import { BlogType } from '../../types/blog.type';
 import { HTTP_STATUS } from '../../../../core/enums/http-status';
 import { WithId } from 'mongodb';
-import { blogMapper } from '../../application/mappers/blog.mapper';
+import { blogMapper } from '../mappers/blog.mapper';
 import { blogsService } from '../../application/blogs.service';
 
 export const getBlogByIdHandler = async (

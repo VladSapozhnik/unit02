@@ -2,7 +2,7 @@ import { Request, Response } from 'express';
 import { BlogType } from '../../types/blog.type';
 import { WithId } from 'mongodb';
 import { HTTP_STATUS } from '../../../../core/enums/http-status';
-import { blogMapper } from '../../application/mappers/blog.mapper';
+import { blogMapper } from '../mappers/blog.mapper';
 import { blogsService } from '../../application/blogs.service';
 
 export const getAllBlogsController = async (req: Request, res: Response) => {

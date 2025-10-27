@@ -3,7 +3,7 @@ import { RequestWithBody } from '../../../../core/types/request.type';
 import { HTTP_STATUS } from '../../../../core/enums/http-status';
 import { CreateBlogDto } from '../../dto/create-blog.dto';
 import { BlogType } from '../../types/blog.type';
-import { blogMapper } from '../../application/mappers/blog.mapper';
+import { blogMapper } from '../mappers/blog.mapper';
 import { WithId } from 'mongodb';
 import { blogsService } from '../../application/blogs.service';
 

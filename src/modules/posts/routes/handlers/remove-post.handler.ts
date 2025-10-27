@@ -3,13 +3,14 @@ import { RequestWithParam } from '../../../../core/types/request.type';
 import { QueryPostDto } from '../../dto/query-post.dto';
 import { postsRepository } from '../../repositories/posts.repository';
 import { HTTP_STATUS } from '../../../../core/enums/http-status';
+import { postsService } from '../../application/posts.service';
 
 export const removePostHandler = async (
   req: RequestWithParam<QueryPostDto>,
   res: Response,
 ) => {
   try {
-    const isRemove: boolean = await postsRepository.removePost(req.params.id);
+    const isRemove: boolean = await postsService.removePost(req.params.id);
 
     if (!isRemove) {
       res.sendStatus(HTTP_STATUS.NOT_FOUND_404);

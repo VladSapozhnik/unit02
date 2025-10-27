@@ -4,13 +4,14 @@ import { QueryPostDto } from '../../dto/query-post.dto';
 import { UpdatePostDto } from '../../dto/update-post.dto';
 import { postsRepository } from '../../repositories/posts.repository';
 import { HTTP_STATUS } from '../../../../core/enums/http-status';
+import { postsService } from '../../application/posts.service';
 
 export const updatePostHandler = async (
   req: RequestWithParamAndBody<QueryPostDto, UpdatePostDto>,
   res: Response,
 ) => {
   try {
-    const isUpdatedPost: boolean = await postsRepository.updatePost(
+    const isUpdatedPost: boolean = await postsService.updatePost(
       req.params.id,
       req.body,
     );
