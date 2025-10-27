@@ -1,15 +1,15 @@
 import { Request, Response } from 'express';
 import { BlogType } from '../../types/blog.type';
-import { blogsRepository } from '../../repositories/blogs.repository';
 import { WithId } from 'mongodb';
 import { HTTP_STATUS } from '../../../../core/enums/http-status';
-import { blogMapper } from '../mappers/blog.mapper';
+import { blogMapper } from '../../application/mappers/blog.mapper';
+import { blogsService } from '../../application/blogs.service';
 
 export const getAllBlogsController = async (req: Request, res: Response) => {
   try {
-    const findBlogs: WithId<BlogType>[] = await blogsRepository.getBlogs();
+    const blogsFromDb: WithId<BlogType>[] = await blogsService.getBlogs();
 
-    const blogs: BlogType[] = findBlogs.map(blogMapper);
+    const blogs: BlogType[] = blogsFromDb.map(blogMapper);
 
     res.send(blogs);
   } catch (e) {
