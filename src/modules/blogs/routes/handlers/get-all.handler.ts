@@ -11,7 +11,7 @@ import { blogListPaginatedOutputMapper } from '../mappers/blog-list-paginated-ou
 
 export const getAllBlogsController = async (req: Request, res: Response) => {
   try {
-    const sanitizedQuery = matchedData<BlogQueryInput>(req, {
+    const sanitizedQuery: BlogQueryInput = matchedData<BlogQueryInput>(req, {
       locations: ['query'],
     });
 
@@ -19,7 +19,6 @@ export const getAllBlogsController = async (req: Request, res: Response) => {
 
     const { items, totalCount } = await blogsService.getBlogs(defaultQuery);
 
-    // const blogs: BlogType[] = blogsFromDb.map(blogMapper);
     const blogsOutput = blogListPaginatedOutputMapper(items, {
       page: defaultQuery.pageNumber,
       pageSize: defaultQuery.pageSize,

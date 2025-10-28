@@ -7,3 +7,5 @@ export type CreatePostDto = {
   content: string;
   blogId: string;
 };
+
+export type CreatePostForBlogDto = Omit<CreatePostDto, 'blogId'>;
