@@ -8,10 +8,21 @@ import {
   UpdateResult,
   WithId,
 } from 'mongodb';
+import { BlogQueryInput } from '../routes/input/blog-query.input';
 
 export const blogsRepository = {
-  async getBlogs(): Promise<WithId<BlogType>[]> {
-    return blogCollection.find().toArray();
+  async getBlogs(
+    queryDto: BlogQueryInput,
+  ): Promise<{ items: WithId<BlogType>[]; totalCount: number }> {
+    const skip: number = (queryDto.pageNumber - 1) * queryDto.pageSize;
+    const items: WithId<BlogType>[] = await blogCollection
+      .find()
+      .skip(skip)
+      .limit(queryDto.pageSize)
+      .toArray();
+
+    const totalCount: number = await blogCollection.countDocuments();
+    return { items, totalCount };
   },
 
   async createBlog(body: BlogType): Promise<InsertOneResult<BlogType>> {

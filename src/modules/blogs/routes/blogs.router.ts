@@ -8,10 +8,17 @@ import { createBlogHandler } from './handlers/create-blog.handler';
 import { updateBlogHandler } from './handlers/update-blog.handler';
 import { removeBlogHandler } from './handlers/remove-blog.handler';
 import { idParamValidator } from '../../../core/validators/param-id.validator';
+import { paginationAndSortingValidation } from '../../../core/validators/pagination-and-sorting.validation';
+import { BlogSortField } from './input/blog-sort-field';
 
 export const blogsRouter: Router = Router();
 
-blogsRouter.get('/', getAllBlogsController);
+blogsRouter.get(
+  '/',
+  paginationAndSortingValidation(BlogSortField),
+  inputValidationMiddleware,
+  getAllBlogsController,
+);
 
 blogsRouter.post(
   '/',

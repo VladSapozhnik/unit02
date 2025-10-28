@@ -3,10 +3,13 @@ import { CreateBlogDto } from '../dto/create-blog.dto';
 import { UpdateBlogDto } from '../dto/update-blog.dto';
 import { DeleteResult, InsertOneResult, UpdateResult, WithId } from 'mongodb';
 import { blogsRepository } from '../repositories/blogs.repository';
+import { BlogQueryInput } from '../routes/input/blog-query.input';
 
 export const blogsService = {
-  async getBlogs(): Promise<WithId<BlogType>[]> {
-    return blogsRepository.getBlogs();
+  async getBlogs(
+    queryDto: BlogQueryInput,
+  ): Promise<{ items: WithId<BlogType>[]; totalCount: number }> {
+    return blogsRepository.getBlogs(queryDto);
   },
 
   async createBlog(body: CreateBlogDto): Promise<WithId<BlogType>> {
