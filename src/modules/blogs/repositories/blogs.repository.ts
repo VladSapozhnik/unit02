@@ -15,7 +15,7 @@ export const blogsRepository = {
   async getBlogs(
     queryDto: BlogQueryInput,
   ): Promise<ResultAndTotalCountType<WithId<BlogType>>> {
-    const skip: number = (queryDto.pageNumber - 1) * queryDto.pageSize;
+    const skip: number = (queryDto.page - 1) * queryDto.pageSize;
     const items: WithId<BlogType>[] = await blogCollection
       .find()
       .skip(skip)

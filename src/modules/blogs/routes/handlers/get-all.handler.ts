@@ -25,7 +25,7 @@ export const getAllBlogsHandler = async (req: Request, res: Response) => {
     const blogsOutput: PaginatedOutputType<BlogType> =
       blogListPaginatedOutputMapper(items, {
         pagesCount: Math.ceil(totalCount / defaultQuery.pageSize),
-        page: defaultQuery.pageNumber,
+        page: defaultQuery.page,
         pageSize: defaultQuery.pageSize,
         totalCount,
       });

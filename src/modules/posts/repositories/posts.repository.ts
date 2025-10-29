@@ -16,7 +16,7 @@ export const postsRepository = {
   async getAllPosts(
     queryDto: PostQueryInput,
   ): Promise<ResultAndTotalCountType<WithId<PostType>>> {
-    const skip: number = getSkipOffset(queryDto.pageNumber, queryDto.pageSize);
+    const skip: number = getSkipOffset(queryDto.page, queryDto.pageSize);
 
     const posts: WithId<PostType>[] = await postCollection
       .find()
@@ -37,7 +37,7 @@ export const postsRepository = {
     blogId: string,
     queryDto: PostQueryInput,
   ): Promise<ResultAndTotalCountType<WithId<PostType>>> {
-    const skip: number = getSkipOffset(queryDto.pageNumber, queryDto.pageSize);
+    const skip: number = getSkipOffset(queryDto.page, queryDto.pageSize);
 
     const posts: WithId<PostType>[] = await postCollection
       .find({ blogId })

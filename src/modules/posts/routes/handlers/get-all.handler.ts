@@ -24,7 +24,7 @@ export const getAllPostsHandler = async (req: Request, res: Response) => {
     const postsOutput: PaginatedOutputType<PostType> =
       postListPaginatedOutputMapper(items, {
         pagesCount: Math.ceil(totalCount / defaultQuery.pageSize),
-        page: defaultQuery.pageNumber,
+        page: defaultQuery.page,
         pageSize: defaultQuery.pageSize,
         totalCount,
       });

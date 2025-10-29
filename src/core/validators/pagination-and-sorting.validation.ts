@@ -10,7 +10,7 @@ const DEFAULT_SORT_BY = 'createdAt';
 export const paginationAndSortingDefault: PaginationAndSorting<string> = {
   sortBy: DEFAULT_SORT_BY,
   sortDirection: DEFAULT_SORT_DIRECTION,
-  pageNumber: DEFAULT_PAGE,
+  page: DEFAULT_PAGE,
   pageSize: DEFAULT_PAGE_SIZE,
 };
 
@@ -20,10 +20,10 @@ export function paginationAndSortingValidation<T extends string>(
   const allowedSortFields = Object.values(sortFieldsEnum);
 
   return [
-    query('pageNumber')
+    query('page')
       .default(DEFAULT_PAGE)
       .isInt({ min: 1 })
-      .withMessage('Page number must be a positive integer')
+      .withMessage('Page must be a positive integer')
       .toInt(),
     query('pageSize')
       .default(DEFAULT_PAGE_SIZE)
