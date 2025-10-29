@@ -15,9 +15,16 @@ export const blogsRepository = {
   async getBlogs(
     queryDto: BlogQueryInput,
   ): Promise<ResultAndTotalCountType<WithId<BlogType>>> {
+    const filter: any = {};
+
+    if (queryDto.searchBlogNameTerm) {
+      filter.name = { $regex: queryDto.searchBlogNameTerm, $options: 'i' };
+    }
+
     const skip: number = (queryDto.page - 1) * queryDto.pageSize;
     const items: WithId<BlogType>[] = await blogCollection
-      .find()
+      .find(filter)
+      .sort({ [queryDto.sortBy]: queryDto.sortDirection })
       .skip(skip)
       .limit(queryDto.pageSize)
       .toArray();

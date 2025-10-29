@@ -20,6 +20,7 @@ export const postsRepository = {
 
     const posts: WithId<PostType>[] = await postCollection
       .find()
+      .sort({ [queryDto.sortBy]: queryDto.sortDirection })
       .limit(queryDto.pageSize)
       .skip(skip)
       .toArray();
@@ -41,6 +42,7 @@ export const postsRepository = {
 
     const posts: WithId<PostType>[] = await postCollection
       .find({ blogId })
+      .sort({ [queryDto.sortBy]: queryDto.sortDirection })
       .limit(queryDto.pageSize)
       .skip(skip)
       .toArray();

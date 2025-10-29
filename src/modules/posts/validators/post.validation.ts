@@ -1,6 +1,6 @@
 import { body } from 'express-validator';
 
-export const postValidator = [
+export const postValidation = [
   body('title')
     .isString()
     .withMessage('Title must be a string')

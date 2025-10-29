@@ -6,7 +6,6 @@ import { matchedData } from 'express-validator';
 import { BlogQueryInput } from '../input/blog-query.input';
 import { setDefaultSortAndPaginationIfNotExistHelper } from '../../../../core/helpers/set-default-sort-and-pagination.helper';
 import { blogListPaginatedOutputMapper } from '../mappers/blog-list-paginated-output.mapper';
-import { PaginatedMetaType } from '../../../../core/types/paginated-meta.type';
 import { PaginationAndSorting } from '../../../../core/types/pagination-and-sorting.type';
 import { BlogSortField } from '../input/blog-sort-field';
 import { PaginatedOutputType } from '../../../../core/types/paginated-output.type';
@@ -15,6 +14,7 @@ export const getAllBlogsHandler = async (req: Request, res: Response) => {
   try {
     const sanitizedQuery: BlogQueryInput = matchedData<BlogQueryInput>(req, {
       locations: ['query'],
+      includeOptionals: true,
     });
 
     const defaultQuery: PaginationAndSorting<BlogSortField> =

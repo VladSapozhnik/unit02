@@ -1,7 +1,7 @@
 // import {body} from "express-validator";
 import { body } from 'express-validator';
 
-export const blogValidator = [
+export const blogValidation = [
   body('name')
     .isString()
     .withMessage('Name must be a string')
