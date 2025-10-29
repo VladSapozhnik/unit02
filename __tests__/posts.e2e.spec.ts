@@ -38,7 +38,13 @@ describe('test' + RouterPath.posts, () => {
   });
 
   it('should return status 200 and empty array', async () => {
-    await request(app).get('/posts').expect(HTTP_STATUS.OK_200, []);
+    await request(app).get('/posts').expect(HTTP_STATUS.OK_200, {
+      pagesCount: 0,
+      page: 1,
+      pageSize: 10,
+      totalCount: 0,
+      items: [],
+    });
   });
 
   it('should return status 400 and array of errors when create dto with invalid data', async () => {
