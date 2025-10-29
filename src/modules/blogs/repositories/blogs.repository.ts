@@ -9,11 +9,12 @@ import {
   WithId,
 } from 'mongodb';
 import { BlogQueryInput } from '../routes/input/blog-query.input';
+import { ResultAndTotalCountType } from '../../../core/types/result-and-total-count.type';
 
 export const blogsRepository = {
   async getBlogs(
     queryDto: BlogQueryInput,
-  ): Promise<{ items: WithId<BlogType>[]; totalCount: number }> {
+  ): Promise<ResultAndTotalCountType<WithId<BlogType>>> {
     const skip: number = (queryDto.pageNumber - 1) * queryDto.pageSize;
     const items: WithId<BlogType>[] = await blogCollection
       .find()

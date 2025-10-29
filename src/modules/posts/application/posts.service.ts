@@ -5,10 +5,14 @@ import { BlogType } from '../../blogs/types/blog.type';
 import { UpdatePostDto } from '../dto/update-post.dto';
 import { DeleteResult, InsertOneResult, UpdateResult, WithId } from 'mongodb';
 import { postsRepository } from '../repositories/posts.repository';
+import { PostQueryInput } from '../routes/input/post-query.input';
+import { ResultAndTotalCountType } from '../../../core/types/result-and-total-count.type';
 
 export const postsService = {
-  async getAllPosts(): Promise<WithId<PostType>[]> {
-    return postsRepository.getAllPosts();
+  async getAllPosts(
+    queryDto: PostQueryInput,
+  ): Promise<ResultAndTotalCountType<WithId<PostType>>> {
+    return postsRepository.getAllPosts(queryDto);
   },
 
   async createPost(body: CreatePostDto): Promise<WithId<PostType> | boolean> {
@@ -30,6 +34,13 @@ export const postsService = {
     if (!result.insertedId) return false;
 
     return { _id: result.insertedId, ...postBody };
+  },
+
+  getPostsByBlogId(
+    blogId: string,
+    queryDto: PostQueryInput,
+  ): Promise<ResultAndTotalCountType<WithId<PostType>>> {
+    return postsRepository.getPostsByBlogId(blogId, queryDto);
   },
 
   async getPostById(id: string): Promise<WithId<PostType> | null> {

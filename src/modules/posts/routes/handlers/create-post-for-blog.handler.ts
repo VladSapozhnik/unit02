@@ -24,6 +24,8 @@ export const createPostForBlogHandler = async (
       .status(HTTP_STATUS.CREATED_201)
       .send(postMapper(isCreatedPost as WithId<PostType>));
   } catch {
-    res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
+    res
+      .status(HTTP_STATUS.CREATED_201)
+      .sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
 };

@@ -1,6 +1,5 @@
-export type PaginatedOutputType = {
-  page: number;
-  pageSize: number;
-  pagesCount: number;
-  totalCount: number;
+import { PaginatedMetaType } from './paginated-meta.type';
+
+export type PaginatedOutputType<T> = PaginatedMetaType & {
+  items: T[];
 };

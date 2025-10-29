@@ -1,7 +1,4 @@
 import { PostType } from '../types/post.type';
-import { CreatePostDto } from '../dto/create-post.dto';
-import { blogsRepository } from '../../blogs/repositories/blogs.repository';
-import { BlogType } from '../../blogs/types/blog.type';
 import { UpdatePostDto } from '../dto/update-post.dto';
 import {
   DeleteResult,
@@ -11,14 +8,46 @@ import {
   WithId,
 } from 'mongodb';
 import { postCollection } from '../../../core/db/mango.db';
+import { PostQueryInput } from '../routes/input/post-query.input';
+import { ResultAndTotalCountType } from '../../../core/types/result-and-total-count.type';
+import { getSkipOffset } from '../../../core/helpers/get-skip-offset';
 
 export const postsRepository = {
-  async getAllPosts(): Promise<WithId<PostType>[]> {
-    return postCollection.find().toArray();
+  async getAllPosts(
+    queryDto: PostQueryInput,
+  ): Promise<ResultAndTotalCountType<WithId<PostType>>> {
+    const skip: number = getSkipOffset(queryDto.pageNumber, queryDto.pageSize);
+
+    const posts: WithId<PostType>[] = await postCollection
+      .find()
+      .limit(queryDto.pageSize)
+      .skip(skip)
+      .toArray();
+
+    const totalCount: number = await postCollection.countDocuments();
+
+    return { items: posts, totalCount };
   },
 
   async createPost(body: PostType): Promise<InsertOneResult<PostType>> {
     return postCollection.insertOne(body);
+  },
+
+  async getPostsByBlogId(
+    blogId: string,
+    queryDto: PostQueryInput,
+  ): Promise<ResultAndTotalCountType<WithId<PostType>>> {
+    const skip: number = getSkipOffset(queryDto.pageNumber, queryDto.pageSize);
+
+    const posts: WithId<PostType>[] = await postCollection
+      .find({ blogId })
+      .limit(queryDto.pageSize)
+      .skip(skip)
+      .toArray();
+
+    const totalCount: number = await postCollection.countDocuments({ blogId });
+
+    return { items: posts, totalCount };
   },
 
   async getPostById(id: string): Promise<WithId<PostType> | null> {
