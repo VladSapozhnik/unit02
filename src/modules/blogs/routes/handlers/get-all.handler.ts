@@ -8,7 +8,6 @@ import { setDefaultSortAndPaginationIfNotExistHelper } from '../../../../core/he
 import { blogListPaginatedOutputMapper } from '../mappers/blog-list-paginated-output.mapper';
 import { PaginationAndSorting } from '../../../../core/types/pagination-and-sorting.type';
 import { BlogSortField } from '../input/blog-sort-field';
-import { PaginatedOutputType } from '../../../../core/types/paginated-output.type';
 
 export const getAllBlogsHandler = async (req: Request, res: Response) => {
   try {
@@ -22,13 +21,12 @@ export const getAllBlogsHandler = async (req: Request, res: Response) => {
 
     const { items, totalCount } = await blogsService.getBlogs(defaultQuery);
 
-    const blogsOutput: PaginatedOutputType<BlogType> =
-      blogListPaginatedOutputMapper(items, {
-        pagesCount: Math.ceil(totalCount / defaultQuery.pageSize),
-        page: defaultQuery.page,
-        pageSize: defaultQuery.pageSize,
-        totalCount,
-      });
+    const blogsOutput = blogListPaginatedOutputMapper(items, {
+      pagesCount: Math.ceil(totalCount / defaultQuery.pageSize),
+      pageNumber: defaultQuery.pageNumber,
+      pageSize: defaultQuery.pageSize,
+      totalCount,
+    });
 
     res.send(blogsOutput);
   } catch (e) {

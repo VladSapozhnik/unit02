@@ -10,18 +10,20 @@ import {
 } from 'mongodb';
 import { BlogQueryInput } from '../routes/input/blog-query.input';
 import { ResultAndTotalCountType } from '../../../core/types/result-and-total-count.type';
+import { getSkipOffset } from '../../../core/helpers/get-skip-offset';
 
 export const blogsRepository = {
   async getBlogs(
     queryDto: BlogQueryInput,
   ): Promise<ResultAndTotalCountType<WithId<BlogType>>> {
+    const skip: number = getSkipOffset(queryDto.pageNumber, queryDto.pageSize);
+
     const filter: any = {};
 
     if (queryDto.searchBlogNameTerm) {
       filter.name = { $regex: queryDto.searchBlogNameTerm, $options: 'i' };
     }
 
-    const skip: number = (queryDto.page - 1) * queryDto.pageSize;
     const items: WithId<BlogType>[] = await blogCollection
       .find(filter)
       .sort({ [queryDto.sortBy]: queryDto.sortDirection })

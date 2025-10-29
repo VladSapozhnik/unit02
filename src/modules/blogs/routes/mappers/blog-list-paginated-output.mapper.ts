@@ -7,11 +7,11 @@ import { PaginatedOutputType } from '../../../../core/types/paginated-output.typ
 export const blogListPaginatedOutputMapper = (
   blogs: WithId<BlogType>[],
   meta: PaginatedMetaType,
-): PaginatedOutputType<BlogType> => {
+) => {
   const items: BlogType[] = blogs.map(blogMapper);
   return {
     pagesCount: meta.pagesCount,
-    page: meta.page,
+    page: meta.pageNumber,
     pageSize: meta.pageSize,
     totalCount: meta.totalCount,
     items,

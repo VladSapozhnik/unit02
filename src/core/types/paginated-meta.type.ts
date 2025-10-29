@@ -1,5 +1,5 @@
 export type PaginatedMetaType = {
-  page: number;
+  pageNumber: number;
   pageSize: number;
   pagesCount: number;
   totalCount: number;

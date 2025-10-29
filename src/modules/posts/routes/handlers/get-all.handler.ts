@@ -8,7 +8,6 @@ import { setDefaultSortAndPaginationIfNotExistHelper } from '../../../../core/he
 import { PaginationAndSorting } from '../../../../core/types/pagination-and-sorting.type';
 import { PostSortField } from '../input/post-sort-field';
 import { postListPaginatedOutputMapper } from '../mappers/post-list-paginated-output.mapper';
-import { PaginatedOutputType } from '../../../../core/types/paginated-output.type';
 
 export const getAllPostsHandler = async (req: Request, res: Response) => {
   try {
@@ -21,13 +20,12 @@ export const getAllPostsHandler = async (req: Request, res: Response) => {
 
     const { items, totalCount } = await postsService.getAllPosts(defaultQuery);
 
-    const postsOutput: PaginatedOutputType<PostType> =
-      postListPaginatedOutputMapper(items, {
-        pagesCount: Math.ceil(totalCount / defaultQuery.pageSize),
-        page: defaultQuery.page,
-        pageSize: defaultQuery.pageSize,
-        totalCount,
-      });
+    const postsOutput = postListPaginatedOutputMapper(items, {
+      pagesCount: Math.ceil(totalCount / defaultQuery.pageSize),
+      pageNumber: defaultQuery.pageNumber,
+      pageSize: defaultQuery.pageSize,
+      totalCount,
+    });
 
     res.json(postsOutput);
   } catch (e) {
