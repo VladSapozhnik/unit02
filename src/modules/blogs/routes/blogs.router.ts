@@ -14,14 +14,15 @@ import { createPostForBlogHandler } from '../../posts/routes/handlers/create-pos
 import { PostSortField } from '../../posts/routes/input/post-sort-field';
 import { blogIdParamValidation } from '../validators/blogId-param.validation';
 import { getPostsByBlogIdHandler } from '../../posts/routes/handlers/get-posts-by-blogId.handler';
-import { BlogQuerySearchValidation } from '../validators/blog-query-search.validation';
+import { blogQuerySearchValidation } from '../validators/blog-query-search.validation';
+import { postWithoutBlogIdValidation } from '../../posts/validators/post-without-blogId.validation';
 
 export const blogsRouter: Router = Router();
 
 blogsRouter.get(
   '/',
   paginationAndSortingValidation(BlogSortField),
-  BlogQuerySearchValidation,
+  blogQuerySearchValidation,
   inputValidationMiddleware,
   getAllBlogsHandler,
 );
@@ -37,6 +38,7 @@ blogsRouter.post(
 blogsRouter.post(
   '/:blogId/posts',
   superAdminGuardMiddleware,
+  postWithoutBlogIdValidation,
   blogIdParamValidation,
   inputValidationMiddleware,
   createPostForBlogHandler,
