@@ -24,7 +24,7 @@ export const postsService = {
 
     const postBody = {
       ...body,
-      blogName: existBlog?.name,
+      blogName: existBlog.name,
       createdAt: new Date().toISOString(),
     };
 
