@@ -6,15 +6,15 @@ import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { postMapper } from '../mappers/posts.mapper';
 import { RequestWithParamAndBody } from '../../../../core/types/request.type';
 import { CreatePostForBlogDto } from '../../dto/create-post.dto';
-import { BlogIdQueryDto } from '../../dto/blogId-query.dto';
 import { errorsHandler } from '../../../../core/errors/errors.handler';
+import { QueryPostDto } from '../../dto/query-post.dto';
 
 export const createPostForBlogHandler = async (
-  req: RequestWithParamAndBody<BlogIdQueryDto, CreatePostForBlogDto>,
+  req: RequestWithParamAndBody<QueryPostDto, CreatePostForBlogDto>,
   res: Response,
 ) => {
   try {
-    const blogId: string = req.params.blogId;
+    const blogId: string = req.params.id;
 
     const isCreatedPost: boolean | WithId<PostType> =
       await postsService.createPostForBlog({ ...req.body, blogId });

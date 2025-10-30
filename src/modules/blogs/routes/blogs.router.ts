@@ -12,7 +12,6 @@ import { paginationAndSortingValidation } from '../../../core/validators/paginat
 import { BlogSortField } from './input/blog-sort-field';
 import { createPostForBlogHandler } from '../../posts/routes/handlers/create-post-for-blog.handler';
 import { PostSortField } from '../../posts/routes/input/post-sort-field';
-import { blogIdParamValidation } from '../validators/blogId-param.validation';
 import { getPostsByBlogIdHandler } from '../../posts/routes/handlers/get-posts-by-blogId.handler';
 import { blogQuerySearchValidation } from '../validators/blog-query-search.validation';
 import { postWithoutBlogIdValidation } from '../../posts/validators/post-without-blogId.validation';
@@ -36,18 +35,18 @@ blogsRouter.post(
 );
 
 blogsRouter.post(
-  '/:blogId/posts',
+  '/:id/posts',
   superAdminGuardMiddleware,
   postWithoutBlogIdValidation,
-  blogIdParamValidation,
+  idParamValidator,
   inputValidationMiddleware,
   createPostForBlogHandler,
 );
 
 blogsRouter.get(
-  '/:blogId/posts',
+  '/:id/posts',
   paginationAndSortingValidation(PostSortField),
-  blogIdParamValidation,
+  idParamValidator,
   inputValidationMiddleware,
   getPostsByBlogIdHandler,
 );
