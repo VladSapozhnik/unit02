@@ -15,6 +15,10 @@ import { RouterPath } from '../src/core/constants/router-path';
 import { runDB, stopDB } from '../src/core/db/mango.db';
 import { settings } from '../src/core/settings/settings';
 import { ObjectIdValid } from './blogs.e2e.spec';
+import { SortDirection } from '../src/core/enums/sort-direction.enum';
+import { PostQueryInput } from '../src/modules/posts/routes/input/post-query.input';
+import { PostSortField } from '../src/modules/posts/routes/input/post-sort-field';
+import { createPostForBlogE2eUtil } from './utils/posts/create-post-by-blogId-e2e.util';
 
 const validateErrors: ErrorType[] = [
   { message: expect.any(String), field: expect.any(String) },
@@ -47,10 +51,52 @@ describe('test' + RouterPath.posts, () => {
     });
   });
 
+  it('posts returns empty items array and correct pagination for empty result', async () => {
+    const paginationDefault: PostQueryInput = {
+      sortBy: PostSortField.CreatedAt,
+      sortDirection: SortDirection.Asc,
+      pageSize: 20,
+      pageNumber: 3,
+    };
+
+    await request(app)
+      .get('/posts')
+      .query(paginationDefault)
+      .expect(HTTP_STATUS.OK_200, {
+        pagesCount: 0,
+        page: paginationDefault.pageNumber,
+        pageSize: paginationDefault.pageSize,
+        totalCount: 0,
+        items: [],
+      });
+  });
+
   it('should return status 400 and array of errors when create dto with invalid data', async () => {
     const response: Response = await createPostAndBlogE2eUtil(
       app,
       HTTP_STATUS.BAD_REQUEST_400,
+    );
+
+    expect(response.body.errorsMessages).toEqual(
+      expect.arrayContaining(validateErrors),
+    );
+  });
+
+  it('should return 400 and validation errors when creating post by blog with invalid data', async () => {
+    const response: Response = await createPostForBlogE2eUtil(
+      app,
+      HTTP_STATUS.BAD_REQUEST_400,
+    );
+
+    expect(response.body.errorsMessages).toEqual(
+      expect.arrayContaining(validateErrors),
+    );
+  });
+
+  it('should return 404 and validation errors when creating post by blog with invalid blogId', async () => {
+    const response: Response = await createPostForBlogE2eUtil(
+      app,
+      HTTP_STATUS.NOT_FOUND_404,
     );
 
     expect(response.body.errorsMessages).toEqual(
@@ -72,8 +118,28 @@ describe('test' + RouterPath.posts, () => {
     );
   });
 
-  it('should return 401 Unauthorized when creating a dto with invalid credentials', async () => {
+  it('should create dto and return 201 with created dto body and correct blogId', async () => {
+    const responsePost: Response = await createPostForBlogE2eUtil(
+      app,
+      HTTP_STATUS.CREATED_201,
+    );
+
+    await getPostByIdE2eUtil(
+      app,
+      HTTP_STATUS.OK_200,
+      responsePost.body.id,
+      responsePost.body,
+    );
+  });
+
+  it('should return 401 Unauthorized not create when creating a dto with invalid credentials', async () => {
     await createPostAndBlogE2eUtil(app, HTTP_STATUS.UNAUTHORIZED_401);
+
+    await getPostByIdE2eUtil(app, HTTP_STATUS.NOT_FOUND_404, ObjectIdValid, {});
+  });
+
+  it('should return 401 Unauthorized not create PostForBlogId when creating a dto and BlogId with invalid credentials', async () => {
+    await createPostForBlogE2eUtil(app, HTTP_STATUS.UNAUTHORIZED_401);
 
     await getPostByIdE2eUtil(app, HTTP_STATUS.NOT_FOUND_404, ObjectIdValid, {});
   });

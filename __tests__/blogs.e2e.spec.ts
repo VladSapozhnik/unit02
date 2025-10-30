@@ -17,6 +17,9 @@ import { getBlogByIdE2eUtil } from './utils/blogs/get-blog-by-id.e2e.util';
 import { clearDbE2eUtil } from './utils/clear-db.e2e.util';
 import { runDB, stopDB } from '../src/core/db/mango.db';
 import { settings } from '../src/core/settings/settings';
+import { BlogSortField } from '../src/modules/blogs/routes/input/blog-sort-field';
+import { SortDirection } from '../src/core/enums/sort-direction.enum';
+import { BlogQueryInput } from '../src/modules/blogs/routes/input/blog-query.input';
 
 export const ObjectIdValid = '68f7b37aec3bd9b7be0c000c';
 
@@ -49,6 +52,27 @@ describe('test' + RouterPath.blogs, () => {
       totalCount: 0,
       items: [],
     });
+  });
+
+  it('blogs returns empty items array and correct pagination for empty result', async () => {
+    const paginationDefault: BlogQueryInput = {
+      searchBlogNameTerm: 'test',
+      sortBy: BlogSortField.CreatedAt,
+      sortDirection: SortDirection.Asc,
+      pageSize: 20,
+      pageNumber: 3,
+    };
+
+    await request(app)
+      .get(RouterPath.blogs)
+      .query(paginationDefault)
+      .expect(200, {
+        pagesCount: 0,
+        page: paginationDefault.pageNumber,
+        pageSize: paginationDefault.pageSize,
+        totalCount: 0,
+        items: [],
+      });
   });
 
   it('should return status 400 and array of errors when create dto with invalid data', async () => {
