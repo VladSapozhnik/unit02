@@ -62,10 +62,17 @@ export const postsService = {
     return { _id: result.insertedId, ...postBody };
   },
 
-  getPostsByBlogId(
+  async getPostsByBlogId(
     blogId: string,
     queryDto: PostQueryInput,
   ): Promise<ResultAndTotalCountType<WithId<PostType>>> {
+    const existBlog: BlogType | null =
+      await blogsRepository.getBlogById(blogId);
+
+    if (!existBlog) {
+      throw new NotFoundError('Blog not found');
+    }
+
     return postsRepository.getPostsByBlogId(blogId, queryDto);
   },
 
