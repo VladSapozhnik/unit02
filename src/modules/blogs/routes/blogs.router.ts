@@ -15,6 +15,7 @@ import { PostSortField } from '../../posts/routes/input/post-sort-field';
 import { getPostsByBlogIdHandler } from '../../posts/routes/handlers/get-posts-by-blogId.handler';
 import { blogQuerySearchValidation } from '../validators/blog-query-search.validation';
 import { postWithoutBlogIdValidation } from '../../posts/validators/post-without-blogId.validation';
+import { blogIdParamValidation } from '../validators/blogId-param.validation';
 
 export const blogsRouter: Router = Router();
 
@@ -35,18 +36,18 @@ blogsRouter.post(
 );
 
 blogsRouter.post(
-  '/:id/posts',
+  '/:blogId/posts',
   superAdminGuardMiddleware,
+  blogIdParamValidation,
   postWithoutBlogIdValidation,
-  idParamValidator,
   inputValidationMiddleware,
   createPostForBlogHandler,
 );
 
 blogsRouter.get(
-  '/:id/posts',
+  '/:blogId/posts',
+  blogIdParamValidation,
   paginationAndSortingValidation(PostSortField),
-  idParamValidator,
   inputValidationMiddleware,
   getPostsByBlogIdHandler,
 );

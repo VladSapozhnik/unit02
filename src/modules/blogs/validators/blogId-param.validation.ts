@@ -2,8 +2,8 @@ import { param } from 'express-validator';
 
 export const blogIdParamValidation = param('blogId')
   .exists()
-  .withMessage('BlogId is required')
+  .withMessage('blogId is required')
   .isString()
-  .withMessage('BlogId must be a string')
+  .withMessage('blogId must be a string')
   .isMongoId()
-  .withMessage('BlogId incorrect format of ObjectId');
+  .withMessage('blogId must be a valid ObjectId');
