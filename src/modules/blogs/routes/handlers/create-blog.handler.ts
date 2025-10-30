@@ -6,6 +6,7 @@ import { BlogType } from '../../types/blog.type';
 import { blogMapper } from '../mappers/blog.mapper';
 import { WithId } from 'mongodb';
 import { blogsService } from '../../application/blogs.service';
+import { errorsHandler } from '../../../../core/errors/errors.handler';
 
 export const createBlogHandler = async (
   req: RequestWithBody<CreateBlogDto>,
@@ -23,6 +24,6 @@ export const createBlogHandler = async (
 
     res.status(HTTP_STATUS.CREATED_201).send(blogMapper(createdBlog));
   } catch (e) {
-    res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
+    errorsHandler(e, res);
   }
 };

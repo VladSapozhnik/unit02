@@ -6,28 +6,33 @@ import type { PaginationAndSorting } from '../../../../core/types/pagination-and
 import { postsService } from '../../application/posts.service';
 import { PostSortField } from '../input/post-sort-field';
 import { postListPaginatedOutputMapper } from '../mappers/post-list-paginated-output.mapper';
+import { errorsHandler } from '../../../../core/errors/errors.handler';
 
 export const getPostsByBlogIdHandler = async (req: Request, res: Response) => {
-  const blogId: string = req.params.blogId;
+  try {
+    const blogId: string = req.params.blogId;
 
-  const sanitizedQuery: PostQueryInput = matchedData<PostQueryInput>(req, {
-    locations: ['query'],
-  });
+    const sanitizedQuery: PostQueryInput = matchedData<PostQueryInput>(req, {
+      locations: ['query'],
+    });
 
-  const defaultQuery: PaginationAndSorting<PostSortField> =
-    setDefaultSortAndPaginationIfNotExistHelper(sanitizedQuery);
+    const defaultQuery: PaginationAndSorting<PostSortField> =
+      setDefaultSortAndPaginationIfNotExistHelper(sanitizedQuery);
 
-  const { items, totalCount } = await postsService.getPostsByBlogId(
-    blogId,
-    defaultQuery,
-  );
+    const { items, totalCount } = await postsService.getPostsByBlogId(
+      blogId,
+      defaultQuery,
+    );
 
-  const postsOutput = postListPaginatedOutputMapper(items, {
-    pagesCount: Math.ceil(totalCount / defaultQuery.pageSize),
-    pageNumber: defaultQuery.pageNumber,
-    pageSize: defaultQuery.pageSize,
-    totalCount,
-  });
+    const postsOutput = postListPaginatedOutputMapper(items, {
+      pagesCount: Math.ceil(totalCount / defaultQuery.pageSize),
+      pageNumber: defaultQuery.pageNumber,
+      pageSize: defaultQuery.pageSize,
+      totalCount,
+    });
 
-  res.send(postsOutput);
+    res.send(postsOutput);
+  } catch (e) {
+    errorsHandler(e, res);
+  }
 };

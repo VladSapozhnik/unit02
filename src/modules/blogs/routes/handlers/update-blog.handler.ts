@@ -4,6 +4,7 @@ import { QueryBlogDto } from '../../dto/query-blog.dto';
 import { UpdateBlogDto } from '../../dto/update-blog.dto';
 import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { blogsService } from '../../application/blogs.service';
+import { errorsHandler } from '../../../../core/errors/errors.handler';
 
 export const updateBlogHandler = async (
   req: RequestWithParamAndBody<QueryBlogDto, UpdateBlogDto>,
@@ -22,6 +23,6 @@ export const updateBlogHandler = async (
 
     res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   } catch (e) {
-    res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
+    errorsHandler(e, res);
   }
 };

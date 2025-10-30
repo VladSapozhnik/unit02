@@ -8,6 +8,7 @@ import { setDefaultSortAndPaginationIfNotExistHelper } from '../../../../core/he
 import { PaginationAndSorting } from '../../../../core/types/pagination-and-sorting.type';
 import { PostSortField } from '../input/post-sort-field';
 import { postListPaginatedOutputMapper } from '../mappers/post-list-paginated-output.mapper';
+import { errorsHandler } from '../../../../core/errors/errors.handler';
 
 export const getAllPostsHandler = async (req: Request, res: Response) => {
   try {
@@ -29,6 +30,6 @@ export const getAllPostsHandler = async (req: Request, res: Response) => {
 
     res.json(postsOutput);
   } catch (e) {
-    res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
+    errorsHandler(e, res);
   }
 };

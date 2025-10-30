@@ -6,6 +6,7 @@ import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { WithId } from 'mongodb';
 import { blogMapper } from '../mappers/blog.mapper';
 import { blogsService } from '../../application/blogs.service';
+import { errorsHandler } from '../../../../core/errors/errors.handler';
 
 export const getBlogByIdHandler = async (
   req: RequestWithParam<QueryBlogDto>,
@@ -23,6 +24,6 @@ export const getBlogByIdHandler = async (
 
     res.json(blogMapper(existBlog));
   } catch (e) {
-    res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
+    errorsHandler(e, res);
   }
 };

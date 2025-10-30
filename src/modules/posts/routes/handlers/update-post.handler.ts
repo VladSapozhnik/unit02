@@ -4,6 +4,7 @@ import { QueryPostDto } from '../../dto/query-post.dto';
 import { UpdatePostDto } from '../../dto/update-post.dto';
 import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { postsService } from '../../application/posts.service';
+import { errorsHandler } from '../../../../core/errors/errors.handler';
 
 export const updatePostHandler = async (
   req: RequestWithParamAndBody<QueryPostDto, UpdatePostDto>,
@@ -21,7 +22,7 @@ export const updatePostHandler = async (
     }
 
     res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
-  } catch {
-    res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
+  } catch (e) {
+    errorsHandler(e, res);
   }
 };

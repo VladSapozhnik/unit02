@@ -3,6 +3,7 @@ import { RequestWithParam } from '../../../../core/types/request.type';
 import { QueryPostDto } from '../../dto/query-post.dto';
 import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { postsService } from '../../application/posts.service';
+import { errorsHandler } from '../../../../core/errors/errors.handler';
 
 export const removePostHandler = async (
   req: RequestWithParam<QueryPostDto>,
@@ -18,6 +19,6 @@ export const removePostHandler = async (
 
     res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   } catch (e) {
-    res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
+    errorsHandler(e, res);
   }
 };

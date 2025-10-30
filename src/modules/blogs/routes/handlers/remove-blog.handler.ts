@@ -4,6 +4,7 @@ import { QueryBlogDto } from '../../dto/query-blog.dto';
 import { blogsRepository } from '../../repositories/blogs.repository';
 import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { blogsService } from '../../application/blogs.service';
+import { errorsHandler } from '../../../../core/errors/errors.handler';
 
 export const removeBlogHandler = async (
   req: RequestWithParam<QueryBlogDto>,
@@ -19,6 +20,6 @@ export const removeBlogHandler = async (
 
     res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   } catch (e) {
-    res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
+    errorsHandler(e, res);
   }
 };

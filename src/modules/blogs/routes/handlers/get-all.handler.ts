@@ -8,6 +8,7 @@ import { setDefaultSortAndPaginationIfNotExistHelper } from '../../../../core/he
 import { blogListPaginatedOutputMapper } from '../mappers/blog-list-paginated-output.mapper';
 import { PaginationAndSorting } from '../../../../core/types/pagination-and-sorting.type';
 import { BlogSortField } from '../input/blog-sort-field';
+import { errorsHandler } from '../../../../core/errors/errors.handler';
 
 export const getAllBlogsHandler = async (req: Request, res: Response) => {
   try {
@@ -30,6 +31,6 @@ export const getAllBlogsHandler = async (req: Request, res: Response) => {
 
     res.send(blogsOutput);
   } catch (e) {
-    res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
+    errorsHandler(e, res);
   }
 };

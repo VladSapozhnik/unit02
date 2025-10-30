@@ -6,6 +6,7 @@ import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { WithId } from 'mongodb';
 import { postMapper } from '../mappers/posts.mapper';
 import { postsService } from '../../application/posts.service';
+import { errorsHandler } from '../../../../core/errors/errors.handler';
 
 export const getPostByIdHandler = async (
   req: RequestWithParam<QueryPostDto>,
@@ -23,6 +24,6 @@ export const getPostByIdHandler = async (
 
     res.send(postMapper(existPost));
   } catch (e) {
-    res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
+    errorsHandler(e, res);
   }
 };

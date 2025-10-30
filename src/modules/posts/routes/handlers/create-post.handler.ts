@@ -6,6 +6,7 @@ import { postMapper } from '../mappers/posts.mapper';
 import { WithId } from 'mongodb';
 import { PostType } from '../../types/post.type';
 import { postsService } from '../../application/posts.service';
+import { errorsHandler } from '../../../../core/errors/errors.handler';
 
 export const createPostHandler = async (
   req: RequestWithBody<CreatePostDto>,
@@ -20,7 +21,7 @@ export const createPostHandler = async (
     res
       .status(HTTP_STATUS.CREATED_201)
       .send(postMapper(isCreatedPost as WithId<PostType>));
-  } catch {
-    res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
+  } catch (e) {
+    errorsHandler(e, res);
   }
 };
