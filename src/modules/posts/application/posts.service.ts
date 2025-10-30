@@ -7,6 +7,7 @@ import { DeleteResult, InsertOneResult, UpdateResult, WithId } from 'mongodb';
 import { postsRepository } from '../repositories/posts.repository';
 import { PostQueryInput } from '../routes/input/post-query.input';
 import { ResultAndTotalCountType } from '../../../core/types/result-and-total-count.type';
+import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 
 export const postsService = {
   async getAllPosts(
@@ -21,6 +22,31 @@ export const postsService = {
     );
 
     if (!existBlog) return false;
+
+    const postBody = {
+      ...body,
+      blogName: existBlog.name,
+      createdAt: new Date().toISOString(),
+    };
+
+    const result: InsertOneResult<WithId<PostType>> =
+      await postsRepository.createPost(postBody);
+
+    if (!result.insertedId) return false;
+
+    return { _id: result.insertedId, ...postBody };
+  },
+
+  async createPostForBlog(
+    body: CreatePostDto,
+  ): Promise<WithId<PostType> | boolean> {
+    const existBlog: BlogType | null = await blogsRepository.getBlogById(
+      body.blogId,
+    );
+
+    if (!existBlog) {
+      throw new NotFoundError('Blog not found');
+    }
 
     const postBody = {
       ...body,

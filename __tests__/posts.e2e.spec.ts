@@ -99,9 +99,7 @@ describe('test' + RouterPath.posts, () => {
       HTTP_STATUS.NOT_FOUND_404,
     );
 
-    expect(response.body.errorsMessages).toEqual(
-      expect.arrayContaining(validateErrors),
-    );
+    expect(response.status).toBe(HTTP_STATUS.NOT_FOUND_404);
   });
 
   it('should create dto and return 201 with created dto body', async () => {

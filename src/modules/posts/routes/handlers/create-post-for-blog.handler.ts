@@ -7,6 +7,7 @@ import { postMapper } from '../mappers/posts.mapper';
 import { RequestWithParamAndBody } from '../../../../core/types/request.type';
 import { CreatePostForBlogDto } from '../../dto/create-post.dto';
 import { BlogIdQueryDto } from '../../dto/blogId-query.dto';
+import { errorsHandler } from '../../../../core/errors/errors.handler';
 
 export const createPostForBlogHandler = async (
   req: RequestWithParamAndBody<BlogIdQueryDto, CreatePostForBlogDto>,
@@ -16,14 +17,15 @@ export const createPostForBlogHandler = async (
     const blogId: string = req.params.blogId;
 
     const isCreatedPost: boolean | WithId<PostType> =
-      await postsService.createPost({ ...req.body, blogId });
+      await postsService.createPostForBlog({ ...req.body, blogId });
 
     if (!isCreatedPost) return res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
 
     res
       .status(HTTP_STATUS.CREATED_201)
       .send(postMapper(isCreatedPost as WithId<PostType>));
-  } catch {
-    res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
+  } catch (e) {
+    errorsHandler(e, res);
+    // res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
   }
 };
