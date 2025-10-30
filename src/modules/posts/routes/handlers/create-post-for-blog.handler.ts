@@ -7,14 +7,14 @@ import { postMapper } from '../mappers/posts.mapper';
 import { RequestWithParamAndBody } from '../../../../core/types/request.type';
 import { CreatePostForBlogDto } from '../../dto/create-post.dto';
 import { errorsHandler } from '../../../../core/errors/errors.handler';
-import { QueryPostDto } from '../../dto/query-post.dto';
+import { BlogIdQueryDto } from '../../dto/blogId-query.dto';
 
 export const createPostForBlogHandler = async (
-  req: RequestWithParamAndBody<QueryPostDto, CreatePostForBlogDto>,
+  req: RequestWithParamAndBody<BlogIdQueryDto, CreatePostForBlogDto>,
   res: Response,
 ) => {
   try {
-    const blogId: string = req.params.id;
+    const blogId: string = req.params.blogId;
 
     const isCreatedPost: boolean | WithId<PostType> =
       await postsService.createPostForBlog({ ...req.body, blogId });

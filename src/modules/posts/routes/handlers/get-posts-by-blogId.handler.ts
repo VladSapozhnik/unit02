@@ -10,7 +10,7 @@ import { errorsHandler } from '../../../../core/errors/errors.handler';
 
 export const getPostsByBlogIdHandler = async (req: Request, res: Response) => {
   try {
-    const blogId: string = req.params.id;
+    const blogId: string = req.params.blogId;
 
     const sanitizedQuery: PostQueryInput = matchedData<PostQueryInput>(req, {
       locations: ['query'],
