@@ -1,4 +1,4 @@
-export enum PostSortField {
+export enum PostSortFieldEnum {
   Title = 'title',
   ShortDescription = 'shortDescription',
   Content = 'content',

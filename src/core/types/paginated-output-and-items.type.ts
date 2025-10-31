@@ -1,5 +1,5 @@
 import { PaginatedMetaType } from './paginated-meta.type';
 
-export type PaginatedOutputType<T> = PaginatedMetaType & {
+export type PaginatedOutputAndItemsType<T> = PaginatedMetaType & {
   items: T[];
 };

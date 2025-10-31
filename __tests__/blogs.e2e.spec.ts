@@ -17,8 +17,8 @@ import { getBlogByIdE2eUtil } from './utils/blogs/get-blog-by-id.e2e.util';
 import { clearDbE2eUtil } from './utils/clear-db.e2e.util';
 import { runDB, stopDB } from '../src/core/db/mango.db';
 import { settings } from '../src/core/settings/settings';
-import { BlogSortField } from '../src/modules/blogs/routes/input/blog-sort-field';
-import { SortDirection } from '../src/core/enums/sort-direction.enum';
+import { BlogSortFieldEnum } from '../src/modules/blogs/enum/blog-sort-field.enum';
+import { SortDirectionEnum } from '../src/core/enums/sort-direction.enum';
 import { BlogQueryInput } from '../src/modules/blogs/routes/input/blog-query.input';
 
 export const ObjectIdValid = '68f7b37aec3bd9b7be0c000c';
@@ -57,8 +57,8 @@ describe('test' + RouterPath.blogs, () => {
   it('blogs returns empty items array and correct pagination for empty result', async () => {
     const paginationDefault: BlogQueryInput = {
       searchBlogNameTerm: 'test',
-      sortBy: BlogSortField.CreatedAt,
-      sortDirection: SortDirection.Asc,
+      sortBy: BlogSortFieldEnum.CreatedAt,
+      sortDirection: SortDirectionEnum.Asc,
       pageSize: 20,
       pageNumber: 3,
     };

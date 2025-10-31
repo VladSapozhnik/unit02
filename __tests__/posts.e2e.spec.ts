@@ -15,9 +15,9 @@ import { RouterPath } from '../src/core/constants/router-path';
 import { runDB, stopDB } from '../src/core/db/mango.db';
 import { settings } from '../src/core/settings/settings';
 import { ObjectIdValid } from './blogs.e2e.spec';
-import { SortDirection } from '../src/core/enums/sort-direction.enum';
+import { SortDirectionEnum } from '../src/core/enums/sort-direction.enum';
 import { PostQueryInput } from '../src/modules/posts/routes/input/post-query.input';
-import { PostSortField } from '../src/modules/posts/routes/input/post-sort-field';
+import { PostSortFieldEnum } from '../src/modules/posts/enum/post-sort-field.enum';
 import { createPostForBlogE2eUtil } from './utils/posts/create-post-by-blogId-e2e.util';
 
 const validateErrors: ErrorType[] = [
@@ -53,8 +53,8 @@ describe('test' + RouterPath.posts, () => {
 
   it('posts returns empty items array and correct pagination for empty result', async () => {
     const paginationDefault: PostQueryInput = {
-      sortBy: PostSortField.CreatedAt,
-      sortDirection: SortDirection.Asc,
+      sortBy: PostSortFieldEnum.CreatedAt,
+      sortDirection: SortDirectionEnum.Asc,
       pageSize: 20,
       pageNumber: 3,
     };

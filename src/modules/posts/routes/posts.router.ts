@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { postValidation } from '../validators/post.validation';
-import { inputValidationMiddleware } from '../../../core/middleware/input-validation.middleware';
+import { inputValidationErrorsMiddleware } from '../../../core/middleware/input-validation-errors.middleware';
 import { superAdminGuardMiddleware } from '../../../core/middleware/super-admin-guard.middleware';
 import { getAllPostsHandler } from './handlers/get-all.handler';
 import { createPostHandler } from './handlers/create-post.handler';
@@ -9,14 +9,14 @@ import { getPostByIdHandler } from './handlers/get-post-by-id.handler';
 import { removePostHandler } from './handlers/remove-post.handler';
 import { idParamValidator } from '../../../core/validators/param-id.validation';
 import { paginationAndSortingValidation } from '../../../core/validators/pagination-and-sorting.validation';
-import { PostSortField } from './input/post-sort-field';
+import { PostSortFieldEnum } from '../enum/post-sort-field.enum';
 
 export const postsRouter: Router = Router();
 
 postsRouter.get(
   '/',
-  paginationAndSortingValidation(PostSortField),
-  inputValidationMiddleware,
+  paginationAndSortingValidation(PostSortFieldEnum),
+  inputValidationErrorsMiddleware,
   getAllPostsHandler,
 );
 
@@ -24,14 +24,14 @@ postsRouter.post(
   '/',
   superAdminGuardMiddleware,
   postValidation,
-  inputValidationMiddleware,
+  inputValidationErrorsMiddleware,
   createPostHandler,
 );
 
 postsRouter.get(
   '/:id',
   idParamValidator,
-  inputValidationMiddleware,
+  inputValidationErrorsMiddleware,
   getPostByIdHandler,
 );
 
@@ -40,7 +40,7 @@ postsRouter.put(
   superAdminGuardMiddleware,
   idParamValidator,
   postValidation,
-  inputValidationMiddleware,
+  inputValidationErrorsMiddleware,
   updatePostHandler,
 );
 
@@ -48,6 +48,6 @@ postsRouter.delete(
   '/:id',
   superAdminGuardMiddleware,
   idParamValidator,
-  inputValidationMiddleware,
+  inputValidationErrorsMiddleware,
   removePostHandler,
 );

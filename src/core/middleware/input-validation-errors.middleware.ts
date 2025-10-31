@@ -3,7 +3,7 @@ import { Result, validationResult, ValidationError } from 'express-validator';
 import { HTTP_STATUS } from '../enums/http-status.enum';
 import { ErrorType } from '../types/error.type';
 
-export const inputValidationMiddleware = (
+export const inputValidationErrorsMiddleware = (
   req: Request,
   res: Response,
   next: NextFunction,

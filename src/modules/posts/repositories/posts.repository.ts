@@ -9,13 +9,13 @@ import {
 } from 'mongodb';
 import { postCollection } from '../../../core/db/mango.db';
 import { PostQueryInput } from '../routes/input/post-query.input';
-import { ResultAndTotalCountType } from '../../../core/types/result-and-total-count.type';
+import { ItemsAndTotalCountType } from '../../../core/types/items-and-total-count.type';
 import { getSkipOffset } from '../../../core/helpers/get-skip-offset';
 
 export const postsRepository = {
   async getAllPosts(
     queryDto: PostQueryInput,
-  ): Promise<ResultAndTotalCountType<WithId<PostType>>> {
+  ): Promise<ItemsAndTotalCountType<WithId<PostType>>> {
     const skip: number = getSkipOffset(queryDto.pageNumber, queryDto.pageSize);
 
     const posts: WithId<PostType>[] = await postCollection
@@ -37,7 +37,7 @@ export const postsRepository = {
   async getPostsByBlogId(
     blogId: string,
     queryDto: PostQueryInput,
-  ): Promise<ResultAndTotalCountType<WithId<PostType>>> {
+  ): Promise<ItemsAndTotalCountType<WithId<PostType>>> {
     const skip: number = getSkipOffset(queryDto.pageNumber, queryDto.pageSize);
 
     const posts: WithId<PostType>[] = await postCollection

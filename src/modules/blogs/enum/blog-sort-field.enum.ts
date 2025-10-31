@@ -1,4 +1,4 @@
-export enum BlogSortField {
+export enum BlogSortFieldEnum {
   Name = 'name',
   Description = 'description',
   WebsiteUrl = 'websiteUrl',

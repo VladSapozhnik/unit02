@@ -1,8 +1,8 @@
-import { SortDirection } from '../enums/sort-direction.enum';
+import { SortDirectionEnum } from '../enums/sort-direction.enum';
 
-export type PaginationAndSorting<S> = {
+export type PaginationAndSortingType<S> = {
   sortBy: S;
-  sortDirection: SortDirection;
+  sortDirection: SortDirectionEnum;
   pageNumber: number;
   pageSize: number;
 };

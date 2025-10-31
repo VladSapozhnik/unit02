@@ -1,5 +1,5 @@
-import { PaginationAndSorting } from '../../../../core/types/pagination-and-sorting.type';
-import { BlogSortField } from './blog-sort-field';
+import { PaginationAndSortingType } from '../../../../core/types/pagination-and-sorting.type';
+import { BlogSortFieldEnum } from '../../enum/blog-sort-field.enum';
 
-export type BlogQueryInput = PaginationAndSorting<BlogSortField> &
+export type BlogQueryInput = PaginationAndSortingType<BlogSortFieldEnum> &
   Partial<{ searchNameTerm: string }>;

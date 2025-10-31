@@ -4,12 +4,12 @@ import { UpdateBlogDto } from '../dto/update-blog.dto';
 import { DeleteResult, InsertOneResult, UpdateResult, WithId } from 'mongodb';
 import { blogsRepository } from '../repositories/blogs.repository';
 import { BlogQueryInput } from '../routes/input/blog-query.input';
-import { ResultAndTotalCountType } from '../../../core/types/result-and-total-count.type';
+import { ItemsAndTotalCountType } from '../../../core/types/items-and-total-count.type';
 
 export const blogsService = {
   async getBlogs(
     queryDto: BlogQueryInput,
-  ): Promise<ResultAndTotalCountType<WithId<BlogType>>> {
+  ): Promise<ItemsAndTotalCountType<WithId<BlogType>>> {
     return blogsRepository.getBlogs(queryDto);
   },
 
