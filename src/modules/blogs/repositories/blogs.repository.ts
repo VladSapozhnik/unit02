@@ -20,8 +20,8 @@ export const blogsRepository = {
 
     const filter: any = {};
 
-    if (queryDto.searchBlogNameTerm) {
-      filter.name = { $regex: queryDto.searchBlogNameTerm, $options: 'i' };
+    if (queryDto.searchNameTerm) {
+      filter.name = { $regex: queryDto.searchNameTerm, $options: 'i' };
     }
 
     const items: WithId<BlogType>[] = await blogCollection
