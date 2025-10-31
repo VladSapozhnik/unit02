@@ -2,4 +2,4 @@ import { PaginationAndSorting } from '../../../../core/types/pagination-and-sort
 import { BlogSortField } from './blog-sort-field';
 
 export type BlogQueryInput = PaginationAndSorting<BlogSortField> &
-  Partial<{ searchBlogNameTerm: string }>;
+  Partial<{ searchNameTerm: string }>;

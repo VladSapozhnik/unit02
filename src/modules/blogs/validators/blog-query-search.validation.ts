@@ -1,7 +1,7 @@
 import { query } from 'express-validator';
 
 export const blogQuerySearchValidation = [
-  query('searchBlogNameTerm')
+  query('searchNameTerm')
     .optional()
     .isString()
     .trim()
