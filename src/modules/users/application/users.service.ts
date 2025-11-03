@@ -1,21 +1,24 @@
 import {
   CreateUserDto,
-  CreateUserWithCreatedAtDto,
+  CreateUserWithCreatedAtAndSaltDto,
 } from '../dto/create-user.dto';
 import { createdAtHelper } from '../../../core/helpers/created-at.helper';
 import { UserType } from '../type/user.type';
 import { usersRepository } from '../repositories/users.repository';
 import { InsertOneResult, WithId } from 'mongodb';
 import { hashPasswordHelper } from '../helpers/hash-password.helper';
-import { usersQueryRepository } from '../repositories/users.query.repository';
+import bcrypt from 'bcrypt';
 
 export const usersService = {
   async createUser(dto: CreateUserDto): Promise<WithId<UserType>> {
-    const hash: string = await hashPasswordHelper(dto.password);
+    const passwordSalt: string = await bcrypt.genSalt(10);
 
-    const payload: CreateUserWithCreatedAtDto = {
+    const hash: string = await hashPasswordHelper(dto.password, passwordSalt);
+
+    const payload: CreateUserWithCreatedAtAndSaltDto = {
       ...dto,
       password: hash,
+      passwordSalt,
       createdAt: createdAtHelper,
     };
 

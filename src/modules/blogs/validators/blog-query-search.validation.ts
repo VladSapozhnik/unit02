@@ -1,6 +1,6 @@
-import { query } from 'express-validator';
+import { query, ValidationChain } from 'express-validator';
 
-export const blogQuerySearchValidation = [
+export const blogQuerySearchValidation: ValidationChain[] = [
   query('searchNameTerm')
     .optional()
     .isString()
