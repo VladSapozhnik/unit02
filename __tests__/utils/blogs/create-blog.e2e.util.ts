@@ -1,6 +1,6 @@
 import request, { Response } from 'supertest';
 import { Express } from 'express';
-import { RouterPath } from '../../../src/core/constants/router-path';
+import { RouterPathConst } from '../../../src/core/constants/router-path.const';
 import {
   ADMIN_PASSWORD,
   ADMIN_USERNAME,
@@ -39,7 +39,7 @@ export const createBlogE2eUtil = async (
   }
 
   return await request(app)
-    .post(RouterPath.blogs)
+    .post(RouterPathConst.blogs)
     .auth(username, password)
     .send(body)
     .expect(statusCode);

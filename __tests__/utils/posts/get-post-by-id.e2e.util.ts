@@ -1,7 +1,7 @@
 import { Express } from 'express';
 import { HTTP_STATUS } from '../../../src/core/enums/http-status.enum';
 import request from 'supertest';
-import { RouterPath } from '../../../src/core/constants/router-path';
+import { RouterPathConst } from '../../../src/core/constants/router-path.const';
 import { Response } from 'supertest';
 import { PostType } from '../../../src/modules/posts/types/post.type';
 
@@ -18,6 +18,6 @@ export const getPostByIdE2eUtil = async (
   }
 
   return await request(app)
-    .get(RouterPath.posts + id)
+    .get(RouterPathConst.posts + id)
     .expect(statusCode, findBlog);
 };

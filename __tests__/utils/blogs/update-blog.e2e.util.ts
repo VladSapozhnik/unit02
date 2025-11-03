@@ -7,7 +7,7 @@ import {
 import { HTTP_STATUS } from '../../../src/core/enums/http-status.enum';
 import { UpdateBlogDto } from '../../../src/modules/blogs/dto/update-blog.dto';
 import request from 'supertest';
-import { RouterPath } from '../../../src/core/constants/router-path';
+import { RouterPathConst } from '../../../src/core/constants/router-path.const';
 import { ObjectIdValid } from '../../blogs.e2e.spec';
 
 export const exampleUpdateBlog: UpdateBlogDto = {
@@ -41,7 +41,7 @@ export const updateBlogE2eUtil = async (
   }
 
   return await request(app)
-    .put(RouterPath.blogs + id)
+    .put(RouterPathConst.blogs + id)
     .auth(username, password)
     .send(body)
     .expect(statusCode);

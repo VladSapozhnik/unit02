@@ -4,7 +4,7 @@ import { NotFoundError } from './repository-not-found.error';
 
 export function errorsHandler(error: unknown, res: Response): void {
   if (error instanceof NotFoundError) {
-    const httpStatus = HTTP_STATUS.NOT_FOUND_404;
+    const httpStatus: HTTP_STATUS.NOT_FOUND_404 = HTTP_STATUS.NOT_FOUND_404;
 
     res.sendStatus(httpStatus);
     return;

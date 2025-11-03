@@ -5,6 +5,7 @@ import { DeleteResult, InsertOneResult, UpdateResult, WithId } from 'mongodb';
 import { blogsRepository } from '../repositories/blogs.repository';
 import { BlogQueryInput } from '../routes/input/blog-query.input';
 import { ItemsAndTotalCountType } from '../../../core/types/items-and-total-count.type';
+import { createdAtHelper } from '../../../core/helpers/created-at.helper';
 
 export const blogsService = {
   async getBlogs(
@@ -16,7 +17,8 @@ export const blogsService = {
   async createBlog(body: CreateBlogDto): Promise<WithId<BlogType>> {
     const newBlog: BlogType = {
       ...body,
-      createdAt: new Date().toISOString(),
+      // createdAt: new Date().toISOString(),
+      createdAt: createdAtHelper,
       isMembership: false,
     };
 

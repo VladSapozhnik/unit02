@@ -6,7 +6,7 @@ import {
 } from '../../../src/core/middleware/super-admin-guard.middleware';
 import { HTTP_STATUS } from '../../../src/core/enums/http-status.enum';
 import request from 'supertest';
-import { RouterPath } from '../../../src/core/constants/router-path';
+import { RouterPathConst } from '../../../src/core/constants/router-path.const';
 import { ObjectIdValid } from '../../blogs.e2e.spec';
 
 export const removeBlogE2eUtil = async (
@@ -23,7 +23,7 @@ export const removeBlogE2eUtil = async (
   }
 
   return await request(app)
-    .delete(RouterPath.blogs + id)
+    .delete(RouterPathConst.blogs + id)
     .auth(username, password)
     .expect(statusCode);
 };

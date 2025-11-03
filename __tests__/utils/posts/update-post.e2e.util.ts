@@ -5,7 +5,7 @@ import {
   ADMIN_USERNAME,
 } from '../../../src/core/middleware/super-admin-guard.middleware';
 import { HTTP_STATUS } from '../../../src/core/enums/http-status.enum';
-import { RouterPath } from '../../../src/core/constants/router-path';
+import { RouterPathConst } from '../../../src/core/constants/router-path.const';
 import { CreatePostDto } from '../../../src/modules/posts/dto/create-post.dto';
 import { UpdatePostDto } from '../../../src/modules/posts/dto/update-post.dto';
 
@@ -51,7 +51,7 @@ export const updatePostE2eUtil = async (
   }
 
   return await request(app)
-    .put(RouterPath.posts + id)
+    .put(RouterPathConst.posts + id)
     .auth(username, password)
     .send(body)
     .expect(statusCode);

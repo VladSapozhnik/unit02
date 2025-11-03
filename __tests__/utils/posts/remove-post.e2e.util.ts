@@ -6,7 +6,7 @@ import {
 } from '../../../src/core/middleware/super-admin-guard.middleware';
 import { HTTP_STATUS } from '../../../src/core/enums/http-status.enum';
 import request from 'supertest';
-import { RouterPath } from '../../../src/core/constants/router-path';
+import { RouterPathConst } from '../../../src/core/constants/router-path.const';
 
 export const removePostE2eUtil = async (
   app: Express,
@@ -22,7 +22,7 @@ export const removePostE2eUtil = async (
   }
 
   return await request(app)
-    .delete(RouterPath.posts + id)
+    .delete(RouterPathConst.posts + id)
     .auth(username, password)
     .expect(statusCode);
 };

@@ -11,7 +11,7 @@ import {
   exampleUpdatePost,
   updatePostE2eUtil,
 } from './utils/posts/update-post.e2e.util';
-import { RouterPath } from '../src/core/constants/router-path';
+import { RouterPathConst } from '../src/core/constants/router-path.const';
 import { runDB, stopDB } from '../src/core/db/mango.db';
 import { settings } from '../src/core/settings/settings';
 import { ObjectIdValid } from './blogs.e2e.spec';
@@ -27,7 +27,7 @@ const validateErrors: ErrorType[] = [
   { message: expect.any(String), field: expect.any(String) },
 ];
 
-describe('test' + RouterPath.posts, () => {
+describe('test' + RouterPathConst.posts, () => {
   const app = express();
   setupApp(app);
 

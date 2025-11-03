@@ -2,7 +2,7 @@ import request, { type Response } from 'supertest';
 import { setupApp } from '../src/setup-app';
 import { HTTP_STATUS } from '../src/core/enums/http-status.enum';
 import { type ErrorType } from '../src/core/types/error.type';
-import { RouterPath } from '../src/core/constants/router-path';
+import { RouterPathConst } from '../src/core/constants/router-path.const';
 import {
   createBlogE2eUtil,
   exampleCreateBlog,
@@ -29,7 +29,7 @@ const validateErrors: ErrorType[] = [
   { message: expect.any(String), field: expect.any(String) },
 ];
 
-describe('test' + RouterPath.blogs, () => {
+describe('test' + RouterPathConst.blogs, () => {
   const app = express();
 
   setupApp(app);
@@ -45,7 +45,7 @@ describe('test' + RouterPath.blogs, () => {
   });
 
   it('should return status 200 and empty array', async () => {
-    await request(app).get(RouterPath.blogs).expect(200, {
+    await request(app).get(RouterPathConst.blogs).expect(200, {
       pagesCount: 0,
       page: 1,
       pageSize: 10,
@@ -64,7 +64,7 @@ describe('test' + RouterPath.blogs, () => {
     };
 
     await request(app)
-      .get(RouterPath.blogs)
+      .get(RouterPathConst.blogs)
       .query(paginationDefault)
       .expect(200, {
         pagesCount: 0,

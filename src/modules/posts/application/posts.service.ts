@@ -8,6 +8,7 @@ import { postsRepository } from '../repositories/posts.repository';
 import { PostQueryInput } from '../routes/input/post-query.input';
 import { ItemsAndTotalCountType } from '../../../core/types/items-and-total-count.type';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
+import { createdAtHelper } from '../../../core/helpers/created-at.helper';
 
 export const postsService = {
   async getAllPosts(
@@ -26,7 +27,8 @@ export const postsService = {
     const postBody = {
       ...body,
       blogName: existBlog.name,
-      createdAt: new Date().toISOString(),
+      // createdAt: new Date().toISOString(),
+      createdAt: createdAtHelper,
     };
 
     const result: InsertOneResult<WithId<PostType>> =
