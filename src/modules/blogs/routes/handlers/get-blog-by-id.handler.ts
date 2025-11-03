@@ -5,17 +5,16 @@ import { BlogType } from '../../types/blog.type';
 import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { WithId } from 'mongodb';
 import { blogMapper } from '../mappers/blog.mapper';
-import { blogsService } from '../../application/blogs.service';
 import { errorsHandler } from '../../../../core/errors/errors.handler';
+import { blogsQueryRepository } from '../../repositories/blogs.query.repository';
 
 export const getBlogByIdHandler = async (
   req: RequestWithParam<QueryBlogDto>,
   res: Response,
 ) => {
   try {
-    const existBlog: WithId<BlogType> | null = await blogsService.getBlogById(
-      req.params.id,
-    );
+    const existBlog: WithId<BlogType> | null =
+      await blogsQueryRepository.getBlogById(req.params.id);
 
     if (!existBlog) {
       res.sendStatus(HTTP_STATUS.NOT_FOUND_404);

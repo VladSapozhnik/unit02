@@ -1,6 +1,5 @@
 import { PostType } from '../types/post.type';
 import { CreatePostDto } from '../dto/create-post.dto';
-import { blogsRepository } from '../../blogs/repositories/blogs.repository';
 import { BlogType } from '../../blogs/types/blog.type';
 import { UpdatePostDto } from '../dto/update-post.dto';
 import { DeleteResult, InsertOneResult, UpdateResult, WithId } from 'mongodb';
@@ -9,16 +8,12 @@ import { PostQueryInput } from '../routes/input/post-query.input';
 import { ItemsAndTotalCountType } from '../../../core/types/items-and-total-count.type';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { createdAtHelper } from '../../../core/helpers/created-at.helper';
+import { blogsQueryRepository } from '../../blogs/repositories/blogs.query.repository';
+import { postsQueryRepository } from '../repositories/posts.query.repository';
 
 export const postsService = {
-  async getAllPosts(
-    queryDto: PostQueryInput,
-  ): Promise<ItemsAndTotalCountType<WithId<PostType>>> {
-    return postsRepository.getAllPosts(queryDto);
-  },
-
   async createPost(body: CreatePostDto): Promise<WithId<PostType> | boolean> {
-    const existBlog: BlogType | null = await blogsRepository.getBlogById(
+    const existBlog: BlogType | null = await blogsQueryRepository.getBlogById(
       body.blogId,
     );
 
@@ -42,7 +37,7 @@ export const postsService = {
   async createPostForBlog(
     body: CreatePostDto,
   ): Promise<WithId<PostType> | boolean> {
-    const existBlog: BlogType | null = await blogsRepository.getBlogById(
+    const existBlog: BlogType | null = await blogsQueryRepository.getBlogById(
       body.blogId,
     );
 
@@ -69,22 +64,18 @@ export const postsService = {
     queryDto: PostQueryInput,
   ): Promise<ItemsAndTotalCountType<WithId<PostType>>> {
     const existBlog: BlogType | null =
-      await blogsRepository.getBlogById(blogId);
+      await blogsQueryRepository.getBlogById(blogId);
 
     if (!existBlog) {
       throw new NotFoundError('Blog not found');
     }
 
-    return postsRepository.getPostsByBlogId(blogId, queryDto);
-  },
-
-  async getPostById(id: string): Promise<WithId<PostType> | null> {
-    return postsRepository.getPostById(id);
+    return postsQueryRepository.getPostsByBlogId(blogId, queryDto);
   },
 
   async updatePost(id: string, body: UpdatePostDto): Promise<boolean> {
     const existBlog: WithId<BlogType> | null =
-      await blogsRepository.getBlogById(body.blogId);
+      await blogsQueryRepository.getBlogById(body.blogId);
 
     if (!existBlog) return false;
 

@@ -56,7 +56,7 @@ describe('test' + RouterPathConst.blogs, () => {
 
   it('blogs returns empty items array and correct pagination for empty result', async () => {
     const paginationDefault: BlogQueryInput = {
-      searchBlogNameTerm: 'test',
+      searchNameTerm: 'test',
       sortBy: BlogSortFieldEnum.CreatedAt,
       sortDirection: SortDirectionEnum.Asc,
       pageSize: 20,

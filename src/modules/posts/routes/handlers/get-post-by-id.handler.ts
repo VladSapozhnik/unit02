@@ -5,17 +5,16 @@ import { PostType } from '../../types/post.type';
 import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { WithId } from 'mongodb';
 import { postMapper } from '../mappers/posts.mapper';
-import { postsService } from '../../application/posts.service';
 import { errorsHandler } from '../../../../core/errors/errors.handler';
+import { postsQueryRepository } from '../../repositories/posts.query.repository';
 
 export const getPostByIdHandler = async (
   req: RequestWithParam<QueryPostDto>,
   res: Response,
 ) => {
   try {
-    const existPost: WithId<PostType> | null = await postsService.getPostById(
-      req.params.id,
-    );
+    const existPost: WithId<PostType> | null =
+      await postsQueryRepository.getPostById(req.params.id);
 
     if (!existPost) {
       res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
