@@ -1,24 +1,25 @@
-import { Response } from 'express';
+import { NextFunction, Response } from 'express';
 import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { usersService } from '../../application/users.service';
-import { WithId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { UserType } from '../../type/user.type';
-import { errorsHandler } from '../../../../core/errors/errors.handler';
-import { userMapper } from '../mappers/user.mapper';
 import { RequestWithBody } from '../../../../core/types/request.type';
 import { CreateUserDto } from '../../dto/create-user.dto';
+import { usersQueryRepository } from '../../repositories/users.query.repository';
+import { BadRequestError } from '../../../../core/errors/bad-request.error';
 
 export const createUserHandler = async (
   req: RequestWithBody<CreateUserDto>,
   res: Response,
+  next: NextFunction,
 ) => {
-  try {
-    const createdUser: WithId<UserType> = await usersService.createUser(
-      req.body,
-    );
+  const id: ObjectId = await usersService.createUser(req.body);
 
-    res.status(HTTP_STATUS.CREATED_201).send(userMapper(createdUser));
-  } catch (e) {
-    errorsHandler(e, res);
+  const findUser: UserType | null = await usersQueryRepository.getUserById(id);
+
+  if (!findUser) {
+    throw new BadRequestError('User does not exist', 'user');
   }
+
+  res.status(HTTP_STATUS.CREATED_201).send(findUser);
 };

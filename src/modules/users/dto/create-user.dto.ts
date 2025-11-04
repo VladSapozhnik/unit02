@@ -4,7 +4,6 @@ export type CreateUserDto = {
   email: string;
 };
 
-export type CreateUserWithCreatedAtAndSaltDto = CreateUserDto & {
+export type CreateUserWithCreatedAtDto = CreateUserDto & {
   createdAt: string;
-  passwordSalt: string;
 };

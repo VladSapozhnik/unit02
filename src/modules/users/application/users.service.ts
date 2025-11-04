@@ -1,49 +1,40 @@
 import {
   CreateUserDto,
-  CreateUserWithCreatedAtAndSaltDto,
+  CreateUserWithCreatedAtDto,
 } from '../dto/create-user.dto';
 import { createdAtHelper } from '../../../core/helpers/created-at.helper';
 import { UserType } from '../type/user.type';
 import { usersRepository } from '../repositories/users.repository';
-import { hashPasswordHelper } from '../helpers/hash-password.helper';
-import bcrypt from 'bcrypt';
 import { BadRequestError } from '../../../core/errors/bad-request.error';
-import { usersQueryRepository } from '../repositories/users.query.repository';
-import { DeleteResult, InsertOneResult, WithId } from 'mongodb';
+import { DeleteResult, InsertOneResult, ObjectId, WithId } from 'mongodb';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
+import * as argon2 from 'argon2';
 
 export const usersService = {
-  async createUser(dto: CreateUserDto): Promise<WithId<UserType>> {
-    const passwordSalt: string = await bcrypt.genSalt(10);
+  async createUser(dto: CreateUserDto): Promise<ObjectId> {
+    const hash: string = await argon2.hash(dto.password);
 
-    const hash: string = await hashPasswordHelper(dto.password, passwordSalt);
-
-    const payload: CreateUserWithCreatedAtAndSaltDto = {
+    const payload: CreateUserWithCreatedAtDto = {
       ...dto,
       password: hash,
-      passwordSalt,
       createdAt: createdAtHelper(),
     };
 
-    const existUser: WithId<UserType> | null =
-      await usersQueryRepository.getUserByLoginOrEmail(dto.login, dto.email);
+    const isUser: WithId<UserType> | null =
+      await usersRepository.getUserByLoginOrEmail(dto.login, dto.email);
 
-    if (existUser) {
+    if (isUser) {
       throw new BadRequestError('User already exists', 'user');
     }
 
     const result: InsertOneResult<WithId<UserType>> =
       await usersRepository.createUser(payload);
 
-    return { _id: result.insertedId, ...payload };
+    return result.insertedId;
   },
-  async removeUser(id: string): Promise<Boolean> {
+  async removeUser(id: string): Promise<boolean> {
     const isRemoveUser: DeleteResult = await usersRepository.removeUser(id);
 
-    if (isRemoveUser.deletedCount === 0) {
-      throw new NotFoundError('User is not found!', 'user');
-    }
-
-    return true;
+    return isRemoveUser.deletedCount === 1;
   },
 };
