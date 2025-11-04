@@ -10,7 +10,7 @@ export const blogsService = {
     const newBlog: BlogType = {
       ...body,
       // createdAt: new Date().toISOString(),
-      createdAt: createdAtHelper,
+      createdAt: createdAtHelper(),
       isMembership: false,
     };
 

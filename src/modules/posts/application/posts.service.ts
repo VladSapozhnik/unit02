@@ -23,7 +23,7 @@ export const postsService = {
       ...body,
       blogName: existBlog.name,
       // createdAt: new Date().toISOString(),
-      createdAt: createdAtHelper,
+      createdAt: createdAtHelper(),
     };
 
     const result: InsertOneResult<WithId<PostType>> =
@@ -42,13 +42,14 @@ export const postsService = {
     );
 
     if (!existBlog) {
-      throw new NotFoundError('Blog not found');
+      throw new NotFoundError('Blog not found for post', 'BlogId');
     }
 
-    const postBody = {
+    const postBody: PostType = {
       ...body,
       blogName: existBlog.name,
-      createdAt: new Date().toISOString(),
+      // createdAt: new Date().toISOString(),
+      createdAt: createdAtHelper(),
     };
 
     const result: InsertOneResult<WithId<PostType>> =
@@ -67,7 +68,7 @@ export const postsService = {
       await blogsQueryRepository.getBlogById(blogId);
 
     if (!existBlog) {
-      throw new NotFoundError('Blog not found');
+      throw new NotFoundError('Blog not found for post', 'BlogId');
     }
 
     return postsQueryRepository.getPostsByBlogId(blogId, queryDto);

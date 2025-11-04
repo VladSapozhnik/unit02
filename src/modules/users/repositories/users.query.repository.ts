@@ -19,10 +19,10 @@ export const usersQueryRepository = {
     if (queryDto.searchLoginTerm) {
       filter.login = { $regex: queryDto.searchLoginTerm, $options: 'i' };
     }
-
+    console.log(typeof skip);
     const users: WithId<UserType>[] = await userCollection
       .find(filter)
-      .sort({ [queryDto.sortBy]: queryDto.sortDirection })
+      // .sort({ [queryDto.sortBy]: queryDto.sortDirection })
       .skip(skip)
       .limit(queryDto.pageSize)
       .toArray();

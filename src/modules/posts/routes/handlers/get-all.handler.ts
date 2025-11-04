@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { postsService } from '../../application/posts.service';
 import { matchedData } from 'express-validator';
 import { PostQueryInput } from '../input/post-query.input';
 import { setDefaultSortAndPaginationIfNotExistHelper } from '../../../../core/helpers/set-default-sort-and-pagination.helper';

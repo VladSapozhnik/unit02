@@ -1,1 +1,1 @@
-export const createdAtHelper: string = new Date().toISOString();
+export const createdAtHelper = (): string => new Date().toISOString();
