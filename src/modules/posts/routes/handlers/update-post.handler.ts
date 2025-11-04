@@ -11,15 +11,7 @@ export const updatePostHandler = async (
   res: Response,
 ) => {
   try {
-    const isUpdatedPost: boolean = await postsService.updatePost(
-      req.params.id,
-      req.body,
-    );
-
-    if (!isUpdatedPost) {
-      res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
-      return;
-    }
+    await postsService.updatePost(req.params.id, req.body);
 
     res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   } catch (e) {

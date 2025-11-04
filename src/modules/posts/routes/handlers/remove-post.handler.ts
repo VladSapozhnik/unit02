@@ -10,12 +10,7 @@ export const removePostHandler = async (
   res: Response,
 ) => {
   try {
-    const isRemove: boolean = await postsService.removePost(req.params.id);
-
-    if (!isRemove) {
-      res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
-      return;
-    }
+    await postsService.removePost(req.params.id);
 
     res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   } catch (e) {

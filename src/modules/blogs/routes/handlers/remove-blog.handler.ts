@@ -10,12 +10,7 @@ export const removeBlogHandler = async (
   res: Response,
 ) => {
   try {
-    const isDelete: boolean = await blogsService.removeBlogById(req.params.id);
-
-    if (!isDelete) {
-      res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
-      return;
-    }
+    await blogsService.removeBlogById(req.params.id);
 
     res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   } catch (e) {

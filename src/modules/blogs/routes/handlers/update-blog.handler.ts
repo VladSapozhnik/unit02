@@ -11,15 +11,7 @@ export const updateBlogHandler = async (
   res: Response,
 ) => {
   try {
-    const isUpdated: boolean = await blogsService.updateBlog(
-      req.params.id,
-      req.body,
-    );
-
-    if (!isUpdated) {
-      res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
-      return;
-    }
+    await blogsService.updateBlog(req.params.id, req.body);
 
     res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   } catch (e) {

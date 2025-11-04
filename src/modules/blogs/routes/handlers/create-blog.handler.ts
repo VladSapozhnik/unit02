@@ -13,14 +13,9 @@ export const createBlogHandler = async (
   res: Response,
 ) => {
   try {
-    const createdBlog: WithId<BlogType> | null = await blogsService.createBlog(
+    const createdBlog: WithId<BlogType> = await blogsService.createBlog(
       req.body,
     );
-
-    if (!createdBlog) {
-      res.sendStatus(HTTP_STATUS.BAD_REQUEST_400);
-      return;
-    }
 
     res.status(HTTP_STATUS.CREATED_201).send(blogMapper(createdBlog));
   } catch (e) {
