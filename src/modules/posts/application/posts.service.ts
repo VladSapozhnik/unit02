@@ -44,7 +44,7 @@ export const postsService = {
     );
 
     if (!existBlog) {
-      throw new NotFoundError('Blog not found for post', 'BlogId');
+      throw new NotFoundError('Blog not found for post', 'BlogId for Post');
     }
 
     const postBody: PostType = {
@@ -71,7 +71,7 @@ export const postsService = {
       await blogsQueryRepository.getBlogById(blogId);
 
     if (!existBlog) {
-      throw new NotFoundError('Blog not found for post', 'BlogId');
+      throw new NotFoundError('Blog not found for post', 'BlogId for Post');
     }
 
     return postsQueryRepository.getPostsByBlogId(blogId, queryDto);
@@ -82,7 +82,7 @@ export const postsService = {
       await blogsQueryRepository.getBlogById(body.blogId);
 
     if (!existBlog) {
-      throw new NotFoundError('BlogId not found for post', 'BlogId');
+      throw new NotFoundError('BlogId not found for post', 'BlogId for Post');
     }
 
     const updatedBody = { ...body, blogName: existBlog.name };
