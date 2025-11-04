@@ -7,6 +7,9 @@ import { PaginationAndSortingType } from '../../../../core/types/pagination-and-
 import { BlogSortFieldEnum } from '../../enum/blog-sort-field.enum';
 import { errorsHandler } from '../../../../core/errors/errors.handler';
 import { blogsQueryRepository } from '../../repositories/blogs.query.repository';
+import { paginatedListMapper } from '../../../../core/mappers/paginated-list.mapper';
+import { BlogType } from '../../types/blog.type';
+import { blogMapper } from '../mappers/blog.mapper';
 
 export const getAllBlogsHandler = async (req: Request, res: Response) => {
   try {
@@ -21,12 +24,16 @@ export const getAllBlogsHandler = async (req: Request, res: Response) => {
     const { items, totalCount } =
       await blogsQueryRepository.getBlogs(defaultQuery);
 
-    const blogsOutput = blogListPaginatedOutputMapper(items, {
-      pagesCount: Math.ceil(totalCount / defaultQuery.pageSize),
-      pageNumber: defaultQuery.pageNumber,
-      pageSize: defaultQuery.pageSize,
-      totalCount,
-    });
+    const blogsOutput = paginatedListMapper<BlogType>(
+      items,
+      {
+        pagesCount: Math.ceil(totalCount / defaultQuery.pageSize),
+        pageNumber: defaultQuery.pageNumber,
+        pageSize: defaultQuery.pageSize,
+        totalCount,
+      },
+      blogMapper,
+    );
 
     res.send(blogsOutput);
   } catch (e) {

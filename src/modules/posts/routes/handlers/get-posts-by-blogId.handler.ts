@@ -7,6 +7,9 @@ import { postsService } from '../../application/posts.service';
 import { PostSortFieldEnum } from '../../enum/post-sort-field.enum';
 import { postListPaginatedOutputMapper } from '../mappers/post-list-paginated-output.mapper';
 import { errorsHandler } from '../../../../core/errors/errors.handler';
+import { paginatedListMapper } from '../../../../core/mappers/paginated-list.mapper';
+import { PostType } from '../../types/post.type';
+import { postMapper } from '../mappers/posts.mapper';
 
 export const getPostsByBlogIdHandler = async (req: Request, res: Response) => {
   try {
@@ -24,12 +27,16 @@ export const getPostsByBlogIdHandler = async (req: Request, res: Response) => {
       defaultQuery,
     );
 
-    const postsOutput = postListPaginatedOutputMapper(items, {
-      pagesCount: Math.ceil(totalCount / defaultQuery.pageSize),
-      pageNumber: defaultQuery.pageNumber,
-      pageSize: defaultQuery.pageSize,
-      totalCount,
-    });
+    const postsOutput = paginatedListMapper<PostType>(
+      items,
+      {
+        pagesCount: Math.ceil(totalCount / defaultQuery.pageSize),
+        pageNumber: defaultQuery.pageNumber,
+        pageSize: defaultQuery.pageSize,
+        totalCount,
+      },
+      postMapper,
+    );
 
     res.send(postsOutput);
   } catch (e) {
