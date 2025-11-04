@@ -1,4 +1,4 @@
-export type QueryPostDto = {
+export type idUserParamDto = {
   /**
    * id of existing dto
    */

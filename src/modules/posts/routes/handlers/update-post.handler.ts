@@ -1,13 +1,13 @@
 import { Response } from 'express';
 import { RequestWithParamAndBody } from '../../../../core/types/request.type';
-import { QueryPostDto } from '../../dto/query-post.dto';
+import { idPostParamDto } from '../../dto/id-post-param.dto';
 import { UpdatePostDto } from '../../dto/update-post.dto';
 import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { postsService } from '../../application/posts.service';
 import { errorsHandler } from '../../../../core/errors/errors.handler';
 
 export const updatePostHandler = async (
-  req: RequestWithParamAndBody<QueryPostDto, UpdatePostDto>,
+  req: RequestWithParamAndBody<idPostParamDto, UpdatePostDto>,
   res: Response,
 ) => {
   try {

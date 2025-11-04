@@ -1,5 +1,5 @@
 import { RequestWithParam } from '../../../../core/types/request.type';
-import { QueryBlogDto } from '../../dto/query-blog.dto';
+import { idBlogParamDto } from '../../dto/id-blog-param.dto';
 import { Response } from 'express';
 import { BlogType } from '../../types/blog.type';
 import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
@@ -9,7 +9,7 @@ import { errorsHandler } from '../../../../core/errors/errors.handler';
 import { blogsQueryRepository } from '../../repositories/blogs.query.repository';
 
 export const getBlogByIdHandler = async (
-  req: RequestWithParam<QueryBlogDto>,
+  req: RequestWithParam<idBlogParamDto>,
   res: Response,
 ) => {
   try {

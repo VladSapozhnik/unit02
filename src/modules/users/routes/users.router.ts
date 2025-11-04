@@ -7,6 +7,8 @@ import { inputValidationErrorsMiddleware } from '../../../core/middleware/input-
 import { userQuerySearchValidation } from '../validators/user-query-search.validation';
 import { paginationAndSortingValidation } from '../../../core/validators/pagination-and-sorting.validation';
 import { UserSortFieldEnum } from '../enum/user-sort-field.enum';
+import { removeUserHandler } from './handlers/remove-user.handler';
+import { idParamValidator } from '../../../core/validators/param-id.validation';
 
 export const usersRouter: Router = Router();
 
@@ -25,4 +27,12 @@ usersRouter.post(
   userValidation,
   inputValidationErrorsMiddleware,
   createUserHandler,
+);
+
+usersRouter.delete(
+  '/:id',
+  superAdminGuardMiddleware,
+  idParamValidator,
+  inputValidationErrorsMiddleware,
+  removeUserHandler,
 );

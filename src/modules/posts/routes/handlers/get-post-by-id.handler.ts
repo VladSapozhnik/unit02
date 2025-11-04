@@ -1,6 +1,6 @@
 import { Response } from 'express';
 import { RequestWithParam } from '../../../../core/types/request.type';
-import { QueryPostDto } from '../../dto/query-post.dto';
+import { idPostParamDto } from '../../dto/id-post-param.dto';
 import { PostType } from '../../types/post.type';
 import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { WithId } from 'mongodb';
@@ -9,7 +9,7 @@ import { errorsHandler } from '../../../../core/errors/errors.handler';
 import { postsQueryRepository } from '../../repositories/posts.query.repository';
 
 export const getPostByIdHandler = async (
-  req: RequestWithParam<QueryPostDto>,
+  req: RequestWithParam<idPostParamDto>,
   res: Response,
 ) => {
   try {
