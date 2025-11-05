@@ -1,5 +1,5 @@
 import { ObjectId, WithId } from 'mongodb';
-import { PostType } from '../../types/post.type';
+import { PostType } from '../types/post.type';
 
 export const postMapper = (post: WithId<PostType>): PostType => {
   return {

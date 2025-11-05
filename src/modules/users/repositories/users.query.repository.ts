@@ -3,7 +3,7 @@ import { ObjectId, WithId } from 'mongodb';
 import { UserType } from '../type/user.type';
 import { UserQueryInput } from '../routes/input/user-query.input';
 import { getSkipOffset } from '../../../core/helpers/get-skip-offset';
-import { userMapper } from '../routes/mappers/user.mapper';
+import { userMapper } from '../mappers/user.mapper';
 import { paginatedListMapper } from '../../../core/mappers/paginated-list.mapper';
 import { buildPaginationHelper } from '../../../core/helpers/build-pagination.helper';
 import { PaginatedMetaType } from '../../../core/types/paginated-meta.type';

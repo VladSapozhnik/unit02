@@ -1,4 +1,4 @@
-import { BlogType } from '../../types/blog.type';
+import { BlogType } from '../types/blog.type';
 import { ObjectId, WithId } from 'mongodb';
 
 export const blogMapper = (blog: WithId<BlogType>): BlogType => {

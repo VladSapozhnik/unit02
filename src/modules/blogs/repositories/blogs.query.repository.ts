@@ -3,7 +3,7 @@ import { blogCollection } from '../../../core/db/mango.db';
 import { ObjectId, WithId } from 'mongodb';
 import { BlogQueryInput } from '../routes/input/blog-query.input';
 import { getSkipOffset } from '../../../core/helpers/get-skip-offset';
-import { blogMapper } from '../routes/mappers/blog.mapper';
+import { blogMapper } from '../mappers/blog.mapper';
 import { buildBlogsFilter } from '../helpers/build-blogs-filter.helper';
 import { PaginatedMetaType } from '../../../core/types/paginated-meta.type';
 import { buildPaginationHelper } from '../../../core/helpers/build-pagination.helper';

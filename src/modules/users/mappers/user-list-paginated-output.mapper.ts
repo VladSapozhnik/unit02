@@ -1,6 +1,6 @@
 import { WithId } from 'mongodb';
-import { PaginatedMetaType } from '../../../../core/types/paginated-meta.type';
-import { UserType } from '../../type/user.type';
+import { PaginatedMetaType } from '../../../core/types/paginated-meta.type';
+import { UserType } from '../type/user.type';
 import { userMapper } from './user.mapper';
 
 export const userListPaginatedOutputMapper = (

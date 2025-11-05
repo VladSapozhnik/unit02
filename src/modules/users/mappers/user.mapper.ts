@@ -1,5 +1,5 @@
 import { ObjectId, WithId } from 'mongodb';
-import { UserType } from '../../type/user.type';
+import { UserType } from '../type/user.type';
 
 export const userMapper = (user: WithId<UserType>): UserType => {
   return {

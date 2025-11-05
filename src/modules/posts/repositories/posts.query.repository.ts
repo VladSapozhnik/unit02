@@ -3,7 +3,7 @@ import { ObjectId, WithId } from 'mongodb';
 import { postCollection } from '../../../core/db/mango.db';
 import { PostQueryInput } from '../routes/input/post-query.input';
 import { getSkipOffset } from '../../../core/helpers/get-skip-offset';
-import { postMapper } from '../routes/mappers/posts.mapper';
+import { postMapper } from '../mappers/posts.mapper';
 import { PaginatedMetaType } from '../../../core/types/paginated-meta.type';
 import { buildPaginationHelper } from '../../../core/helpers/build-pagination.helper';
 import { paginatedListMapper } from '../../../core/mappers/paginated-list.mapper';

@@ -1,7 +1,7 @@
 import { blogMapper } from './blog.mapper';
-import { BlogType } from '../../types/blog.type';
+import { BlogType } from '../types/blog.type';
 import { WithId } from 'mongodb';
-import { PaginatedMetaType } from '../../../../core/types/paginated-meta.type';
+import { PaginatedMetaType } from '../../../core/types/paginated-meta.type';
 
 export const blogListPaginatedOutputMapper = (
   blogs: WithId<BlogType>[],

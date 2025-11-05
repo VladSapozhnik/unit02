@@ -1,5 +1,5 @@
-import { PaginatedMetaType } from '../../../../core/types/paginated-meta.type';
-import { PostType } from '../../types/post.type';
+import { PaginatedMetaType } from '../../../core/types/paginated-meta.type';
+import { PostType } from '../types/post.type';
 import { WithId } from 'mongodb';
 import { postMapper } from './posts.mapper';
 // import { PaginatedOutputType } from '../../../../core/types/paginated-output.type';
