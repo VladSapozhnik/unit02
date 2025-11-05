@@ -8,7 +8,11 @@ import { blogsRouter } from './modules/blogs/routes/blogs.router';
 import { postsRouter } from './modules/posts/routes/posts.router';
 import { HTTP_STATUS } from './core/enums/http-status.enum';
 import { RouterPathConst } from './core/constants/router-path.const';
-import { blogCollection, postCollection } from './core/db/mango.db';
+import {
+  blogCollection,
+  postCollection,
+  userCollection,
+} from './core/db/mango.db';
 import { usersRouter } from './modules/users/routes/users.router';
 import { errorsHandler } from './core/errors/errors.handler';
 import { authRouter } from './modules/auth/routes/auth.router';
@@ -34,6 +38,7 @@ export const setupApp = (app: Express) => {
     await Promise.all([
       blogCollection.deleteMany(),
       postCollection.deleteMany(),
+      userCollection.deleteMany(),
     ]);
 
     res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
