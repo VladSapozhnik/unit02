@@ -78,8 +78,9 @@ export const postsService = {
   },
 
   async updatePost(id: string, body: UpdatePostDto): Promise<boolean> {
-    const existBlog: WithId<BlogType> | null =
-      await blogsQueryRepository.getBlogById(body.blogId);
+    const existBlog: BlogType | null = await blogsQueryRepository.getBlogById(
+      body.blogId,
+    );
 
     if (!existBlog) {
       throw new NotFoundError('BlogId not found for post', 'BlogId for Post');

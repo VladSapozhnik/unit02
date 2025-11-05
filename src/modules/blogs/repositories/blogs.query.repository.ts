@@ -2,20 +2,18 @@ import { BlogType } from '../types/blog.type';
 import { blogCollection } from '../../../core/db/mango.db';
 import { ObjectId, WithId } from 'mongodb';
 import { BlogQueryInput } from '../routes/input/blog-query.input';
-import { ItemsAndTotalCountType } from '../../../core/types/items-and-total-count.type';
 import { getSkipOffset } from '../../../core/helpers/get-skip-offset';
+import { blogMapper } from '../routes/mappers/blog.mapper';
+import { buildBlogsFilter } from '../helpers/build-blogs-filter.helper';
+import { PaginatedMetaType } from '../../../core/types/paginated-meta.type';
+import { buildPaginationHelper } from '../../../core/helpers/build-pagination.helper';
+import { paginatedListMapper } from '../../../core/mappers/paginated-list.mapper';
 
 export const blogsQueryRepository = {
-  async getBlogs(
-    queryDto: BlogQueryInput,
-  ): Promise<ItemsAndTotalCountType<WithId<BlogType>>> {
+  async getBlogs(queryDto: BlogQueryInput) {
     const skip: number = getSkipOffset(queryDto.pageNumber, queryDto.pageSize);
 
-    const filter: any = {};
-
-    if (queryDto.searchNameTerm) {
-      filter.name = { $regex: queryDto.searchNameTerm, $options: 'i' };
-    }
+    const filter: any = buildBlogsFilter(queryDto);
 
     const items: WithId<BlogType>[] = await blogCollection
       .find(filter)
@@ -25,10 +23,25 @@ export const blogsQueryRepository = {
       .toArray();
 
     const totalCount: number = await blogCollection.countDocuments(filter);
-    return { items, totalCount };
+
+    const pagination: PaginatedMetaType = buildPaginationHelper(
+      totalCount,
+      queryDto.pageNumber,
+      queryDto.pageSize,
+    );
+
+    return paginatedListMapper(items, pagination, blogMapper);
   },
 
-  async getBlogById(id: string): Promise<WithId<BlogType> | null> {
-    return blogCollection.findOne({ _id: new ObjectId(id) });
+  async getBlogById(id: ObjectId | string): Promise<BlogType | null> {
+    const findBlog: WithId<BlogType> | null = await blogCollection.findOne({
+      _id: new ObjectId(id),
+    });
+
+    if (!findBlog) {
+      return null;
+    }
+
+    return blogMapper(findBlog);
   },
 };

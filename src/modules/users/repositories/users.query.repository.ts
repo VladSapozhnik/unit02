@@ -42,11 +42,4 @@ export const usersQueryRepository = {
 
     return userMapper(user);
   },
-
-  async getUserByLogin(login: string) {
-    await userCollection.findOne({ login });
-  },
-  async getUserByEmail(email: string) {
-    await userCollection.findOne({ email });
-  },
 };
