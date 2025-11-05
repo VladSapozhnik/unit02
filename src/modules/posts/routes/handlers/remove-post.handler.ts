@@ -3,17 +3,17 @@ import { RequestWithParam } from '../../../../core/types/request.type';
 import { idPostParamDto } from '../../dto/id-post-param.dto';
 import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { postsService } from '../../application/posts.service';
-import { errorsHandler } from '../../../../core/errors/errors.handler';
+import { NotFoundError } from '../../../../core/errors/repository-not-found.error';
 
 export const removePostHandler = async (
   req: RequestWithParam<idPostParamDto>,
   res: Response,
 ) => {
-  try {
-    await postsService.removePost(req.params.id);
+  const isRemove: boolean = await postsService.removePost(req.params.id);
 
-    res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
-  } catch (e) {
-    errorsHandler(e, res);
+  if (!isRemove) {
+    throw new NotFoundError('Failed to remove Post', 'post');
   }
+
+  res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
 };

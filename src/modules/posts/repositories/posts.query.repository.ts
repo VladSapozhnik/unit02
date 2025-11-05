@@ -4,6 +4,7 @@ import { postCollection } from '../../../core/db/mango.db';
 import { PostQueryInput } from '../routes/input/post-query.input';
 import { ItemsAndTotalCountType } from '../../../core/types/items-and-total-count.type';
 import { getSkipOffset } from '../../../core/helpers/get-skip-offset';
+import { postMapper } from '../routes/mappers/posts.mapper';
 
 export const postsQueryRepository = {
   async getAllPosts(
@@ -41,7 +42,15 @@ export const postsQueryRepository = {
     return { items: posts, totalCount };
   },
 
-  async getPostById(id: string): Promise<WithId<PostType> | null> {
-    return await postCollection.findOne({ _id: new ObjectId(id) });
+  async getPostById(id: ObjectId | string): Promise<PostType | null> {
+    const post: WithId<PostType> | null = await postCollection.findOne({
+      _id: new ObjectId(id),
+    });
+
+    if (!post) {
+      return null;
+    }
+
+    return postMapper(post);
   },
 };

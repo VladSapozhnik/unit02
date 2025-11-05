@@ -1,6 +1,12 @@
 import { PostType } from '../types/post.type';
 import { UpdatePostDto } from '../dto/update-post.dto';
-import { DeleteResult, InsertOneResult, ObjectId, UpdateResult } from 'mongodb';
+import {
+  DeleteResult,
+  InsertOneResult,
+  ObjectId,
+  UpdateResult,
+  WithId,
+} from 'mongodb';
 import { postCollection } from '../../../core/db/mango.db';
 
 export const postsRepository = {

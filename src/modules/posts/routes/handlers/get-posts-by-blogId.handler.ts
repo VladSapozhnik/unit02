@@ -5,7 +5,6 @@ import { setDefaultSortAndPaginationIfNotExistHelper } from '../../../../core/he
 import type { PaginationAndSortingType } from '../../../../core/types/pagination-and-sorting.type';
 import { postsService } from '../../application/posts.service';
 import { PostSortFieldEnum } from '../../enum/post-sort-field.enum';
-import { postListPaginatedOutputMapper } from '../mappers/post-list-paginated-output.mapper';
 import { errorsHandler } from '../../../../core/errors/errors.handler';
 import { paginatedListMapper } from '../../../../core/mappers/paginated-list.mapper';
 import { PostType } from '../../types/post.type';

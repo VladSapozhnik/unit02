@@ -11,6 +11,7 @@ import { RouterPathConst } from './core/constants/router-path.const';
 import { blogCollection, postCollection } from './core/db/mango.db';
 import { usersRouter } from './modules/users/routes/users.router';
 import { errorsHandler } from './core/errors/errors.handler';
+import { authRouter } from './modules/auth/routes/auth.router';
 
 export const app = express();
 export const setupApp = (app: Express) => {
@@ -23,6 +24,7 @@ export const setupApp = (app: Express) => {
   app.use(RouterPathConst.blogs, blogsRouter);
   app.use(RouterPathConst.posts, postsRouter);
   app.use(RouterPathConst.users, usersRouter);
+  app.use(RouterPathConst.auth, authRouter);
 
   app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
     errorsHandler(err, res);

@@ -2,7 +2,13 @@ import { PostType } from '../types/post.type';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { BlogType } from '../../blogs/types/blog.type';
 import { UpdatePostDto } from '../dto/update-post.dto';
-import { DeleteResult, InsertOneResult, UpdateResult, WithId } from 'mongodb';
+import {
+  DeleteResult,
+  InsertOneResult,
+  ObjectId,
+  UpdateResult,
+  WithId,
+} from 'mongodb';
 import { postsRepository } from '../repositories/posts.repository';
 import { PostQueryInput } from '../routes/input/post-query.input';
 import { ItemsAndTotalCountType } from '../../../core/types/items-and-total-count.type';
@@ -13,7 +19,7 @@ import { postsQueryRepository } from '../repositories/posts.query.repository';
 import { BadRequestError } from '../../../core/errors/bad-request.error';
 
 export const postsService = {
-  async createPost(body: CreatePostDto): Promise<WithId<PostType>> {
+  async createPost(body: CreatePostDto): Promise<ObjectId> {
     const existBlog: BlogType | null = await blogsQueryRepository.getBlogById(
       body.blogId,
     );
@@ -22,7 +28,7 @@ export const postsService = {
       throw new BadRequestError("Blog doesn't exist", 'blogId For Post');
     }
 
-    const postBody = {
+    const postBody: PostType = {
       ...body,
       blogName: existBlog.name,
       createdAt: createdAtHelper(),
@@ -31,14 +37,10 @@ export const postsService = {
     const result: InsertOneResult<WithId<PostType>> =
       await postsRepository.createPost(postBody);
 
-    if (!result.insertedId) {
-      throw new BadRequestError('Failed to create Post', 'post');
-    }
-
-    return { _id: result.insertedId, ...postBody };
+    return result.insertedId;
   },
 
-  async createPostForBlog(body: CreatePostDto): Promise<WithId<PostType>> {
+  async createPostForBlog(body: CreatePostDto): Promise<ObjectId> {
     const existBlog: BlogType | null = await blogsQueryRepository.getBlogById(
       body.blogId,
     );
@@ -56,11 +58,7 @@ export const postsService = {
     const result: InsertOneResult<WithId<PostType>> =
       await postsRepository.createPost(postBody);
 
-    if (!result.insertedId) {
-      throw new BadRequestError('Failed to create Post', 'post');
-    }
-
-    return { _id: result.insertedId, ...postBody };
+    return result.insertedId;
   },
 
   async getPostsByBlogId(
@@ -93,19 +91,11 @@ export const postsService = {
       updatedBody,
     );
 
-    if (result.matchedCount === 0) {
-      throw new NotFoundError('Failed to update Post', 'post');
-    }
-
     return result.matchedCount === 1;
   },
 
   async removePost(id: string): Promise<boolean> {
     const result: DeleteResult = await postsRepository.removePost(id);
-
-    if (result.deletedCount === 0) {
-      throw new NotFoundError('Failed to remove Post', 'post');
-    }
 
     return result.deletedCount === 1;
   },

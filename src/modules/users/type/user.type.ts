@@ -4,3 +4,10 @@ export type UserType = {
   email: string;
   createdAt: string;
 };
+
+export type UserDbType = {
+  login: string;
+  email: string;
+  password: string;
+  createdAt: string;
+};
