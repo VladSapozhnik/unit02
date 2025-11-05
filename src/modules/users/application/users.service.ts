@@ -7,7 +7,6 @@ import { UserType } from '../type/user.type';
 import { usersRepository } from '../repositories/users.repository';
 import { BadRequestError } from '../../../core/errors/bad-request.error';
 import { DeleteResult, InsertOneResult, ObjectId, WithId } from 'mongodb';
-import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import * as argon2 from 'argon2';
 
 export const usersService = {

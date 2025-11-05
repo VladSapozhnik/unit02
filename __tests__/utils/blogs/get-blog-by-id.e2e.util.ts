@@ -14,7 +14,9 @@ export const getBlogByIdE2eUtil = async (
   let findBlog: BlogType | {} = blog;
 
   if (statusCode === HTTP_STATUS.NOT_FOUND_404) {
-    findBlog = {};
+    return await request(app)
+      .get(RouterPathConst.blogs + id)
+      .expect(statusCode);
   }
 
   return await request(app)
