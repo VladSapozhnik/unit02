@@ -10,12 +10,9 @@ import {
   WithId,
 } from 'mongodb';
 import { postsRepository } from '../repositories/posts.repository';
-import { PostQueryInput } from '../routes/input/post-query.input';
-import { ItemsAndTotalCountType } from '../../../core/types/items-and-total-count.type';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { createdAtHelper } from '../../../core/helpers/created-at.helper';
 import { blogsQueryRepository } from '../../blogs/repositories/blogs.query.repository';
-import { postsQueryRepository } from '../repositories/posts.query.repository';
 import { BadRequestError } from '../../../core/errors/bad-request.error';
 
 export const postsService = {
@@ -59,20 +56,6 @@ export const postsService = {
       await postsRepository.createPost(postBody);
 
     return result.insertedId;
-  },
-
-  async getPostsByBlogId(
-    blogId: string,
-    queryDto: PostQueryInput,
-  ): Promise<ItemsAndTotalCountType<WithId<PostType>>> {
-    const existBlog: BlogType | null =
-      await blogsQueryRepository.getBlogById(blogId);
-
-    if (!existBlog) {
-      throw new NotFoundError('Blog not found for post', 'BlogId for Post');
-    }
-
-    return postsQueryRepository.getPostsByBlogId(blogId, queryDto);
   },
 
   async updatePost(id: string, body: UpdatePostDto): Promise<boolean> {

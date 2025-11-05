@@ -6,9 +6,6 @@ import { PaginationAndSortingType } from '../../../../core/types/pagination-and-
 import { PostSortFieldEnum } from '../../enum/post-sort-field.enum';
 import { errorsHandler } from '../../../../core/errors/errors.handler';
 import { postsQueryRepository } from '../../repositories/posts.query.repository';
-import { paginatedListMapper } from '../../../../core/mappers/paginated-list.mapper';
-import { postMapper } from '../mappers/posts.mapper';
-import { PostType } from '../../types/post.type';
 
 export const getAllPostsHandler = async (req: Request, res: Response) => {
   try {
@@ -19,19 +16,7 @@ export const getAllPostsHandler = async (req: Request, res: Response) => {
     const defaultQuery: PaginationAndSortingType<PostSortFieldEnum> =
       setDefaultSortAndPaginationIfNotExistHelper(sanitizedQuery);
 
-    const { items, totalCount } =
-      await postsQueryRepository.getAllPosts(defaultQuery);
-
-    const postsOutput = paginatedListMapper<PostType>(
-      items,
-      {
-        pagesCount: Math.ceil(totalCount / defaultQuery.pageSize),
-        pageNumber: defaultQuery.pageNumber,
-        pageSize: defaultQuery.pageSize,
-        totalCount,
-      },
-      postMapper,
-    );
+    const postsOutput = await postsQueryRepository.getPosts(defaultQuery);
 
     res.json(postsOutput);
   } catch (e) {

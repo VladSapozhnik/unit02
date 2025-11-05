@@ -3,42 +3,30 @@ import type { PostQueryInput } from '../input/post-query.input';
 import { matchedData } from 'express-validator';
 import { setDefaultSortAndPaginationIfNotExistHelper } from '../../../../core/helpers/set-default-sort-and-pagination.helper';
 import type { PaginationAndSortingType } from '../../../../core/types/pagination-and-sorting.type';
-import { postsService } from '../../application/posts.service';
 import { PostSortFieldEnum } from '../../enum/post-sort-field.enum';
-import { errorsHandler } from '../../../../core/errors/errors.handler';
-import { paginatedListMapper } from '../../../../core/mappers/paginated-list.mapper';
-import { PostType } from '../../types/post.type';
-import { postMapper } from '../mappers/posts.mapper';
+import { blogsQueryRepository } from '../../../blogs/repositories/blogs.query.repository';
+import { BlogType } from '../../../blogs/types/blog.type';
+import { NotFoundError } from '../../../../core/errors/repository-not-found.error';
+import { postsQueryRepository } from '../../repositories/posts.query.repository';
 
 export const getPostsByBlogIdHandler = async (req: Request, res: Response) => {
-  try {
-    const blogId: string = req.params.blogId;
+  const blogId: string = req.params.blogId;
 
-    const sanitizedQuery: PostQueryInput = matchedData<PostQueryInput>(req, {
-      locations: ['query'],
-    });
+  const sanitizedQuery: PostQueryInput = matchedData<PostQueryInput>(req, {
+    locations: ['query'],
+  });
 
-    const defaultQuery: PaginationAndSortingType<PostSortFieldEnum> =
-      setDefaultSortAndPaginationIfNotExistHelper(sanitizedQuery);
+  const defaultQuery: PaginationAndSortingType<PostSortFieldEnum> =
+    setDefaultSortAndPaginationIfNotExistHelper(sanitizedQuery);
 
-    const { items, totalCount } = await postsService.getPostsByBlogId(
-      blogId,
-      defaultQuery,
-    );
+  const existBlog: BlogType | null =
+    await blogsQueryRepository.getBlogById(blogId);
 
-    const postsOutput = paginatedListMapper<PostType>(
-      items,
-      {
-        pagesCount: Math.ceil(totalCount / defaultQuery.pageSize),
-        pageNumber: defaultQuery.pageNumber,
-        pageSize: defaultQuery.pageSize,
-        totalCount,
-      },
-      postMapper,
-    );
-
-    res.send(postsOutput);
-  } catch (e) {
-    errorsHandler(e, res);
+  if (!existBlog) {
+    throw new NotFoundError('Blog not found for post', 'BlogId for Post');
   }
+
+  const postsOutput = await postsQueryRepository.getPosts(defaultQuery, blogId);
+
+  res.send(postsOutput);
 };
