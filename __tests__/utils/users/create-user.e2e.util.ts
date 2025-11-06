@@ -20,13 +20,32 @@ export const exampleNonCreateUser: CreateUserDto = {
   email: '',
 };
 
+export enum ACTION_CREATE_USER {
+  CREATE_USER = 'CREATE_USER',
+  PAGINATION_AND_SEARCH = 'PAGINATION_AND_SEARCH',
+  DUPLICATE_USER = 'DUPLICATE_USER',
+}
+
 export const createUserE2eUtil = async (
   app: Express,
   statusCode: HTTP_STATUS,
+  action: ACTION_CREATE_USER = ACTION_CREATE_USER.CREATE_USER,
 ): Promise<Response> => {
   let username: string = ADMIN_USERNAME;
   let password: string = ADMIN_PASSWORD;
   let body: CreateUserDto = exampleCreateUser;
+
+  if (action === ACTION_CREATE_USER.DUPLICATE_USER) {
+    statusCode = HTTP_STATUS.BAD_REQUEST_400;
+  }
+
+  if (action === ACTION_CREATE_USER.PAGINATION_AND_SEARCH) {
+    body = {
+      login: 'vLaD356',
+      password: 'string',
+      email: 'example@gmail.com',
+    };
+  }
 
   if (statusCode === HTTP_STATUS.UNAUTHORIZED_401) {
     username = 'not authorized';
