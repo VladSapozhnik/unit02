@@ -7,6 +7,7 @@ import {
 import { HTTP_STATUS } from '../../../src/core/enums/http-status.enum';
 import request from 'supertest';
 import { RouterPathConst } from '../../../src/core/constants/router-path.const';
+import { ObjectIdValid } from '../../blogs.e2e.spec';
 
 export const removePostE2eUtil = async (
   app: Express,
@@ -19,6 +20,10 @@ export const removePostE2eUtil = async (
   if (statusCode === HTTP_STATUS.UNAUTHORIZED_401) {
     username = 'not authorized';
     password = 'not authorized';
+  }
+
+  if (statusCode === HTTP_STATUS.NOT_FOUND_404) {
+    id = ObjectIdValid;
   }
 
   return await request(app)

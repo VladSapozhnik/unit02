@@ -22,6 +22,10 @@ export const removeBlogE2eUtil = async (
     password = 'not authorized';
   }
 
+  if (statusCode === HTTP_STATUS.NOT_FOUND_404) {
+    id = ObjectIdValid;
+  }
+
   return await request(app)
     .delete(RouterPathConst.blogs + id)
     .auth(username, password)

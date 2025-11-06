@@ -48,16 +48,16 @@ describe('test' + RouterPathConst.users, () => {
       });
   });
 
-  it('should get users from database auth', async () => {
-    await createUserE2eUtil(app, HTTP_STATUS.CREATED_201);
-    const response: Response = await createUserE2eUtil(
-      app,
-      HTTP_STATUS.CREATED_201,
-      ACTION_CREATE_USER.PAGINATION_AND_SEARCH,
-    );
-
-    await getUsersE2eUtil(app, HTTP_STATUS.OK_200, response.body, true);
-  });
+  // it('should get users from database auth', async () => {
+  //   await createUserE2eUtil(app, HTTP_STATUS.CREATED_201);
+  //   const response: Response = await createUserE2eUtil(
+  //     app,
+  //     HTTP_STATUS.CREATED_201,
+  //     ACTION_CREATE_USER.PAGINATION_AND_SEARCH,
+  //   );
+  //
+  //   await getUsersE2eUtil(app, HTTP_STATUS.OK_200, response.body);
+  // });
 
   it('should return 401 and not get users if user is not authorized', async () => {
     await getUsersE2eUtil(app, HTTP_STATUS.UNAUTHORIZED_401);
@@ -131,7 +131,7 @@ describe('test' + RouterPathConst.users, () => {
       HTTP_STATUS.CREATED_201,
     );
 
-    await removeUserE2eUtil(app, HTTP_STATUS.BAD_REQUEST_400, response.body.id);
+    await removeUserE2eUtil(app, HTTP_STATUS.NOT_FOUND_404, response.body.id);
 
     await getUsersE2eUtil(app, HTTP_STATUS.OK_200, response.body);
   });

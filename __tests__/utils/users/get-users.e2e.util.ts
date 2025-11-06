@@ -12,10 +12,10 @@ import { SortDirectionEnum } from '../../../src/core/enums/sort-direction.enum';
 import { UserSortFieldEnum } from '../../../src/modules/users/enum/user-sort-field.enum';
 import { UserQueryInput } from '../../../src/modules/users/routes/input/user-query.input';
 
-const paginationDefault: UserQueryInput = {
+let paginationDefault: UserQueryInput = {
   sortBy: UserSortFieldEnum.CreatedAt,
   sortDirection: SortDirectionEnum.Asc,
-  pageSize: 20,
+  pageSize: 2,
   pageNumber: 1,
 };
 
@@ -35,9 +35,29 @@ export const getUsersE2eUtil = async (
   let username: string = ADMIN_USERNAME;
   let password: string = ADMIN_PASSWORD;
 
+  // if (isSearchInPagination) {
+  //   paginationDefault = {
+  //     ...paginationDefault,
+  //     pageNumber: 1,
+  //   };
+  //
+  //   paginationOutput = {
+  //     ...paginationOutput,
+  //     page: paginationDefault.pageNumber,
+  //     totalCount: 2,
+  //     pagesCount: 2,
+  //   };
+  // }
+
   if (statusCode === HTTP_STATUS.UNAUTHORIZED_401) {
     username = 'not authorized';
     password = 'not authorized';
+
+    return await request(app)
+      .get(RouterPathConst.users)
+      .query(paginationDefault)
+      .auth(username, password)
+      .expect(statusCode);
   }
 
   if (statusCode === HTTP_STATUS.NOT_FOUND_404) {
