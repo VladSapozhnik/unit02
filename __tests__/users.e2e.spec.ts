@@ -48,7 +48,7 @@ describe('test' + RouterPathConst.users, () => {
       });
   });
 
-  it('should get users from database auth', async () => {
+  it('should return correct pagination metadata for users list', async () => {
     await createUserE2eUtil(app, HTTP_STATUS.CREATED_201);
     const response: Response = await createUserE2eUtil(
       app,
