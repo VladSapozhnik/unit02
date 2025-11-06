@@ -39,13 +39,13 @@ export const createUserE2eUtil = async (
     statusCode = HTTP_STATUS.BAD_REQUEST_400;
   }
 
-  // if (action === ACTION_CREATE_USER.PAGINATION_AND_SEARCH) {
-  //   body = {
-  //     login: 'vLaD356',
-  //     password: 'string',
-  //     email: 'example@gmail.com',
-  //   };
-  // }
+  if (action === ACTION_CREATE_USER.PAGINATION_AND_SEARCH) {
+    body = {
+      login: 'vLaD356',
+      password: 'string',
+      email: 'example@gmail.com',
+    };
+  }
 
   if (statusCode === HTTP_STATUS.UNAUTHORIZED_401) {
     username = 'not authorized';

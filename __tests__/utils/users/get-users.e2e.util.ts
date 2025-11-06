@@ -12,42 +12,53 @@ import { SortDirectionEnum } from '../../../src/core/enums/sort-direction.enum';
 import { UserSortFieldEnum } from '../../../src/modules/users/enum/user-sort-field.enum';
 import { UserQueryInput } from '../../../src/modules/users/routes/input/user-query.input';
 
-let paginationDefault: UserQueryInput = {
+const paginationInputDefault: UserQueryInput = {
   sortBy: UserSortFieldEnum.CreatedAt,
   sortDirection: SortDirectionEnum.Asc,
   pageSize: 2,
   pageNumber: 1,
 };
 
-let paginationOutput = {
+const paginationOutputDefault = {
   pagesCount: 1,
-  page: paginationDefault.pageNumber,
-  pageSize: paginationDefault.pageSize,
+  page: paginationInputDefault.pageNumber,
+  pageSize: paginationInputDefault.pageSize,
   totalCount: 1,
+};
+
+const paginationAndSearchInputDefault: UserQueryInput = {
+  searchLoginTerm: 'PBvS',
+  searchEmailTerm: 'gmail',
+  sortBy: UserSortFieldEnum.CreatedAt,
+  sortDirection: SortDirectionEnum.Asc,
+  pageSize: 1,
+  pageNumber: 2,
+};
+
+const paginationAndSearchOutputDefault = {
+  pagesCount: 2,
+  page: paginationAndSearchInputDefault.pageNumber,
+  pageSize: paginationAndSearchInputDefault.pageSize,
+  totalCount: 2,
 };
 
 export const getUsersE2eUtil = async (
   app: Express,
   statusCode: HTTP_STATUS,
   user: UserType | {} = {},
+  isSearchInPagination: boolean = false,
 ): Promise<Response> => {
   let findUser: UserType | {} = user;
   let username: string = ADMIN_USERNAME;
   let password: string = ADMIN_PASSWORD;
+  let paginationInput: UserQueryInput = paginationInputDefault;
+  let paginationOutput = paginationOutputDefault;
+  let items: UserType[] | {} = [user];
 
-  // if (isSearchInPagination) {
-  //   paginationDefault = {
-  //     ...paginationDefault,
-  //     pageNumber: 1,
-  //   };
-  //
-  //   paginationOutput = {
-  //     ...paginationOutput,
-  //     page: paginationDefault.pageNumber,
-  //     totalCount: 2,
-  //     pagesCount: 2,
-  //   };
-  // }
+  if (isSearchInPagination && HTTP_STATUS.OK_200) {
+    paginationInput = paginationAndSearchInputDefault;
+    paginationOutput = paginationAndSearchOutputDefault;
+  }
 
   if (statusCode === HTTP_STATUS.UNAUTHORIZED_401) {
     username = 'not authorized';
@@ -55,15 +66,22 @@ export const getUsersE2eUtil = async (
 
     return await request(app)
       .get(RouterPathConst.users)
-      .query(paginationDefault)
+      .query(paginationInput)
       .auth(username, password)
       .expect(statusCode);
   }
 
   if (statusCode === HTTP_STATUS.NOT_FOUND_404) {
+    // paginationOutput = {
+    //   ...paginationOutput,
+    //   pagesCount: 0,
+    //   totalCount: 0,
+    // };
+    //
+    // items = [];
     return await request(app)
       .get(RouterPathConst.users)
-      .query(paginationDefault)
+      .query(paginationInput)
       .auth(username, password)
       .expect(HTTP_STATUS.OK_200, {
         ...paginationOutput,
@@ -75,7 +93,7 @@ export const getUsersE2eUtil = async (
 
   return await request(app)
     .get(RouterPathConst.users)
-    .query(paginationDefault)
+    .query(paginationInput)
     .auth(username, password)
-    .expect(statusCode, { ...paginationOutput, items: [findUser] });
+    .expect(statusCode, { ...paginationOutput, items });
 };
