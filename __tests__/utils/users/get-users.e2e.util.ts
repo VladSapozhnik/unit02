@@ -45,15 +45,14 @@ const paginationAndSearchOutputDefault = {
 export const getUsersE2eUtil = async (
   app: Express,
   statusCode: HTTP_STATUS,
-  user: UserType | {} = {},
+  user: UserType | null = null,
   isSearchInPagination: boolean = false,
 ): Promise<Response> => {
-  let findUser: UserType | {} = user;
   let username: string = ADMIN_USERNAME;
   let password: string = ADMIN_PASSWORD;
   let paginationInput: UserQueryInput = paginationInputDefault;
   let paginationOutput = paginationOutputDefault;
-  let items: UserType[] | {} = [user];
+  let items: UserType[] = user ? [user] : [];
 
   if (isSearchInPagination && HTTP_STATUS.OK_200) {
     paginationInput = paginationAndSearchInputDefault;
@@ -71,24 +70,12 @@ export const getUsersE2eUtil = async (
       .expect(statusCode);
   }
 
-  if (statusCode === HTTP_STATUS.NOT_FOUND_404) {
-    // paginationOutput = {
-    //   ...paginationOutput,
-    //   pagesCount: 0,
-    //   totalCount: 0,
-    // };
-    //
-    // items = [];
-    return await request(app)
-      .get(RouterPathConst.users)
-      .query(paginationInput)
-      .auth(username, password)
-      .expect(HTTP_STATUS.OK_200, {
-        ...paginationOutput,
-        pagesCount: 0,
-        totalCount: 0,
-        items: [],
-      });
+  if (items.length === 0) {
+    paginationOutput = {
+      ...paginationOutput,
+      pagesCount: 0,
+      totalCount: 0,
+    };
   }
 
   return await request(app)

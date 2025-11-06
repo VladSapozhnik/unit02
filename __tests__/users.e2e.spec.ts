@@ -75,13 +75,13 @@ describe('test' + RouterPathConst.users, () => {
   it('should return 401 and not create user if user is not authorized', async () => {
     await createUserE2eUtil(app, HTTP_STATUS.UNAUTHORIZED_401);
 
-    await getUsersE2eUtil(app, HTTP_STATUS.NOT_FOUND_404);
+    await getUsersE2eUtil(app, HTTP_STATUS.OK_200);
   });
 
   it('should not create user with invalid or duplicate data', async () => {
     await createUserE2eUtil(app, HTTP_STATUS.BAD_REQUEST_400);
 
-    await getUsersE2eUtil(app, HTTP_STATUS.NOT_FOUND_404);
+    await getUsersE2eUtil(app, HTTP_STATUS.OK_200);
   });
 
   it('should not create user if login or email already exists', async () => {
@@ -107,7 +107,7 @@ describe('test' + RouterPathConst.users, () => {
 
     await removeUserE2eUtil(app, HTTP_STATUS.NO_CONTENT_204, response.body.id);
 
-    await getUsersE2eUtil(app, HTTP_STATUS.NOT_FOUND_404);
+    await getUsersE2eUtil(app, HTTP_STATUS.OK_200);
   });
 
   it('should return 401 and not remove user if user is not authorized', async () => {
