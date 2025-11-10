@@ -17,8 +17,8 @@ import {
 import { usersRouter } from './modules/users/routes/users.router';
 import { errorsHandler } from './core/errors/errors.handler';
 import { authRouter } from './modules/auth/routes/auth.router';
+import { commentsRouter } from './modules/comments/routes/comments.router';
 
-export const app = express();
 export const setupApp = (app: Express) => {
   app.use(express.json());
 
@@ -30,6 +30,7 @@ export const setupApp = (app: Express) => {
   app.use(RouterPathConst.posts, postsRouter);
   app.use(RouterPathConst.users, usersRouter);
   app.use(RouterPathConst.auth, authRouter);
+  app.use(RouterPathConst.comments, commentsRouter);
 
   app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
     errorsHandler(err, res);

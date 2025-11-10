@@ -10,7 +10,7 @@ export const authService = {
       dto.loginOrEmail,
     );
 
-    if (!user) {
+    if (!user || !user._id) {
       return false;
     }
 
