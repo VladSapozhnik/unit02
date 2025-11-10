@@ -5,6 +5,8 @@ import { ObjectId, WithId } from 'mongodb';
 import { PostType } from '../../types/post.type';
 import { NotFoundError } from '../../../../core/errors/repository-not-found.error';
 import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
+import { commentsQueryRepository } from '../../../comments/repositories/comments.query.repository';
+import { CommentType } from '../../../comments/types/comment.type';
 
 export const createCommentForPostHandler = async (
   req: Request,
@@ -15,7 +17,7 @@ export const createCommentForPostHandler = async (
   );
 
   if (!existPost) {
-    throw new NotFoundError('Not Found Post', 'postId');
+    throw new NotFoundError('Not Found Post', 'post');
   }
 
   const id: ObjectId = await commentsService.createComment(
@@ -24,8 +26,8 @@ export const createCommentForPostHandler = async (
     req.body,
   );
 
-  res.status(HTTP_STATUS.CREATED_201).send({
-    lol: 'lol',
-    id: id,
-  });
+  const findComment: CommentType | null =
+    await commentsQueryRepository.getCommentById(id);
+
+  res.status(HTTP_STATUS.CREATED_201).send(findComment);
 };

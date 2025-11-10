@@ -1,4 +1,4 @@
-import { userCollection } from '../../../core/db/mango.db';
+import { usersCollection } from '../../../core/db/mango.db';
 import { ObjectId, WithId } from 'mongodb';
 import { UserType } from '../type/user.type';
 import { UserQueryInput } from '../routes/input/user-query.input';
@@ -14,14 +14,14 @@ export const usersQueryRepository = {
     const skip: number = getSkipOffset(queryDto.pageNumber, queryDto.pageSize);
     const filter: any = buildUserFilter(queryDto);
 
-    const users: WithId<UserType>[] = await userCollection
+    const users: WithId<UserType>[] = await usersCollection
       .find(filter)
       .sort({ [queryDto.sortBy]: queryDto.sortDirection, _id: 1 })
       .skip(skip)
       .limit(queryDto.pageSize)
       .toArray();
 
-    const totalCount: number = await userCollection.countDocuments(filter);
+    const totalCount: number = await usersCollection.countDocuments(filter);
 
     const pagination: PaginatedMetaType = buildPaginationHelper(
       totalCount,
@@ -32,7 +32,7 @@ export const usersQueryRepository = {
     return paginatedListMapper<UserType>(users, pagination, userMapper);
   },
   async getUserById(id: ObjectId | string): Promise<UserType | null> {
-    const user: WithId<UserType> | null = await userCollection.findOne({
+    const user: WithId<UserType> | null = await usersCollection.findOne({
       _id: new ObjectId(id),
     });
 

@@ -10,20 +10,20 @@ const POST_COLLECTION_NAME = 'posts';
 const USER_COLLECTION_NAME = 'users';
 
 export let client: MongoClient;
-export let blogCollection: Collection<BlogType>;
-export let postCollection: Collection<PostType>;
-export let userCollection: Collection<UserDbType>;
-export let commentCollection: Collection<CommentType>;
+export let blogsCollection: Collection<BlogType>;
+export let postsCollection: Collection<PostType>;
+export let usersCollection: Collection<UserDbType>;
+export let commentsCollection: Collection<CommentType>;
 
 export async function runDB(db_url: string): Promise<void> {
   client = new MongoClient(db_url);
 
   const db: Db = client.db(settings.DB_NAME);
 
-  blogCollection = db.collection<BlogType>(BLOG_COLLECTION_NAME);
-  postCollection = db.collection<PostType>(POST_COLLECTION_NAME);
-  userCollection = db.collection<UserDbType>(USER_COLLECTION_NAME);
-  commentCollection = db.collection<CommentType>(USER_COLLECTION_NAME);
+  blogsCollection = db.collection<BlogType>(BLOG_COLLECTION_NAME);
+  postsCollection = db.collection<PostType>(POST_COLLECTION_NAME);
+  usersCollection = db.collection<UserDbType>(USER_COLLECTION_NAME);
+  commentsCollection = db.collection<CommentType>(USER_COLLECTION_NAME);
 
   try {
     await client.connect();

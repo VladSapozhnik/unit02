@@ -9,10 +9,10 @@ import { postsRouter } from './modules/posts/routes/posts.router';
 import { HTTP_STATUS } from './core/enums/http-status.enum';
 import { RouterPathConst } from './core/constants/router-path.const';
 import {
-  blogCollection,
-  commentCollection,
-  postCollection,
-  userCollection,
+  blogsCollection,
+  commentsCollection,
+  postsCollection,
+  usersCollection,
 } from './core/db/mango.db';
 import { usersRouter } from './modules/users/routes/users.router';
 import { errorsHandler } from './core/errors/errors.handler';
@@ -37,10 +37,10 @@ export const setupApp = (app: Express) => {
 
   app.delete(RouterPathConst.__tests__, async (req: Request, res: Response) => {
     await Promise.all([
-      blogCollection.deleteMany(),
-      postCollection.deleteMany(),
-      userCollection.deleteMany(),
-      commentCollection.deleteMany(),
+      blogsCollection.deleteMany(),
+      postsCollection.deleteMany(),
+      usersCollection.deleteMany(),
+      commentsCollection.deleteMany(),
     ]);
 
     res.sendStatus(HTTP_STATUS.NO_CONTENT_204);

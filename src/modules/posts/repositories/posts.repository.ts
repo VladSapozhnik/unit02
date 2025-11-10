@@ -7,28 +7,28 @@ import {
   UpdateResult,
   WithId,
 } from 'mongodb';
-import { postCollection } from '../../../core/db/mango.db';
+import { postsCollection } from '../../../core/db/mango.db';
 
 export const postsRepository = {
   async createPost(body: PostType): Promise<InsertOneResult<PostType>> {
-    return postCollection.insertOne(body);
+    return postsCollection.insertOne(body);
   },
 
   async findPostById(postId: string): Promise<WithId<PostType> | null> {
-    return postCollection.findOne({ _id: new ObjectId(postId) });
+    return postsCollection.findOne({ _id: new ObjectId(postId) });
   },
 
   async updatePost(
     id: string,
     body: UpdatePostDto,
   ): Promise<UpdateResult<PostType>> {
-    return postCollection.updateOne(
+    return postsCollection.updateOne(
       { _id: new ObjectId(id) },
       { $set: { ...body } },
     );
   },
 
   async removePost(id: string): Promise<DeleteResult> {
-    return await postCollection.deleteOne({ _id: new ObjectId(id) });
+    return await postsCollection.deleteOne({ _id: new ObjectId(id) });
   },
 };

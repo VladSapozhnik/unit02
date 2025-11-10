@@ -1,4 +1,4 @@
-import { userCollection } from '../../../core/db/mango.db';
+import { usersCollection } from '../../../core/db/mango.db';
 import { UserDbType, UserType } from '../type/user.type';
 import { DeleteResult, InsertOneResult, ObjectId, WithId } from 'mongodb';
 import { CreateUserWithCreatedAtDto } from '../dto/create-user.dto';
@@ -8,10 +8,10 @@ export const usersRepository = {
   async createUser(
     dto: CreateUserWithCreatedAtDto,
   ): Promise<InsertOneResult<WithId<UserDbType>>> {
-    return userCollection.insertOne(dto);
+    return usersCollection.insertOne(dto);
   },
   async getUserById(id: ObjectId | string): Promise<UserType | null> {
-    const user: WithId<UserType> | null = await userCollection.findOne({
+    const user: WithId<UserType> | null = await usersCollection.findOne({
       _id: new ObjectId(id),
     });
 
@@ -22,16 +22,16 @@ export const usersRepository = {
     return userMapper(user);
   },
   async getUserByLoginOrEmail(login: string, email: string) {
-    return userCollection.findOne({ $or: [{ login }, { email }] });
+    return usersCollection.findOne({ $or: [{ login }, { email }] });
   },
   async findByLoginOrEmail(
     loginOrEmail: string,
   ): Promise<WithId<UserDbType> | null> {
-    return userCollection.findOne({
+    return usersCollection.findOne({
       $or: [{ login: loginOrEmail }, { email: loginOrEmail }],
     });
   },
   async removeUser(id: string): Promise<DeleteResult> {
-    return userCollection.deleteOne({ _id: new ObjectId(id) });
+    return usersCollection.deleteOne({ _id: new ObjectId(id) });
   },
 };

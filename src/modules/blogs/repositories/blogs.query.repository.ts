@@ -1,5 +1,5 @@
 import { BlogType } from '../types/blog.type';
-import { blogCollection } from '../../../core/db/mango.db';
+import { blogsCollection } from '../../../core/db/mango.db';
 import { ObjectId, WithId } from 'mongodb';
 import { BlogQueryInput } from '../routes/input/blog-query.input';
 import { getSkipOffset } from '../../../core/helpers/get-skip-offset';
@@ -15,14 +15,14 @@ export const blogsQueryRepository = {
 
     const filter: any = buildBlogsFilter(queryDto);
 
-    const items: WithId<BlogType>[] = await blogCollection
+    const items: WithId<BlogType>[] = await blogsCollection
       .find(filter)
       .sort({ [queryDto.sortBy]: queryDto.sortDirection })
       .skip(skip)
       .limit(queryDto.pageSize)
       .toArray();
 
-    const totalCount: number = await blogCollection.countDocuments(filter);
+    const totalCount: number = await blogsCollection.countDocuments(filter);
 
     const pagination: PaginatedMetaType = buildPaginationHelper(
       totalCount,
@@ -34,7 +34,7 @@ export const blogsQueryRepository = {
   },
 
   async getBlogById(id: ObjectId | string): Promise<BlogType | null> {
-    const findBlog: WithId<BlogType> | null = await blogCollection.findOne({
+    const findBlog: WithId<BlogType> | null = await blogsCollection.findOne({
       _id: new ObjectId(id),
     });
 

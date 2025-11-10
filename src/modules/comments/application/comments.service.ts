@@ -13,9 +13,9 @@ export const commentsService = {
   ): Promise<ObjectId> {
     const payload: CommentType = {
       content: body.content,
-      postId: new ObjectId(postId),
+      postId: postId,
       commentatorInfo: {
-        userId: new ObjectId(user._id),
+        userId: user._id,
         userLogin: user.login,
       },
       createdAt: createdAtHelper(),

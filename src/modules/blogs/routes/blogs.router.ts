@@ -15,7 +15,7 @@ import { PostSortFieldEnum } from '../../posts/enum/post-sort-field.enum';
 import { getPostsByBlogIdHandler } from '../../posts/routes/handlers/get-posts-by-blogId.handler';
 import { blogQuerySearchValidation } from '../validators/blog-query-search.validation';
 import { postWithoutBlogIdValidation } from '../../posts/validators/post-without-blogId.validation';
-import { blogIdParamValidation } from '../../../core/validators/blogId-param.validation';
+import { blogIdParamValidation } from '../validators/blogId-param.validation';
 
 export const blogsRouter: Router = Router();
 

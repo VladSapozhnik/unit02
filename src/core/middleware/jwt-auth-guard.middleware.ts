@@ -18,14 +18,13 @@ export const jwtAuthGuardMiddleware = async (
   }
 
   const [authType, token] = auth.split(' ');
-  console.log(authType);
+
   if (authType !== 'Bearer') {
     res.sendStatus(HTTP_STATUS.UNAUTHORIZED_401);
     return;
   }
 
   const userId: ObjectId | null = await jwtService.verifyAccessToken(token);
-  console.log(userId);
 
   if (!userId) {
     res.sendStatus(HTTP_STATUS.UNAUTHORIZED_401);

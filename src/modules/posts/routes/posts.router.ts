@@ -12,6 +12,10 @@ import { paginationAndSortingValidation } from '../../../core/validators/paginat
 import { PostSortFieldEnum } from '../enum/post-sort-field.enum';
 import { createCommentForPostHandler } from './handlers/create-comment-for-post.handler';
 import { jwtAuthGuardMiddleware } from '../../../core/middleware/jwt-auth-guard.middleware';
+import { postIdParamValidation } from '../validators/postId-param.validation';
+import { commentValidation } from '../../comments/validators/comment.validation';
+import { getCommentsForPostIdHandler } from './handlers/get-comments-for-post-id.handler';
+import { CommentSortFieldEnum } from '../../comments/enum/comment-sort-field.enum';
 
 export const postsRouter: Router = Router();
 
@@ -33,7 +37,18 @@ postsRouter.post(
 postsRouter.post(
   '/:postId/comments',
   jwtAuthGuardMiddleware,
+  postIdParamValidation,
+  commentValidation,
+  inputValidationErrorsMiddleware,
   createCommentForPostHandler,
+);
+
+postsRouter.get(
+  '/:postId/comments',
+  postIdParamValidation,
+  paginationAndSortingValidation(CommentSortFieldEnum),
+  inputValidationErrorsMiddleware,
+  getCommentsForPostIdHandler,
 );
 
 postsRouter.get(

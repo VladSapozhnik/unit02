@@ -2,16 +2,16 @@ import { WithId } from 'mongodb';
 import { PaginatedMetaType } from '../types/paginated-meta.type';
 
 export const paginatedListMapper = <T>(
-  users: WithId<T>[],
+  items: WithId<T>[],
   meta: PaginatedMetaType,
   mapper: (item: WithId<T>) => T,
 ) => {
-  const items: T[] = users.map(mapper);
+  const itemsMapper: T[] = items.map(mapper);
   return {
     pagesCount: meta.pagesCount,
     page: meta.pageNumber,
     pageSize: meta.pageSize,
     totalCount: meta.totalCount,
-    items,
+    items: itemsMapper,
   };
 };
