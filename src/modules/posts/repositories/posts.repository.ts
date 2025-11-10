@@ -1,11 +1,21 @@
 import { PostType } from '../types/post.type';
 import { UpdatePostDto } from '../dto/update-post.dto';
-import { DeleteResult, InsertOneResult, ObjectId, UpdateResult } from 'mongodb';
+import {
+  DeleteResult,
+  InsertOneResult,
+  ObjectId,
+  UpdateResult,
+  WithId,
+} from 'mongodb';
 import { postCollection } from '../../../core/db/mango.db';
 
 export const postsRepository = {
   async createPost(body: PostType): Promise<InsertOneResult<PostType>> {
     return postCollection.insertOne(body);
+  },
+
+  async findPostById(postId: string): Promise<WithId<PostType> | null> {
+    return postCollection.findOne({ _id: new ObjectId(postId) });
   },
 
   async updatePost(

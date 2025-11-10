@@ -10,6 +10,8 @@ import { removePostHandler } from './handlers/remove-post.handler';
 import { idParamValidator } from '../../../core/validators/param-id.validation';
 import { paginationAndSortingValidation } from '../../../core/validators/pagination-and-sorting.validation';
 import { PostSortFieldEnum } from '../enum/post-sort-field.enum';
+import { createCommentForPostHandler } from './handlers/create-comment-for-post.handler';
+import { jwtAuthGuardMiddleware } from '../../../core/middleware/jwt-auth-guard.middleware';
 
 export const postsRouter: Router = Router();
 
@@ -26,6 +28,12 @@ postsRouter.post(
   postValidation,
   inputValidationErrorsMiddleware,
   createPostHandler,
+);
+
+postsRouter.post(
+  '/:postId/comments',
+  jwtAuthGuardMiddleware,
+  createCommentForPostHandler,
 );
 
 postsRouter.get(

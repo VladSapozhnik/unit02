@@ -8,4 +8,5 @@ export const settings = {
     'mongodb+srv://vladbars2:vlad34299@cluster0.jgd7edn.mongodb.net/testing',
 
   DB_NAME: process.env.DB_NAME || 'dto-it-incubator',
+  JWT_SECRET_KEY: process.env.JWT_SECRET_KEY || 'secretkey',
 };

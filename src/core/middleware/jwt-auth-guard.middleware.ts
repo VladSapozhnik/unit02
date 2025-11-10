@@ -1,0 +1,44 @@
+import { Request, Response, NextFunction } from 'express';
+import { HTTP_STATUS } from '../enums/http-status.enum';
+import { jwtService } from '../../modules/jwt/application/jwt.service';
+import { ObjectId } from 'mongodb';
+import { UserType } from '../../modules/users/type/user.type';
+import { usersRepository } from '../../modules/users/repositories/users.repository';
+
+export const jwtAuthGuardMiddleware = async (
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) => {
+  const auth: string | undefined = req.headers['authorization'];
+
+  if (!auth) {
+    res.sendStatus(HTTP_STATUS.UNAUTHORIZED_401);
+    return;
+  }
+
+  const [authType, token] = auth.split(' ');
+  console.log(authType);
+  if (authType !== 'Bearer') {
+    res.sendStatus(HTTP_STATUS.UNAUTHORIZED_401);
+    return;
+  }
+
+  const userId: ObjectId | null = await jwtService.verifyAccessToken(token);
+  console.log(userId);
+
+  if (!userId) {
+    res.sendStatus(HTTP_STATUS.UNAUTHORIZED_401);
+    return;
+  }
+
+  const isUser: UserType | null = await usersRepository.getUserById(userId);
+
+  if (!isUser) {
+    res.sendStatus(HTTP_STATUS.UNAUTHORIZED_401);
+    return;
+  }
+
+  req.user = isUser;
+  next();
+};

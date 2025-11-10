@@ -31,7 +31,7 @@ export const usersQueryRepository = {
 
     return paginatedListMapper<UserType>(users, pagination, userMapper);
   },
-  async getUserById(id: ObjectId): Promise<UserType | null> {
+  async getUserById(id: ObjectId | string): Promise<UserType | null> {
     const user: WithId<UserType> | null = await userCollection.findOne({
       _id: new ObjectId(id),
     });

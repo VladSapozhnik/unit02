@@ -10,6 +10,7 @@ import { HTTP_STATUS } from './core/enums/http-status.enum';
 import { RouterPathConst } from './core/constants/router-path.const';
 import {
   blogCollection,
+  commentCollection,
   postCollection,
   userCollection,
 } from './core/db/mango.db';
@@ -39,6 +40,7 @@ export const setupApp = (app: Express) => {
       blogCollection.deleteMany(),
       postCollection.deleteMany(),
       userCollection.deleteMany(),
+      commentCollection.deleteMany(),
     ]);
 
     res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
