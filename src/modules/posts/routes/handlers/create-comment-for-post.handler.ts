@@ -20,6 +20,11 @@ export const createCommentForPostHandler = async (
     throw new NotFoundError('Not Found Post', 'post');
   }
 
+  if (!req.user._id) {
+    res.sendStatus(HTTP_STATUS.UNAUTHORIZED_401);
+    return;
+  }
+
   const id: ObjectId = await commentsService.createComment(
     req.user,
     existPost._id,

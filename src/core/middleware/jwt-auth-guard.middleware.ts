@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import { HTTP_STATUS } from '../enums/http-status.enum';
 import { jwtService } from '../../modules/jwt/application/jwt.service';
-import { ObjectId } from 'mongodb';
+import { ObjectId, WithId } from 'mongodb';
 import { UserType } from '../../modules/users/type/user.type';
 import { usersRepository } from '../../modules/users/repositories/users.repository';
 
@@ -31,9 +31,10 @@ export const jwtAuthGuardMiddleware = async (
     return;
   }
 
-  const isUser: UserType | null = await usersRepository.getUserById(userId);
+  const isUser: WithId<UserType> | null =
+    await usersRepository.getUserById(userId);
 
-  if (!isUser) {
+  if (!isUser || !isUser._id) {
     res.sendStatus(HTTP_STATUS.UNAUTHORIZED_401);
     return;
   }

@@ -8,6 +8,7 @@ import { CommentType } from '../../modules/comments/types/comment.type';
 const BLOG_COLLECTION_NAME = 'blogs';
 const POST_COLLECTION_NAME = 'posts';
 const USER_COLLECTION_NAME = 'users';
+const COMMENT_COLLECTION_NAME = 'comments';
 
 export let client: MongoClient;
 export let blogsCollection: Collection<BlogType>;
@@ -23,7 +24,7 @@ export async function runDB(db_url: string): Promise<void> {
   blogsCollection = db.collection<BlogType>(BLOG_COLLECTION_NAME);
   postsCollection = db.collection<PostType>(POST_COLLECTION_NAME);
   usersCollection = db.collection<UserDbType>(USER_COLLECTION_NAME);
-  commentsCollection = db.collection<CommentType>(USER_COLLECTION_NAME);
+  commentsCollection = db.collection<CommentType>(COMMENT_COLLECTION_NAME);
 
   try {
     await client.connect();

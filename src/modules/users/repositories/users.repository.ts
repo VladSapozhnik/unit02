@@ -2,7 +2,6 @@ import { usersCollection } from '../../../core/db/mango.db';
 import { UserDbType, UserType } from '../type/user.type';
 import { DeleteResult, InsertOneResult, ObjectId, WithId } from 'mongodb';
 import { CreateUserWithCreatedAtDto } from '../dto/create-user.dto';
-import { userMapper } from '../mappers/user.mapper';
 
 export const usersRepository = {
   async createUser(
@@ -10,7 +9,7 @@ export const usersRepository = {
   ): Promise<InsertOneResult<WithId<UserDbType>>> {
     return usersCollection.insertOne(dto);
   },
-  async getUserById(id: ObjectId | string): Promise<UserType | null> {
+  async getUserById(id: ObjectId | string): Promise<WithId<UserType> | null> {
     const user: WithId<UserType> | null = await usersCollection.findOne({
       _id: new ObjectId(id),
     });
@@ -19,7 +18,7 @@ export const usersRepository = {
       return null;
     }
 
-    return userMapper(user);
+    return user;
   },
   async getUserByLoginOrEmail(login: string, email: string) {
     return usersCollection.findOne({ $or: [{ login }, { email }] });

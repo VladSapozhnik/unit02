@@ -1,6 +1,6 @@
-import { body } from 'express-validator';
+import { body, ValidationChain } from 'express-validator';
 
-export const commentValidation = [
+export const commentValidation: ValidationChain[] = [
   body('content')
     .isString()
     .withMessage('Content must be a string')

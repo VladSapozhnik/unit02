@@ -15,11 +15,26 @@ export const commentsRepository = {
   ): Promise<InsertOneResult<WithId<CommentType>>> {
     return commentsCollection.insertOne(dto);
   },
+  async getCommentById(
+    id: string | ObjectId,
+  ): Promise<WithId<CommentType> | null> {
+    const comment: WithId<CommentType> | null =
+      await commentsCollection.findOne({ _id: new ObjectId(id) });
+
+    if (!comment) {
+      return null;
+    }
+
+    return comment;
+  },
   async updateComment(
     id: string,
     dto: UpdateCommentDto,
   ): Promise<UpdateResult<WithId<CommentType>>> {
-    return commentsCollection.updateOne({ _id: new ObjectId(id) }, dto);
+    return commentsCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: dto },
+    );
   },
   async removeComment(id: string): Promise<DeleteResult> {
     return commentsCollection.deleteOne({ _id: new ObjectId(id) });
