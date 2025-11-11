@@ -13,19 +13,37 @@ import { CommentType } from '../types/comment.type';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { ForbiddenRequestError } from '../../../core/errors/forbidden-request.error';
 import { UpdateCommentDto } from '../dto/update-comment.dto';
+import { PostType } from '../../posts/types/post.type';
+import { postsRepository } from '../../posts/repositories/posts.repository';
+import { usersRepository } from '../../users/repositories/users.repository';
+import { UnauthorizedError } from '../../../core/errors/unauthorized.error';
 
 export const commentsService = {
   async createComment(
-    user: WithId<UserType>,
-    postId: ObjectId,
+    userId: string,
+    postId: string,
     body: CreateCommentDto,
-  ): Promise<ObjectId> {
+  ): Promise<string> {
+    const existUser: WithId<UserType> | null =
+      await usersRepository.getUserById(userId);
+
+    if (!existUser) {
+      throw new UnauthorizedError('Unauthorized');
+    }
+
+    const existPost: WithId<PostType> | null =
+      await postsRepository.findPostById(postId);
+
+    if (!existPost) {
+      throw new NotFoundError('Not Found Post', 'post');
+    }
+
     const payload: CommentType = {
       content: body.content,
-      postId: postId,
+      postId: new ObjectId(postId),
       commentatorInfo: {
-        userId: user._id,
-        userLogin: user.login,
+        userId: new ObjectId(existUser._id),
+        userLogin: existUser.login,
       },
       createdAt: createdAtHelper(),
     };
@@ -33,10 +51,10 @@ export const commentsService = {
     const result: InsertOneResult<CommentType> =
       await commentsRepository.createComment(payload);
 
-    return result.insertedId;
+    return result.insertedId.toString();
   },
   async updateComment(
-    user: WithId<UserType>,
+    userId: string,
     id: string,
     body: UpdateCommentDto,
   ): Promise<boolean> {
@@ -47,7 +65,7 @@ export const commentsService = {
       throw new NotFoundError(`Comment with id ${id} not found`, 'comment');
     }
 
-    if (findComment.commentatorInfo.userId.toString() !== user._id.toString()) {
+    if (findComment.commentatorInfo.userId.toString() !== userId) {
       throw new ForbiddenRequestError(
         'You can delete only your own comments',
         'comment',
@@ -59,7 +77,7 @@ export const commentsService = {
 
     return result.matchedCount === 1;
   },
-  async removeComment(user: WithId<UserType>, id: string): Promise<boolean> {
+  async removeComment(userId: string, id: string): Promise<boolean> {
     const findComment: CommentType | null =
       await commentsRepository.getCommentById(id);
 
@@ -67,7 +85,7 @@ export const commentsService = {
       throw new NotFoundError(`Comment with id ${id} not found`, 'comment');
     }
 
-    if (findComment.commentatorInfo.userId.toString() !== user._id.toString()) {
+    if (findComment.commentatorInfo.userId.toString() !== userId) {
       throw new ForbiddenRequestError(
         'You can delete only your own comments',
         'comment',

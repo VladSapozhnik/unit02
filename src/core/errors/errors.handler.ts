@@ -4,6 +4,7 @@ import { NotFoundError } from './repository-not-found.error';
 import { ErrorResponse, ErrorType } from '../types/error.type';
 import { BadRequestError } from './bad-request.error';
 import { ForbiddenRequestError } from './forbidden-request.error';
+import { UnauthorizedError } from './unauthorized.error';
 
 function errorMessage(error: ErrorType): ErrorResponse {
   return {
@@ -31,6 +32,13 @@ export function errorsHandler(error: unknown, res: Response): void {
   }
   if (error instanceof ForbiddenRequestError) {
     const httpStatus: HTTP_STATUS.FORBIDDEN_403 = HTTP_STATUS.FORBIDDEN_403;
+
+    res.status(httpStatus).json(errorMessage(error));
+    return;
+  }
+  if (error instanceof UnauthorizedError) {
+    const httpStatus: HTTP_STATUS.UNAUTHORIZED_401 =
+      HTTP_STATUS.UNAUTHORIZED_401;
 
     res.status(httpStatus).json(errorMessage(error));
     return;

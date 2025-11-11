@@ -8,13 +8,10 @@ export interface RequestWithUserId extends Request {
 }
 
 export const getProfileHandler = async (req: Request, res: Response) => {
-  if (!req.userId) {
-    return res.status(HTTP_STATUS.UNAUTHORIZED_401);
-  }
+  const userId: string = req.userId as string;
 
-  const getProfile: ProfileType | null = await usersQueryRepository.getProfile(
-    req.userId,
-  );
+  const getProfile: ProfileType | null =
+    await usersQueryRepository.getProfile(userId);
 
   if (!getProfile) {
     res.sendStatus(HTTP_STATUS.UNAUTHORIZED_401);
