@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { commentsQueryRepository } from '../../repositories/comments.query.repository';
 import { CommentType } from '../../types/comment.type';
 import { NotFoundError } from '../../../../core/errors/repository-not-found.error';
