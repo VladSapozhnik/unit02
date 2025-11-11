@@ -8,6 +8,8 @@ import { paginatedListMapper } from '../../../core/mappers/paginated-list.mapper
 import { buildPaginationHelper } from '../../../core/helpers/build-pagination.helper';
 import { PaginatedMetaType } from '../../../core/types/paginated-meta.type';
 import { buildUserFilter } from '../helpers/build-user-filter.helper';
+import { profileMapper } from '../mappers/profile.mapper';
+import { ProfileType } from '../type/profile.type';
 
 export const usersQueryRepository = {
   async getAllUsers(queryDto: UserQueryInput) {
@@ -41,5 +43,16 @@ export const usersQueryRepository = {
     }
 
     return userMapper(user);
+  },
+  async getProfile(id: string): Promise<ProfileType | null> {
+    const user: WithId<UserType> | null = await usersCollection.findOne({
+      _id: new ObjectId(id),
+    });
+
+    if (!user) {
+      return null;
+    }
+
+    return profileMapper(user);
   },
 };

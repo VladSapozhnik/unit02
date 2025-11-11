@@ -1,15 +1,16 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { authService } from '../../application/auth.service';
 import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { jwtService } from '../../../jwt/application/jwt.service';
-import { ObjectId } from 'mongodb';
-import { LoginResponse } from '../../dto/login.dto';
+import { LoginDto } from '../../dto/login.dto';
+import { RequestWithBody } from '../../../../core/types/request.type';
+import { AccessTokenType } from '../../type/access-token.type';
 
 export const loginHandler = async (
-  req: Request,
-  res: Response<LoginResponse>,
+  req: RequestWithBody<LoginDto>,
+  res: Response<AccessTokenType>,
 ) => {
-  const isLogin: false | ObjectId = await authService.login(req.body);
+  const isLogin: false | string = await authService.login(req.body);
 
   if (!isLogin) {
     res.sendStatus(HTTP_STATUS.UNAUTHORIZED_401);
