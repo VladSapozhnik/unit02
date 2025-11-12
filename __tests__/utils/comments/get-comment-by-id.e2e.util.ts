@@ -16,11 +16,15 @@ export const getCommentByIdE2eUtil = async (
   let findComment: PostType | {} = comment;
 
   if (statusCode === HTTP_STATUS.NOT_FOUND_404) {
-    findComment = {};
+    commentId = ObjectIdValid;
+
+    return await request(app)
+      .get(RouterPathConst.comments + commentId)
+      .expect(statusCode);
   }
 
   if (statusCode === HTTP_STATUS.BAD_REQUEST_400) {
-    commentId = ObjectIdValid;
+    findComment = {};
   }
 
   return await request(app)

@@ -116,14 +116,14 @@ describe('test' + RouterPathConst.comments, () => {
     );
   });
 
-  // it('should not get comment and return 404 for non-existent commentId', async () => {
-  //   await getCommentByIdE2eUtil(
-  //     app,
-  //     HTTP_STATUS.NOT_FOUND_404,
-  //     createdComment.id,
-  //     {},
-  //   );
-  // });
+  it('should not get comment and return 404 for non-existent commentId', async () => {
+    await getCommentByIdE2eUtil(
+      app,
+      HTTP_STATUS.NOT_FOUND_404,
+      ObjectIdValid,
+      {},
+    );
+  });
 
   it('should not update a comment and return 401 for invalid token', async () => {
     await updateCommentE2eUtil(
