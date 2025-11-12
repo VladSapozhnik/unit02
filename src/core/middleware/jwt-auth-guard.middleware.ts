@@ -1,9 +1,10 @@
 import { Request, Response, NextFunction } from 'express';
 import { HTTP_STATUS } from '../enums/http-status.enum';
-import { jwtService } from '../../modules/jwt/application/jwt.service';
+
 import { usersRepository } from '../../modules/users/repositories/users.repository';
 import { WithId } from 'mongodb';
 import { UserType } from '../../modules/users/type/user.type';
+import { jwtService } from '../jwt/jwt.service';
 
 export const jwtAuthGuardMiddleware = async (
   req: Request,

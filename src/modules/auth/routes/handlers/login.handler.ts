@@ -1,10 +1,10 @@
 import { Response } from 'express';
 import { authService } from '../../application/auth.service';
 import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
-import { jwtService } from '../../../jwt/application/jwt.service';
 import { LoginDto } from '../../dto/login.dto';
 import { RequestWithBody } from '../../../../core/types/request.type';
 import { AccessTokenType } from '../../type/access-token.type';
+import { jwtService } from '../../../../core/jwt/jwt.service';
 
 export const loginHandler = async (
   req: RequestWithBody<LoginDto>,
