@@ -190,25 +190,24 @@ describe('test' + RouterPathConst.comments, () => {
     );
   });
 
-  // it('should return 204 and remove comment for valid commentId', async () => {
-  //   const response: Response = await createCommentE2eUtil(
-  //     app,
-  //     HTTP_STATUS.NOT_FOUND_404,
-  //     createdPost.id,
-  //     userToken,
-  //   );
-  //
-  //   // const commentOne: CommentType = createdComment;
-  //   const commentTwo: CommentType = response.body;
-  //
-  //   await getCommentsForPostE2eUtil(
-  //     app,
-  //     HTTP_STATUS.OK_200,
-  //     commentTwo,
-  //     createdPost.id,
-  //     true,
-  //   );
-  // });
+  it('should return 204 and remove comment for valid commentId', async () => {
+    const response: Response = await createCommentE2eUtil(
+      app,
+      HTTP_STATUS.CREATED_201,
+      createdPost.id,
+      userToken,
+    );
+
+    const commentTwo: CommentType = response.body;
+
+    await getCommentsForPostE2eUtil(
+      app,
+      HTTP_STATUS.OK_200,
+      commentTwo,
+      createdPost.id,
+      true,
+    );
+  });
 
   it('should not remove a comment and return 401 for invalid token', async () => {
     await removeCommentE2eUtil(
