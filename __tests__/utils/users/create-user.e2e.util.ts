@@ -20,6 +20,12 @@ export const exampleNonCreateUser: CreateUserDto = {
   email: '',
 };
 
+export const exampleCreateTwoUser: CreateUserDto = {
+  login: 'vLaD356',
+  password: 'string',
+  email: 'example@gmail.com',
+};
+
 export enum ACTION_CREATE_USER {
   CREATE_USER = 'CREATE_USER',
   PAGINATION_AND_SEARCH = 'PAGINATION_AND_SEARCH',
@@ -40,11 +46,7 @@ export const createUserE2eUtil = async (
   }
 
   if (action === ACTION_CREATE_USER.PAGINATION_AND_SEARCH) {
-    body = {
-      login: 'vLaD356',
-      password: 'string',
-      email: 'example@gmail.com',
-    };
+    body = exampleCreateTwoUser;
   }
 
   if (statusCode === HTTP_STATUS.UNAUTHORIZED_401) {

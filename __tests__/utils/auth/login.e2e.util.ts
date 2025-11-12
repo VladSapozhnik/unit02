@@ -3,7 +3,10 @@ import { Express } from 'express';
 import { RouterPathConst } from '../../../src/core/constants/router-path.const';
 import { HTTP_STATUS } from '../../../src/core/enums/http-status.enum';
 import { LoginDto } from '../../../src/modules/auth/dto/login.dto';
-import { exampleCreateUser } from '../users/create-user.e2e.util';
+import {
+  exampleCreateUser,
+  exampleCreateTwoUser,
+} from '../users/create-user.e2e.util';
 
 const exampleLogin: LoginDto = {
   loginOrEmail: exampleCreateUser.email,
@@ -20,9 +23,15 @@ const exampleNonLogin: LoginDto = {
   password: 'noexaple',
 };
 
+const exampleTwoUserLogin: LoginDto = {
+  loginOrEmail: exampleCreateTwoUser.email,
+  password: exampleCreateTwoUser.password,
+};
+
 export const loginE2eUtil = async (
   app: Express,
   statusCode: HTTP_STATUS,
+  loginUserNumberTwo: boolean = false,
 ): Promise<Response> => {
   let body: LoginDto = exampleLogin;
 
@@ -32,6 +41,10 @@ export const loginE2eUtil = async (
 
   if (statusCode === HTTP_STATUS.BAD_REQUEST_400) {
     body = exampleBadRequestLogin;
+  }
+
+  if (loginUserNumberTwo) {
+    body = exampleTwoUserLogin;
   }
 
   if (statusCode === HTTP_STATUS.OK_200) {
