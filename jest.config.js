@@ -5,7 +5,7 @@ const tsJestTransformCfg = createDefaultPreset().transform;
 /** @type {import("jest").Config} **/
 
 module.exports = {
-  testTimeout: 10000,
+  // testTimeout: 10000,
   testEnvironment: 'node',
   // testPathIgnorePatterns: [
   //   '.*manager.ts$', // Игнорировать файлы, оканчивающиеся на manager.ts

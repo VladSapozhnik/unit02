@@ -20,6 +20,8 @@ import {
 } from './utils/comments/update-comment.e2e.util';
 import { ObjectIdValid } from './blogs.e2e.spec';
 import { removeCommentE2eUtil } from './utils/comments/remove-comment.e2e.util';
+import { getCommentsForPostE2eUtil } from './utils/comments/get-comments-for-post-e2e.util';
+import { CommentType } from '../src/modules/comments/types/comment.type';
 
 describe('test' + RouterPathConst.comments, () => {
   const app = express();
@@ -36,7 +38,7 @@ describe('test' + RouterPathConst.comments, () => {
   });
   let userToken: any;
   let userTokenTwo: any;
-  let post: any;
+  let createdPost: any;
   it('should created two users and created post and blog status 201 for valid body', async () => {
     await createUserE2eUtil(app, HTTP_STATUS.CREATED_201);
 
@@ -63,14 +65,14 @@ describe('test' + RouterPathConst.comments, () => {
       HTTP_STATUS.CREATED_201,
     );
 
-    post = responsePost.body;
+    createdPost = responsePost.body;
   });
 
   it('should not create a comment and return 401 for invalid token', async () => {
     await createCommentE2eUtil(
       app,
       HTTP_STATUS.UNAUTHORIZED_401,
-      post.id,
+      createdPost.id,
       userToken,
     );
   });
@@ -79,7 +81,7 @@ describe('test' + RouterPathConst.comments, () => {
     await createCommentE2eUtil(
       app,
       HTTP_STATUS.BAD_REQUEST_400,
-      post.id,
+      createdPost.id,
       userToken,
     );
   });
@@ -88,7 +90,7 @@ describe('test' + RouterPathConst.comments, () => {
     await createCommentE2eUtil(
       app,
       HTTP_STATUS.NOT_FOUND_404,
-      post.id,
+      createdPost.id,
       userToken,
     );
   });
@@ -98,7 +100,7 @@ describe('test' + RouterPathConst.comments, () => {
     const response: Response = await createCommentE2eUtil(
       app,
       HTTP_STATUS.CREATED_201,
-      post.id,
+      createdPost.id,
       userToken,
     );
 
@@ -167,8 +169,46 @@ describe('test' + RouterPathConst.comments, () => {
       userToken,
     );
 
-    createdComment.content = exampleUpdateComment;
+    createdComment.content = exampleUpdateComment.content;
   });
+
+  it('should return 404 for non-existent post', async () => {
+    await getCommentsForPostE2eUtil(
+      app,
+      HTTP_STATUS.NOT_FOUND_404,
+      createdComment,
+      createdPost.id,
+    );
+  });
+
+  it('should return 200 for exist post', async () => {
+    await getCommentsForPostE2eUtil(
+      app,
+      HTTP_STATUS.OK_200,
+      createdComment,
+      createdPost.id,
+    );
+  });
+
+  // it('should return 204 and remove comment for valid commentId', async () => {
+  //   const response: Response = await createCommentE2eUtil(
+  //     app,
+  //     HTTP_STATUS.NOT_FOUND_404,
+  //     createdPost.id,
+  //     userToken,
+  //   );
+  //
+  //   // const commentOne: CommentType = createdComment;
+  //   const commentTwo: CommentType = response.body;
+  //
+  //   await getCommentsForPostE2eUtil(
+  //     app,
+  //     HTTP_STATUS.OK_200,
+  //     commentTwo,
+  //     createdPost.id,
+  //     true,
+  //   );
+  // });
 
   it('should not remove a comment and return 401 for invalid token', async () => {
     await removeCommentE2eUtil(
@@ -188,12 +228,21 @@ describe('test' + RouterPathConst.comments, () => {
     );
   });
 
-  it('should return 204 and remove comment for valid commentId', async () => {
+  it('should not remove a comment and return 403 for forbidden user', async () => {
     await removeCommentE2eUtil(
       app,
       HTTP_STATUS.FORBIDDEN_403,
       createdComment.id,
       userTokenTwo,
+    );
+  });
+
+  it('should return 204 and remove comment for valid commentId', async () => {
+    await removeCommentE2eUtil(
+      app,
+      HTTP_STATUS.NO_CONTENT_204,
+      createdComment.id,
+      userToken,
     );
   });
 });
