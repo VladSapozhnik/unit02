@@ -4,20 +4,26 @@ import request from 'supertest';
 import { RouterPathConst } from '../../../src/core/constants/router-path.const';
 import { Response } from 'supertest';
 import { PostType } from '../../../src/modules/posts/types/post.type';
+import { ObjectIdValid } from '../../blogs.e2e.spec';
 
-export const getPostByIdE2eUtil = async (
+export const getCommentByIdE2eUtil = async (
   app: Express,
   statusCode: HTTP_STATUS,
-  id: string | number = -100,
-  blog: PostType | {},
+  id: string = ObjectIdValid,
+  comment: PostType | {},
 ): Promise<Response> => {
-  let findBlog: PostType | {} = blog;
+  let commentId: string = id;
+  let findComment: PostType | {} = comment;
 
   if (statusCode === HTTP_STATUS.NOT_FOUND_404) {
-    findBlog = {};
+    findComment = {};
+  }
+
+  if (statusCode === HTTP_STATUS.BAD_REQUEST_400) {
+    commentId = ObjectIdValid;
   }
 
   return await request(app)
-    .get(RouterPathConst.posts + id)
-    .expect(statusCode, findBlog);
+    .get(RouterPathConst.comments + commentId)
+    .expect(statusCode, findComment);
 };

@@ -21,7 +21,7 @@ import { BlogSortFieldEnum } from '../src/modules/blogs/enum/blog-sort-field.enu
 import { SortDirectionEnum } from '../src/core/enums/sort-direction.enum';
 import { BlogQueryInput } from '../src/modules/blogs/routes/input/blog-query.input';
 
-export const ObjectIdValid = '68f7b37aec3bd9b7be0c000c';
+export const ObjectIdValid = '68f2b37aec3bd9b7be0c000c';
 
 const validateErrors: ErrorType[] = [
   { message: expect.any(String), field: expect.any(String) },
