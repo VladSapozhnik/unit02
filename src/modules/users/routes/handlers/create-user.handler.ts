@@ -1,7 +1,6 @@
-import { NextFunction, Response } from 'express';
+import { Response } from 'express';
 import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { usersService } from '../../application/users.service';
-import { ObjectId } from 'mongodb';
 import { UserType } from '../../type/user.type';
 import { RequestWithBody } from '../../../../core/types/request.type';
 import { CreateUserDto } from '../../dto/create-user.dto';
@@ -11,9 +10,8 @@ import { BadRequestError } from '../../../../core/errors/bad-request.error';
 export const createUserHandler = async (
   req: RequestWithBody<CreateUserDto>,
   res: Response,
-  next: NextFunction,
 ) => {
-  const id: ObjectId = await usersService.createUser(req.body);
+  const id: string = await usersService.createUser(req.body);
 
   const findUser: UserType | null = await usersQueryRepository.getUserById(id);
 

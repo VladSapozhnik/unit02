@@ -17,6 +17,7 @@ export const loginHandler = async (
     return;
   }
   const jwt: string = await jwtService.createAccessToken(isLogin);
+
   res.json({
     accessToken: jwt,
   });

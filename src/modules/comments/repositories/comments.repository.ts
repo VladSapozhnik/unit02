@@ -10,10 +10,11 @@ import {
 import { UpdateCommentDto } from '../dto/update-comment.dto';
 
 export const commentsRepository = {
-  async createComment(
-    dto: CommentType,
-  ): Promise<InsertOneResult<WithId<CommentType>>> {
-    return commentsCollection.insertOne(dto);
+  async createComment(dto: CommentType): Promise<string> {
+    const result: InsertOneResult<WithId<CommentType>> =
+      await commentsCollection.insertOne(dto);
+
+    return result?.insertedId.toString() ?? null;
   },
   async getCommentById(
     id: string | ObjectId,

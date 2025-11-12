@@ -2,13 +2,7 @@ import { PostType } from '../types/post.type';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { BlogType } from '../../blogs/types/blog.type';
 import { UpdatePostDto } from '../dto/update-post.dto';
-import {
-  DeleteResult,
-  InsertOneResult,
-  ObjectId,
-  UpdateResult,
-  WithId,
-} from 'mongodb';
+import { DeleteResult, UpdateResult } from 'mongodb';
 import { postsRepository } from '../repositories/posts.repository';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { createdAtHelper } from '../../../core/helpers/created-at.helper';
@@ -16,7 +10,7 @@ import { blogsQueryRepository } from '../../blogs/repositories/blogs.query.repos
 import { BadRequestError } from '../../../core/errors/bad-request.error';
 
 export const postsService = {
-  async createPost(body: CreatePostDto): Promise<ObjectId> {
+  async createPost(body: CreatePostDto): Promise<string> {
     const existBlog: BlogType | null = await blogsQueryRepository.getBlogById(
       body.blogId,
     );
@@ -31,13 +25,16 @@ export const postsService = {
       createdAt: createdAtHelper(),
     };
 
-    const result: InsertOneResult<WithId<PostType>> =
-      await postsRepository.createPost(postBody);
+    const postId: string = await postsRepository.createPost(postBody);
 
-    return result.insertedId;
+    if (!postId) {
+      throw new BadRequestError('Failed to create Post', 'post');
+    }
+
+    return postId;
   },
 
-  async createPostForBlog(body: CreatePostDto): Promise<ObjectId> {
+  async createPostForBlog(body: CreatePostDto): Promise<string> {
     const existBlog: BlogType | null = await blogsQueryRepository.getBlogById(
       body.blogId,
     );
@@ -52,10 +49,13 @@ export const postsService = {
       createdAt: createdAtHelper(),
     };
 
-    const result: InsertOneResult<WithId<PostType>> =
-      await postsRepository.createPost(postBody);
+    const postId: string = await postsRepository.createPost(postBody);
 
-    return result.insertedId;
+    if (!postId) {
+      throw new BadRequestError('Failed to create Post', 'post');
+    }
+
+    return postId;
   },
 
   async updatePost(id: string, body: UpdatePostDto): Promise<boolean> {

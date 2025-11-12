@@ -6,12 +6,12 @@ import { createdAtHelper } from '../../../core/helpers/created-at.helper';
 import { UserType } from '../type/user.type';
 import { usersRepository } from '../repositories/users.repository';
 import { BadRequestError } from '../../../core/errors/bad-request.error';
-import { DeleteResult, InsertOneResult, ObjectId, WithId } from 'mongodb';
-import * as argon2 from 'argon2';
+import { DeleteResult, WithId } from 'mongodb';
+import { hashService } from '../../../core/hash/hash.service';
 
 export const usersService = {
-  async createUser(dto: CreateUserDto): Promise<ObjectId> {
-    const hash: string = await argon2.hash(dto.password);
+  async createUser(dto: CreateUserDto): Promise<string> {
+    const hash: string = await hashService.hashPassword(dto.password);
 
     const payload: CreateUserWithCreatedAtDto = {
       ...dto,
@@ -26,10 +26,7 @@ export const usersService = {
       throw new BadRequestError('User already exists', 'user');
     }
 
-    const result: InsertOneResult<WithId<UserType>> =
-      await usersRepository.createUser(payload);
-
-    return result.insertedId;
+    return usersRepository.createUser(payload);
   },
   async removeUser(id: string): Promise<boolean> {
     const isRemoveUser: DeleteResult = await usersRepository.removeUser(id);

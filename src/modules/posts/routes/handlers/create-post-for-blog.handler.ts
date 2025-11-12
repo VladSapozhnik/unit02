@@ -1,5 +1,4 @@
 import { Response } from 'express';
-import { ObjectId } from 'mongodb';
 import { PostType } from '../../types/post.type';
 import { postsService } from '../../application/posts.service';
 import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
@@ -15,14 +14,10 @@ export const createPostForBlogHandler = async (
 ) => {
   const blogId: string = req.params.blogId;
 
-  const id: ObjectId = await postsService.createPostForBlog({
+  const id: string = await postsService.createPostForBlog({
     ...req.body,
     blogId,
   });
-
-  if (!id) {
-    throw new BadRequestError('Failed to create Post', 'post');
-  }
 
   const post: PostType | null = await postsQueryRepository.getPostById(id);
 

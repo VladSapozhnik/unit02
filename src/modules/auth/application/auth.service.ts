@@ -1,7 +1,7 @@
 import { LoginDto } from '../dto/login.dto';
 import { usersRepository } from '../../users/repositories/users.repository';
 import { UserDbType } from '../../users/type/user.type';
-import * as argon2 from 'argon2';
+import { hashService } from '../../../core/hash/hash.service';
 
 export const authService = {
   async login(dto: LoginDto): Promise<false | string> {
@@ -13,7 +13,7 @@ export const authService = {
       return false;
     }
 
-    const isValidatePassword: boolean = await argon2.verify(
+    const isValidatePassword: boolean = await hashService.compare(
       user.password,
       dto.password,
     );

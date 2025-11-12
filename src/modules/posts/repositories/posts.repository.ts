@@ -10,8 +10,11 @@ import {
 import { postsCollection } from '../../../core/db/mango.db';
 
 export const postsRepository = {
-  async createPost(body: PostType): Promise<InsertOneResult<PostType>> {
-    return postsCollection.insertOne(body);
+  async createPost(body: PostType): Promise<string> {
+    const result: InsertOneResult<WithId<PostType>> =
+      await postsCollection.insertOne(body);
+
+    return result?.insertedId.toString() ?? null;
   },
 
   async findPostById(postId: string): Promise<WithId<PostType> | null> {

@@ -1,12 +1,6 @@
 import { UserType } from '../../users/type/user.type';
 import { CreateCommentDto } from '../dto/create-comment.dto';
-import {
-  DeleteResult,
-  InsertOneResult,
-  ObjectId,
-  UpdateResult,
-  WithId,
-} from 'mongodb';
+import { DeleteResult, ObjectId, UpdateResult, WithId } from 'mongodb';
 import { createdAtHelper } from '../../../core/helpers/created-at.helper';
 import { commentsRepository } from '../repositories/comments.repository';
 import { CommentType } from '../types/comment.type';
@@ -17,6 +11,7 @@ import { PostType } from '../../posts/types/post.type';
 import { postsRepository } from '../../posts/repositories/posts.repository';
 import { usersRepository } from '../../users/repositories/users.repository';
 import { UnauthorizedError } from '../../../core/errors/unauthorized.error';
+import { BadRequestError } from '../../../core/errors/bad-request.error';
 
 export const commentsService = {
   async createComment(
@@ -48,10 +43,13 @@ export const commentsService = {
       createdAt: createdAtHelper(),
     };
 
-    const result: InsertOneResult<CommentType> =
-      await commentsRepository.createComment(payload);
+    const commentId: string = await commentsRepository.createComment(payload);
 
-    return result.insertedId.toString();
+    if (!commentId) {
+      throw new BadRequestError('Failed to create comment', 'comment');
+    }
+
+    return commentId;
   },
   async updateComment(
     userId: string,

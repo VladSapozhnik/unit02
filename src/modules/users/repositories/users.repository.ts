@@ -4,10 +4,11 @@ import { DeleteResult, InsertOneResult, ObjectId, WithId } from 'mongodb';
 import { CreateUserWithCreatedAtDto } from '../dto/create-user.dto';
 
 export const usersRepository = {
-  async createUser(
-    dto: CreateUserWithCreatedAtDto,
-  ): Promise<InsertOneResult<WithId<UserDbType>>> {
-    return usersCollection.insertOne(dto);
+  async createUser(dto: CreateUserWithCreatedAtDto): Promise<string> {
+    const result: InsertOneResult<WithId<UserDbType>> =
+      await usersCollection.insertOne(dto);
+
+    return result.insertedId?.toString() ?? null;
   },
   async getUserById(id: ObjectId | string): Promise<WithId<UserType> | null> {
     const user: WithId<UserType> | null = await usersCollection.findOne({

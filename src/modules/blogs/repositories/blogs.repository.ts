@@ -1,11 +1,20 @@
 import { BlogType } from '../types/blog.type';
 import { UpdateBlogDto } from '../dto/update-blog.dto';
 import { blogsCollection } from '../../../core/db/mango.db';
-import { DeleteResult, InsertOneResult, ObjectId, UpdateResult } from 'mongodb';
+import {
+  DeleteResult,
+  InsertOneResult,
+  ObjectId,
+  UpdateResult,
+  WithId,
+} from 'mongodb';
 
 export const blogsRepository = {
-  async createBlog(body: BlogType): Promise<InsertOneResult<BlogType>> {
-    return blogsCollection.insertOne(body);
+  async createBlog(body: BlogType): Promise<string> {
+    const result: InsertOneResult<WithId<BlogType>> =
+      await blogsCollection.insertOne(body);
+
+    return result?.insertedId.toString() ?? null;
   },
 
   async updateBlog(

@@ -1,23 +1,27 @@
 import { BlogType } from '../types/blog.type';
 import { CreateBlogDto } from '../dto/create-blog.dto';
 import { UpdateBlogDto } from '../dto/update-blog.dto';
-import { DeleteResult, InsertOneResult, ObjectId, UpdateResult } from 'mongodb';
+import { DeleteResult, UpdateResult } from 'mongodb';
 import { blogsRepository } from '../repositories/blogs.repository';
 import { createdAtHelper } from '../../../core/helpers/created-at.helper';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
+import { BadRequestError } from '../../../core/errors/bad-request.error';
 
 export const blogsService = {
-  async createBlog(body: CreateBlogDto): Promise<ObjectId> {
+  async createBlog(body: CreateBlogDto): Promise<string> {
     const newBlog: BlogType = {
       ...body,
       createdAt: createdAtHelper(),
       isMembership: false,
     };
 
-    const result: InsertOneResult<BlogType> =
-      await blogsRepository.createBlog(newBlog);
+    const blogId: string = await blogsRepository.createBlog(newBlog);
 
-    return result.insertedId;
+    if (!blogId) {
+      throw new BadRequestError('Failed to create blog', 'blog');
+    }
+
+    return blogId;
   },
 
   async updateBlog(id: string, body: UpdateBlogDto): Promise<boolean> {
