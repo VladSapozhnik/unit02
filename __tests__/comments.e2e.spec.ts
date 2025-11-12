@@ -181,7 +181,7 @@ describe('test' + RouterPathConst.comments, () => {
     );
   });
 
-  it('should return 200 for exist post', async () => {
+  it('should return 200 for exist post and one comment and pagination', async () => {
     await getCommentsForPostE2eUtil(
       app,
       HTTP_STATUS.OK_200,
@@ -190,7 +190,7 @@ describe('test' + RouterPathConst.comments, () => {
     );
   });
 
-  it('should return 204 and remove comment for valid commentId', async () => {
+  it('should return 200 for exist post and two comments and pagination', async () => {
     const response: Response = await createCommentE2eUtil(
       app,
       HTTP_STATUS.CREATED_201,
