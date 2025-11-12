@@ -34,6 +34,18 @@ export const loginE2eUtil = async (
     body = exampleBadRequestLogin;
   }
 
+  if (statusCode === HTTP_STATUS.OK_200) {
+    const response: Response = await request(app)
+      .post(RouterPathConst.auth + 'login')
+      .send(body)
+      .expect(statusCode);
+
+    expect(response.body).toEqual({
+      accessToken: expect.any(String),
+    });
+
+    return response;
+  }
   return await request(app)
     .post(RouterPathConst.auth + 'login')
     .send(body)
