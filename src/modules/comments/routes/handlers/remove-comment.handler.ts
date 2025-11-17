@@ -11,14 +11,7 @@ export const removeCommentHandler = async (
 ) => {
   const userId: string = req.userId as string;
 
-  const isRemove: boolean = await commentsService.removeComment(
-    userId,
-    req.params.commentId,
-  );
-
-  if (!isRemove) {
-    throw new NotFoundError(`Comment with id not found`, 'comments');
-  }
+  await commentsService.removeComment(userId, req.params.commentId);
 
   res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
 };

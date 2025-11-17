@@ -1,6 +1,6 @@
 import { UserType } from '../../users/type/user.type';
 import { CreateCommentDto } from '../dto/create-comment.dto';
-import { DeleteResult, ObjectId, UpdateResult, WithId } from 'mongodb';
+import { ObjectId, WithId } from 'mongodb';
 import { createdAtHelper } from '../../../core/helpers/created-at.helper';
 import { commentsRepository } from '../repositories/comments.repository';
 import { CommentType } from '../types/comment.type';
@@ -70,10 +70,13 @@ export const commentsService = {
       );
     }
 
-    const result: UpdateResult<WithId<CommentType>> =
-      await commentsRepository.updateComment(id, body);
+    const isUpdated: boolean = await commentsRepository.updateComment(id, body);
 
-    return result.matchedCount === 1;
+    if (!isUpdated) {
+      throw new BadRequestError(`Comment with id not found`, 'comment');
+    }
+
+    return isUpdated;
   },
   async removeComment(userId: string, id: string): Promise<boolean> {
     const findComment: CommentType | null =
@@ -90,8 +93,12 @@ export const commentsService = {
       );
     }
 
-    const result: DeleteResult = await commentsRepository.removeComment(id);
+    const isRemove: boolean = await commentsRepository.removeComment(id);
 
-    return result.deletedCount === 1;
+    if (!isRemove) {
+      throw new NotFoundError(`Comment with id not found`, 'comments');
+    }
+
+    return isRemove;
   },
 };

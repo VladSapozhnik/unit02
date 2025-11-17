@@ -12,15 +12,7 @@ export const updateCommentHandler = async (
 ) => {
   const userId: string = req.userId as string;
 
-  const isUpdated: boolean = await commentsService.updateComment(
-    userId,
-    req.params.commentId,
-    req.body,
-  );
-
-  if (!isUpdated) {
-    throw new BadRequestError(`Comment with id not found`, 'comment');
-  }
+  await commentsService.updateComment(userId, req.params.commentId, req.body);
 
   res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
 };

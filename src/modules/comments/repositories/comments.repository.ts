@@ -28,16 +28,20 @@ export const commentsRepository = {
 
     return comment;
   },
-  async updateComment(
-    id: string,
-    dto: UpdateCommentDto,
-  ): Promise<UpdateResult<WithId<CommentType>>> {
-    return commentsCollection.updateOne(
-      { _id: new ObjectId(id) },
-      { $set: dto },
-    );
+  async updateComment(id: string, dto: UpdateCommentDto): Promise<boolean> {
+    const result: UpdateResult<WithId<CommentType>> =
+      await commentsCollection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: dto },
+      );
+
+    return result.matchedCount === 1;
   },
-  async removeComment(id: string): Promise<DeleteResult> {
-    return commentsCollection.deleteOne({ _id: new ObjectId(id) });
+  async removeComment(id: string): Promise<boolean> {
+    const result: DeleteResult = await commentsCollection.deleteOne({
+      _id: new ObjectId(id),
+    });
+
+    return result.deletedCount === 1;
   },
 };
