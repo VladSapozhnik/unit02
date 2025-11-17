@@ -1,6 +1,12 @@
 import { usersCollection } from '../../../core/db/mango.db';
 import { UserDbType, UserType } from '../type/user.type';
-import { DeleteResult, InsertOneResult, ObjectId, WithId } from 'mongodb';
+import {
+  DeleteResult,
+  InsertOneResult,
+  ObjectId,
+  UpdateResult,
+  WithId,
+} from 'mongodb';
 import { CreateUserWithCreatedAtDto } from '../dto/create-user.dto';
 
 export const usersRepository = {
@@ -21,6 +27,11 @@ export const usersRepository = {
 
     return user;
   },
+  async findUserByCode(code: string): Promise<WithId<UserType> | null> {
+    return await usersCollection.findOne({
+      'emailConfirmation.confirmationCode': code,
+    });
+  },
   async getUserByLoginOrEmail(login: string, email: string) {
     return usersCollection.findOne({ $or: [{ login }, { email }] });
   },
@@ -30,6 +41,15 @@ export const usersRepository = {
     return usersCollection.findOne({
       $or: [{ login: loginOrEmail }, { email: loginOrEmail }],
     });
+  },
+  async updateConfirmation(id: string): Promise<boolean> {
+    const result: UpdateResult<WithId<UserDbType>> =
+      await usersCollection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { 'emailConfirmation.isConfirmed': true } },
+      );
+
+    return result.modifiedCount === 1;
   },
   async removeUser(id: string): Promise<DeleteResult> {
     return usersCollection.deleteOne({ _id: new ObjectId(id) });

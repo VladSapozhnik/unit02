@@ -17,6 +17,11 @@ export const usersService = {
       ...dto,
       password: hash,
       createdAt: createdAtHelper(),
+      emailConfirmation: {
+        confirmationCode: '',
+        expirationDate: new Date(),
+        isConfirmed: true,
+      },
     };
 
     const isUser: WithId<UserType> | null =

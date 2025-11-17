@@ -8,6 +8,11 @@ export type UserType = {
   login: string;
   email: string;
   createdAt: string;
+  emailConfirmation: {
+    confirmationCode: string;
+    expirationDate: Date;
+    isConfirmed: boolean;
+  };
 };
 
 export type UserDbType = {
@@ -19,4 +24,9 @@ export type UserDbType = {
   email: string;
   password: string;
   createdAt: string;
+  emailConfirmation: {
+    confirmationCode: string;
+    expirationDate: Date;
+    isConfirmed: boolean;
+  };
 };

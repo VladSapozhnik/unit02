@@ -10,6 +10,7 @@ import { PaginatedMetaType } from '../../../core/types/paginated-meta.type';
 import { buildUserFilter } from '../helpers/build-user-filter.helper';
 import { profileMapper } from '../mappers/profile.mapper';
 import { ProfileType } from '../type/profile.type';
+import { UserOutputType } from '../type/user-output.type';
 
 export const usersQueryRepository = {
   async getAllUsers(queryDto: UserQueryInput) {
@@ -31,9 +32,13 @@ export const usersQueryRepository = {
       queryDto.pageSize,
     );
 
-    return paginatedListMapper<UserType>(users, pagination, userMapper);
+    return paginatedListMapper<UserType, UserOutputType>(
+      users,
+      pagination,
+      userMapper,
+    );
   },
-  async getUserById(id: ObjectId | string): Promise<UserType | null> {
+  async getUserById(id: ObjectId | string): Promise<UserOutputType | null> {
     const user: WithId<UserType> | null = await usersCollection.findOne({
       _id: new ObjectId(id),
     });
