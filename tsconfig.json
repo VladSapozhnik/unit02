@@ -9,6 +9,7 @@
     "strict": true,
     "skipLibCheck": true
   },
+  "files": ["src/core/types/express.d.type.ts"],
   "include": ["src/**/*"],
   "exclude": ["__tests__", "dist", "node_modules"]
 }
