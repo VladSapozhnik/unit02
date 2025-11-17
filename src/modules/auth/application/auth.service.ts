@@ -66,7 +66,7 @@ export const authService = {
     if (
       user.emailConfirmation.isConfirmed ||
       user.emailConfirmation.confirmationCode !== code ||
-      user.emailConfirmation.expirationDate > new Date()
+      user.emailConfirmation.expirationDate < new Date()
     ) {
       throw new BadRequestError('Bad code for registration', 'code');
     }
