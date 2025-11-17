@@ -1,7 +1,6 @@
 import { BlogType } from '../types/blog.type';
 import { CreateBlogDto } from '../dto/create-blog.dto';
 import { UpdateBlogDto } from '../dto/update-blog.dto';
-import { DeleteResult, UpdateResult } from 'mongodb';
 import { blogsRepository } from '../repositories/blogs.repository';
 import { createdAtHelper } from '../../../core/helpers/created-at.helper';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
@@ -25,25 +24,22 @@ export const blogsService = {
   },
 
   async updateBlog(id: string, body: UpdateBlogDto): Promise<boolean> {
-    const result: UpdateResult<BlogType> = await blogsRepository.updateBlog(
-      id,
-      body,
-    );
+    const isUpdated: boolean = await blogsRepository.updateBlog(id, body);
 
-    if (result.matchedCount === 0) {
+    if (!isUpdated) {
       throw new NotFoundError('Id is not found', 'blog');
     }
 
-    return result.matchedCount === 1;
+    return isUpdated;
   },
 
   async removeBlogById(id: string): Promise<boolean> {
-    const result: DeleteResult = await blogsRepository.removeBlogById(id);
+    const isDeleted: boolean = await blogsRepository.removeBlogById(id);
 
-    if (result.deletedCount === 0) {
+    if (!isDeleted) {
       throw new NotFoundError('Id is not found', 'blog');
     }
 
-    return result.deletedCount === 1;
+    return isDeleted;
   },
 };

@@ -17,14 +17,20 @@ export const blogsRepository = {
     return result?.insertedId.toString() ?? null;
   },
 
-  async updateBlog(
-    id: string,
-    body: UpdateBlogDto,
-  ): Promise<UpdateResult<BlogType>> {
-    return blogsCollection.updateOne({ _id: new ObjectId(id) }, { $set: body });
+  async updateBlog(id: string, body: UpdateBlogDto): Promise<boolean> {
+    const result: UpdateResult<BlogType> = await blogsCollection.updateOne(
+      { _id: new ObjectId(id) },
+      { $set: body },
+    );
+
+    return result.matchedCount === 1;
   },
 
-  async removeBlogById(id: string): Promise<DeleteResult> {
-    return await blogsCollection.deleteOne({ _id: new ObjectId(id) });
+  async removeBlogById(id: string): Promise<boolean> {
+    const result: DeleteResult = await blogsCollection.deleteOne({
+      _id: new ObjectId(id),
+    });
+
+    return result.deletedCount === 1;
   },
 };
