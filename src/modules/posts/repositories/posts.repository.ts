@@ -21,17 +21,20 @@ export const postsRepository = {
     return postsCollection.findOne({ _id: new ObjectId(postId) });
   },
 
-  async updatePost(
-    id: string,
-    body: UpdatePostDto,
-  ): Promise<UpdateResult<PostType>> {
-    return postsCollection.updateOne(
+  async updatePost(id: string, body: UpdatePostDto): Promise<boolean> {
+    const result: UpdateResult<PostType> = await postsCollection.updateOne(
       { _id: new ObjectId(id) },
       { $set: { ...body } },
     );
+
+    return result.matchedCount === 1;
   },
 
-  async removePost(id: string): Promise<DeleteResult> {
-    return await postsCollection.deleteOne({ _id: new ObjectId(id) });
+  async removePost(id: string): Promise<boolean> {
+    const result: DeleteResult = await postsCollection.deleteOne({
+      _id: new ObjectId(id),
+    });
+
+    return result.deletedCount === 1;
   },
 };

@@ -2,7 +2,6 @@ import { PostType } from '../types/post.type';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { BlogType } from '../../blogs/types/blog.type';
 import { UpdatePostDto } from '../dto/update-post.dto';
-import { DeleteResult, UpdateResult } from 'mongodb';
 import { postsRepository } from '../repositories/posts.repository';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { createdAtHelper } from '../../../core/helpers/created-at.helper';
@@ -69,17 +68,22 @@ export const postsService = {
 
     const updatedBody = { ...body, blogName: existBlog.name };
 
-    const result: UpdateResult<PostType> = await postsRepository.updatePost(
-      id,
-      updatedBody,
-    );
+    const isUpdate: boolean = await postsRepository.updatePost(id, updatedBody);
 
-    return result.matchedCount === 1;
+    if (!isUpdate) {
+      throw new NotFoundError('Failed to update Post', 'post');
+    }
+
+    return isUpdate;
   },
 
   async removePost(id: string): Promise<boolean> {
-    const result: DeleteResult = await postsRepository.removePost(id);
+    const isRemove: boolean = await postsRepository.removePost(id);
 
-    return result.deletedCount === 1;
+    if (!isRemove) {
+      throw new NotFoundError('Failed to remove Post', 'post');
+    }
+
+    return isRemove;
   },
 };

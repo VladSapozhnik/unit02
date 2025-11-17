@@ -6,8 +6,8 @@ import { createdAtHelper } from '../../../core/helpers/created-at.helper';
 import { UserType } from '../type/user.type';
 import { usersRepository } from '../repositories/users.repository';
 import { BadRequestError } from '../../../core/errors/bad-request.error';
-import { DeleteResult, WithId } from 'mongodb';
 import { hashService } from '../../../core/hash/hash.service';
+import { WithId } from 'mongodb';
 
 export const usersService = {
   async createUser(dto: CreateUserDto): Promise<string> {
@@ -34,8 +34,6 @@ export const usersService = {
     return usersRepository.createUser(payload);
   },
   async removeUser(id: string): Promise<boolean> {
-    const isRemoveUser: DeleteResult = await usersRepository.removeUser(id);
-
-    return isRemoveUser.deletedCount === 1;
+    return await usersRepository.removeUser(id);
   },
 };

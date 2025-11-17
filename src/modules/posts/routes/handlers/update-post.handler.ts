@@ -15,9 +15,5 @@ export const updatePostHandler = async (
     req.body,
   );
 
-  if (!isUpdate) {
-    throw new NotFoundError('Failed to update Post', 'post');
-  }
-
   res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
 };
