@@ -54,7 +54,7 @@ export const authService = {
       );
     }
 
-    return id;
+    return randomUUID;
   },
   async confirmEmail(code: string) {
     const user: WithId<UserType> | null =
