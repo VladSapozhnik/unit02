@@ -38,7 +38,14 @@ export const authService = {
       await usersRepository.getUserByLoginOrEmail(dto.login, dto.email);
 
     if (isUser) {
-      throw new BadRequestError('User already exists', 'user');
+      let field: string = 'user';
+      if (isUser.login === dto.login) {
+        field = 'login';
+      } else if (isUser.email === dto.email) {
+        field = 'email';
+      }
+
+      throw new BadRequestError('User already exists', field);
     }
 
     await usersRepository.createUser(payload);
