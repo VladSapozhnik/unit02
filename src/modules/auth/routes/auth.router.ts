@@ -10,6 +10,7 @@ import { confirmEmailHandler } from './handlers/confirm-email.handler';
 import { confirmEmailValidation } from '../validators/confirm-email.validation';
 import { resendEmailHandler } from './handlers/resend-email.handler';
 import { resendEmailValidation } from '../validators/resend-email.validation';
+import { registerValidation } from '../validators/register.validation';
 
 export const authRouter: Router = Router();
 
@@ -22,7 +23,7 @@ authRouter.post(
 
 authRouter.post(
   '/registration',
-  userValidation,
+  registerValidation,
   inputValidationErrorsMiddleware,
   registerUserHandler,
 );

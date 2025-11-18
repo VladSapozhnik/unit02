@@ -37,7 +37,7 @@ export const authService = {
     const isUser: WithId<UserType> | null =
       await usersRepository.getUserByLoginOrEmail(dto.login, dto.email);
 
-    if (!isUser) {
+    if (isUser) {
       throw new BadRequestError('User already exists', 'user');
     }
 
