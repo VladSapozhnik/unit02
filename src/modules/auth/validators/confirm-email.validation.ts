@@ -1,7 +1,7 @@
-import { query, ValidationChain } from 'express-validator';
+import { body, ValidationChain } from 'express-validator';
 
 export const confirmEmailValidation: ValidationChain[] = [
-  query('code')
+  body('code')
     .exists()
     .withMessage('Password is required')
     .isString()

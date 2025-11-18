@@ -1,6 +1,7 @@
-export const settings = {
-  PORT: Number(process.env.PORT) || 5000,
+const PORT: number = Number(process.env.PORT) || 5000;
 
+export const settings = {
+  PORT,
   MONGO_URI: process.env.MONGO_URI || 'mongodb://127.0.0.1:27017/',
 
   MONGO_URI_TESTING:
@@ -11,4 +12,5 @@ export const settings = {
   JWT_SECRET_KEY: process.env.JWT_SECRET_KEY || 'secretkey',
   USER_GMAIL: process.env.USER_GMAIL || 'example@gmail.com',
   USER_GMAIL_PASSWORD: process.env.USER_GMAIL_PASSWORD || 'example_password',
+  BASE_URL: process.env.BASE_URL || `http://localhost:${PORT}`,
 };

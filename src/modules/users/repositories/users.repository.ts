@@ -8,6 +8,7 @@ import {
   WithId,
 } from 'mongodb';
 import { CreateUserWithCreatedAtDto } from '../dto/create-user.dto';
+import { ResendEmailType } from '../../auth/type/resend-email.type';
 
 export const usersRepository = {
   async createUser(dto: CreateUserWithCreatedAtDto): Promise<string> {
@@ -50,6 +51,21 @@ export const usersRepository = {
       );
 
     return result.modifiedCount === 1;
+  },
+  async resendEmail(
+    email: string,
+    updateData: ResendEmailType,
+  ): Promise<WithId<UserDbType> | null> {
+    return usersCollection.findOneAndUpdate(
+      {
+        email,
+        'emailConfirmation.isConfirmed': false,
+      },
+      {
+        $set: updateData,
+      },
+      { returnDocument: 'after' },
+    );
   },
   async removeUser(id: string): Promise<boolean> {
     const result: DeleteResult = await usersCollection.deleteOne({

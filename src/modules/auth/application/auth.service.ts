@@ -13,6 +13,7 @@ import { generateId } from '../../../core/constants/generate-id';
 import { add } from 'date-fns/add';
 import { emailManager } from '../../../core/managers/email.manager';
 import { usersService } from '../../users/application/users.service';
+import { ResendEmailType } from '../type/resend-email.type';
 
 export const authService = {
   async registration(dto: CreateUserDto): Promise<string> {
@@ -60,7 +61,7 @@ export const authService = {
       await usersRepository.findUserByCode(code);
 
     if (!user) {
-      throw new BadRequestError('User already exists', 'user');
+      throw new BadRequestError('Invalid confirmation code', 'code');
     }
 
     if (
@@ -72,6 +73,37 @@ export const authService = {
     }
 
     await usersRepository.updateConfirmation(user._id.toString());
+  },
+  async resendEmail(email: string) {
+    const newExpiration: Date = add(new Date(), { hours: 1, minutes: 30 });
+    const newCode = generateId();
+
+    const updateData: ResendEmailType = {
+      'emailConfirmation.confirmationCode': newCode,
+      'emailConfirmation.expirationDate': newExpiration,
+    };
+
+    const isUpdated: WithId<UserDbType> | null =
+      await usersRepository.resendEmail(email, updateData);
+
+    if (!isUpdated) {
+      throw new BadRequestError(
+        'Email is already confirmed or does not exist',
+        'email',
+      );
+    }
+
+    try {
+      await emailManager.sendEmailForRegistration(email, newCode);
+    } catch (e) {
+      await usersService.removeUser(isUpdated._id.toString());
+      throw new BadRequestError(
+        'registration failed code:' + e,
+        'registration',
+      );
+    }
+
+    return isUpdated;
   },
   async login(dto: LoginDto): Promise<false | string> {
     const user: UserDbType | null = await usersRepository.findByLoginOrEmail(
