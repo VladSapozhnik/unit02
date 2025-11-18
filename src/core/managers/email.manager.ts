@@ -5,8 +5,10 @@ export const emailManager = {
     await emailAdapter.send(
       email,
       `<div>
-                <h1>HI MAN, YO</h1>
-                <a href='https://somesite.com/confirm-email?code=${code}'>complete registration</a>
+                <h1>Thank for your registration</h1>
+                 <p>To finish registration please follow the link below:
+                    <a href='https://somesite.com/confirm-email?code=${code}'>complete registration</a>
+                </p>
             </div>`,
     );
   },
