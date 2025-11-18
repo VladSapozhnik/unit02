@@ -2,7 +2,7 @@ import nodemailer from 'nodemailer';
 import { settings } from '../settings/settings';
 
 export const emailAdapter = {
-  async send(email: string, text: string) {
+  async send(email: string, html: string) {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -15,7 +15,7 @@ export const emailAdapter = {
       from: `Vlad Mirage <${settings.USER_GMAIL}>`,
       to: email,
       subject: 'Code registration my sait',
-      text,
+      html,
     };
 
     try {
