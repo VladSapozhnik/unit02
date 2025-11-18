@@ -33,6 +33,11 @@ export const usersRepository = {
       'emailConfirmation.confirmationCode': code,
     });
   },
+  async findUserByEmail(email: string): Promise<WithId<UserType> | null> {
+    return await usersCollection.findOne({
+      email,
+    });
+  },
   async getUserByLoginOrEmail(login: string, email: string) {
     return usersCollection.findOne({ $or: [{ login }, { email }] });
   },

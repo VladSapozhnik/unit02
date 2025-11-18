@@ -12,11 +12,10 @@ import { BadRequestError } from '../../../core/errors/bad-request.error';
 import { generateId } from '../../../core/constants/generate-id';
 import { add } from 'date-fns/add';
 import { emailManager } from '../../../core/managers/email.manager';
-import { usersService } from '../../users/application/users.service';
 import { ResendEmailType } from '../type/resend-email.type';
 
 export const authService = {
-  async registration(dto: CreateUserDto): Promise<string> {
+  async registration(dto: CreateUserDto) {
     const hash: string = await hashService.hashPassword(dto.password);
 
     const randomUUID = generateId();
@@ -38,23 +37,22 @@ export const authService = {
     const isUser: WithId<UserType> | null =
       await usersRepository.getUserByLoginOrEmail(dto.login, dto.email);
 
-    if (isUser) {
+    if (!isUser) {
       throw new BadRequestError('User already exists', 'user');
     }
 
-    const id: string = await usersRepository.createUser(payload);
+    await usersRepository.createUser(payload);
 
     try {
       await emailManager.sendEmailForRegistration(dto.email, randomUUID);
     } catch (e) {
-      await usersService.removeUser(id);
-      throw new BadRequestError(
-        'registration failed code:' + e,
-        'registration',
-      );
+      console.log(e);
+      // await usersService.removeUser(id);
+      // throw new BadRequestError(
+      //   'registration failed code:' + e,
+      //   'registration',
+      // );
     }
-
-    return randomUUID;
   },
   async confirmEmail(code: string) {
     const user: WithId<UserType> | null =
@@ -96,14 +94,12 @@ export const authService = {
     try {
       await emailManager.sendEmailForRegistration(email, newCode);
     } catch (e) {
-      await usersService.removeUser(isUpdated._id.toString());
-      throw new BadRequestError(
-        'registration failed code:' + e,
-        'registration',
-      );
+      console.log(e);
+      // throw new BadRequestError(
+      //   'registration failed code:' + e,
+      //   'registration',
+      // );
     }
-
-    return isUpdated;
   },
   async login(dto: LoginDto): Promise<false | string> {
     const user: UserDbType | null = await usersRepository.findByLoginOrEmail(
