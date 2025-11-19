@@ -2,7 +2,7 @@ import jwt from 'jsonwebtoken';
 import { ObjectId } from 'mongodb';
 import { settings } from '../settings/settings';
 
-export const jwtService = {
+export const jwtAdapter = {
   async createAccessToken(userId: string | ObjectId): Promise<string> {
     return jwt.sign({ userId: userId.toString() }, settings.JWT_SECRET_KEY, {
       expiresIn: '1h',

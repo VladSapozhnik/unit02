@@ -4,7 +4,7 @@ import { HTTP_STATUS } from '../enums/http-status.enum';
 import { usersRepository } from '../../modules/users/repositories/users.repository';
 import { WithId } from 'mongodb';
 import { UserType } from '../../modules/users/type/user.type';
-import { jwtService } from '../jwt/jwt.service';
+import { jwtAdapter } from '../adapters/jwt.adapter';
 
 export const jwtAuthGuardMiddleware = async (
   req: Request,
@@ -26,7 +26,7 @@ export const jwtAuthGuardMiddleware = async (
       return;
     }
 
-    const userId: string | null = await jwtService.verifyAccessToken(token);
+    const userId: string | null = await jwtAdapter.verifyAccessToken(token);
 
     if (!userId) {
       res.sendStatus(HTTP_STATUS.UNAUTHORIZED_401);

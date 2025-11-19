@@ -1,7 +1,7 @@
 import { LoginDto } from '../dto/login.dto';
 import { usersRepository } from '../../users/repositories/users.repository';
 import { UserDbType, UserType } from '../../users/type/user.type';
-import { hashService } from '../../../core/hash/hash.service';
+import { hashAdapter } from '../../../core/adapters/hash.adapter';
 import { CreateUserDto } from '../../users/dto/create-user.dto';
 import { createdAtHelper } from '../../../core/helpers/created-at.helper';
 import { WithId } from 'mongodb';
@@ -15,7 +15,7 @@ import { Result } from '../../../core/types/result.type';
 
 export const authService = {
   async registration(dto: CreateUserDto): Promise<Result<UserDbType | null>> {
-    const hash: string = await hashService.hashPassword(dto.password);
+    const hash: string = await hashAdapter.hashPassword(dto.password);
 
     const randomUUID = generateId();
 
@@ -120,7 +120,7 @@ export const authService = {
       return false;
     }
 
-    const isValidatePassword: boolean = await hashService.compare(
+    const isValidatePassword: boolean = await hashAdapter.compare(
       user.password,
       dto.password,
     );

@@ -3,12 +3,12 @@ import { createdAtHelper } from '../../../core/helpers/created-at.helper';
 import { UserDbType, UserType } from '../type/user.type';
 import { usersRepository } from '../repositories/users.repository';
 import { BadRequestError } from '../../../core/errors/bad-request.error';
-import { hashService } from '../../../core/hash/hash.service';
+import { hashAdapter } from '../../../core/adapters/hash.adapter';
 import { WithId } from 'mongodb';
 
 export const usersService = {
   async createUser(dto: CreateUserDto): Promise<string> {
-    const hash: string = await hashService.hashPassword(dto.password);
+    const hash: string = await hashAdapter.hashPassword(dto.password);
 
     const payload: UserDbType = {
       ...dto,

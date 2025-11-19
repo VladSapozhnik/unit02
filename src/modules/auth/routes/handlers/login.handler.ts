@@ -4,7 +4,7 @@ import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { LoginDto } from '../../dto/login.dto';
 import { RequestWithBody } from '../../../../core/types/request.type';
 import { AccessTokenType } from '../../type/access-token.type';
-import { jwtService } from '../../../../core/jwt/jwt.service';
+import { jwtAdapter } from '../../../../core/adapters/jwt.adapter';
 
 export const loginHandler = async (
   req: RequestWithBody<LoginDto>,
@@ -16,7 +16,7 @@ export const loginHandler = async (
     res.sendStatus(HTTP_STATUS.UNAUTHORIZED_401);
     return;
   }
-  const jwt: string = await jwtService.createAccessToken(isLogin);
+  const jwt: string = await jwtAdapter.createAccessToken(isLogin);
 
   res.json({
     accessToken: jwt,
