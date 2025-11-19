@@ -7,11 +7,10 @@ import {
   UpdateResult,
   WithId,
 } from 'mongodb';
-import { CreateUserWithCreatedAtDto } from '../dto/create-user.dto';
 import { ResendEmailType } from '../../auth/type/resend-email.type';
 
 export const usersRepository = {
-  async createUser(dto: CreateUserWithCreatedAtDto): Promise<string> {
+  async createUser(dto: UserDbType): Promise<string> {
     const result: InsertOneResult<WithId<UserDbType>> =
       await usersCollection.insertOne(dto);
 

@@ -2,25 +2,24 @@ import { LoginDto } from '../dto/login.dto';
 import { usersRepository } from '../../users/repositories/users.repository';
 import { UserDbType, UserType } from '../../users/type/user.type';
 import { hashService } from '../../../core/hash/hash.service';
-import {
-  CreateUserDto,
-  CreateUserWithCreatedAtDto,
-} from '../../users/dto/create-user.dto';
+import { CreateUserDto } from '../../users/dto/create-user.dto';
 import { createdAtHelper } from '../../../core/helpers/created-at.helper';
 import { WithId } from 'mongodb';
 import { BadRequestError } from '../../../core/errors/bad-request.error';
 import { generateId } from '../../../core/constants/generate-id';
 import { add } from 'date-fns/add';
-import { emailManager } from '../../../core/managers/email.manager';
 import { ResendEmailType } from '../type/resend-email.type';
+import { emailAdapter } from '../../../core/adapters/email.adapter';
+import { ResultStatus } from '../../../core/enums/result-status.enum';
+import { Result } from '../../../core/types/result.type';
 
 export const authService = {
-  async registration(dto: CreateUserDto) {
+  async registration(dto: CreateUserDto): Promise<Result<UserDbType | null>> {
     const hash: string = await hashService.hashPassword(dto.password);
 
     const randomUUID = generateId();
 
-    const payload: CreateUserWithCreatedAtDto = {
+    const newUser: UserDbType = {
       ...dto,
       password: hash,
       createdAt: createdAtHelper(),
@@ -38,28 +37,36 @@ export const authService = {
       await usersRepository.getUserByLoginOrEmail(dto.login, dto.email);
 
     if (isUser) {
-      let field: string = 'user';
       if (isUser.login === dto.login) {
-        field = 'login';
+        return {
+          status: ResultStatus.BadRequest,
+          errorMessage: 'Bad Request',
+          data: null,
+          extensions: [{ field: 'login', message: 'User already exists' }],
+        };
       } else if (isUser.email === dto.email) {
-        field = 'email';
+        return {
+          status: ResultStatus.BadRequest,
+          errorMessage: 'Bad Request',
+          data: null,
+          extensions: [{ field: 'email', message: 'Email already exists' }],
+        };
       }
-
-      throw new BadRequestError('User already exists', field);
     }
 
-    await usersRepository.createUser(payload);
+    await usersRepository.createUser(newUser);
 
     try {
-      await emailManager.sendEmailForRegistration(dto.email, randomUUID);
+      await emailAdapter.sendEmail(dto.email, randomUUID);
     } catch (e) {
       console.log(e);
-      // await usersService.removeUser(id);
-      // throw new BadRequestError(
-      //   'registration failed code:' + e,
-      //   'registration',
-      // );
     }
+
+    return {
+      status: ResultStatus.Success,
+      data: newUser,
+      extensions: [],
+    };
   },
   async confirmEmail(code: string) {
     const user: WithId<UserType> | null =
@@ -99,13 +106,9 @@ export const authService = {
     }
 
     try {
-      await emailManager.sendEmailForRegistration(email, newCode);
+      await emailAdapter.sendEmail(email, newCode);
     } catch (e) {
       console.log(e);
-      // throw new BadRequestError(
-      //   'registration failed code:' + e,
-      //   'registration',
-      // );
     }
   },
   async login(dto: LoginDto): Promise<false | string> {

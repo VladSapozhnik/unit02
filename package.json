@@ -11,7 +11,10 @@
     "build": "tsc",
     "test": "jest -i --no-cache",
     "lint": "eslint --fix .",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test:e2e": "jest --config jest-e2e.json --runInBand --detectOpenHandles --forceExit",
+    "test:integration": "jest --config jest-integration.json --runInBand --detectOpenHandles --forceExit",
+    "coverage": "jest --coverage"
   },
   "dependencies": {
     "argon2": "^0.44.0",
@@ -21,6 +24,7 @@
     "express-validator": "^7.2.1",
     "jsonwebtoken": "^9.0.2",
     "mongodb": "^6.20.0",
+    "mongodb-memory-server": "^10.3.0",
     "nodemailer": "^7.0.10"
   },
   "devDependencies": {
