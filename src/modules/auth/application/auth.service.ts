@@ -86,7 +86,7 @@ export const authService = {
 
     await usersRepository.updateConfirmation(user._id.toString());
   },
-  async resendEmail(email: string) {
+  async resendEmail(email: string): Promise<Result> {
     const newExpiration: Date = add(new Date(), { hours: 1, minutes: 30 });
     const newCode = generateId();
 
@@ -99,10 +99,17 @@ export const authService = {
       await usersRepository.resendEmail(email, updateData);
 
     if (!isUpdated) {
-      throw new BadRequestError(
-        'Email is already confirmed or does not exist',
-        'email',
-      );
+      return {
+        status: ResultStatus.BadRequest,
+        errorMessage: 'Bad Request',
+        data: null,
+        extensions: [
+          {
+            field: 'email',
+            message: 'Email is already confirmed or does not exist',
+          },
+        ],
+      };
     }
 
     try {
@@ -110,6 +117,12 @@ export const authService = {
     } catch (e) {
       console.log(e);
     }
+
+    return {
+      status: ResultStatus.Success,
+      data: null,
+      extensions: [],
+    };
   },
   async login(dto: LoginDto): Promise<false | string> {
     const user: UserDbType | null = await usersRepository.findByLoginOrEmail(
