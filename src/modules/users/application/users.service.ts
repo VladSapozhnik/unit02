@@ -5,6 +5,8 @@ import { usersRepository } from '../repositories/users.repository';
 import { BadRequestError } from '../../../core/errors/bad-request.error';
 import { hashAdapter } from '../../../core/adapters/hash.adapter';
 import { WithId } from 'mongodb';
+import { HTTP_STATUS } from '../../../core/enums/http-status.enum';
+import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 
 export const usersService = {
   async createUser(dto: CreateUserDto): Promise<string> {
@@ -30,7 +32,11 @@ export const usersService = {
 
     return usersRepository.createUser(newUser);
   },
-  async removeUser(id: string): Promise<boolean> {
-    return await usersRepository.removeUser(id);
+  async removeUser(id: string) {
+    const isRemove: boolean = await usersRepository.removeUser(id);
+
+    if (!isRemove) {
+      throw new NotFoundError('User is not found!', 'user');
+    }
   },
 };

@@ -5,7 +5,6 @@ import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { RequestWithParamAndBody } from '../../../../core/types/request.type';
 import { CreatePostForBlogDto } from '../../dto/create-post.dto';
 import { BlogIdQueryDto } from '../../dto/blogId-query.dto';
-import { BadRequestError } from '../../../../core/errors/bad-request.error';
 import { postsQueryRepository } from '../../repositories/posts.query.repository';
 
 export const createPostForBlogHandler = async (

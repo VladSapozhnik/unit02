@@ -57,7 +57,7 @@ export const postsService = {
     return postId;
   },
 
-  async updatePost(id: string, body: UpdatePostDto): Promise<boolean> {
+  async updatePost(id: string, body: UpdatePostDto) {
     const existBlog: BlogType | null = await blogsQueryRepository.getBlogById(
       body.blogId,
     );
@@ -73,17 +73,13 @@ export const postsService = {
     if (!isUpdate) {
       throw new NotFoundError('Failed to update Post', 'post');
     }
-
-    return isUpdate;
   },
 
-  async removePost(id: string): Promise<boolean> {
+  async removePost(id: string) {
     const isRemove: boolean = await postsRepository.removePost(id);
 
     if (!isRemove) {
       throw new NotFoundError('Failed to remove Post', 'post');
     }
-
-    return isRemove;
   },
 };

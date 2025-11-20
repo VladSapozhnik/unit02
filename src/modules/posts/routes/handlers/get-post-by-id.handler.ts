@@ -15,7 +15,6 @@ export const getPostByIdHandler = async (
   );
 
   if (!existPost) {
-    res.sendStatus(HTTP_STATUS.NOT_FOUND_404);
     throw new NotFoundError('Post is not found.', 'post');
   }
 

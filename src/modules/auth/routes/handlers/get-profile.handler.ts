@@ -2,6 +2,7 @@ import { Request, Response } from 'express';
 import { usersQueryRepository } from '../../../users/repositories/users.query.repository';
 import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { ProfileType } from '../../../users/type/profile.type';
+import { UnauthorizedError } from '../../../../core/errors/unauthorized.error';
 
 export interface RequestWithUserId extends Request {
   userId: string;
@@ -14,8 +15,7 @@ export const getProfileHandler = async (req: Request, res: Response) => {
     await usersQueryRepository.getProfile(userId);
 
   if (!getProfile) {
-    res.sendStatus(HTTP_STATUS.UNAUTHORIZED_401);
-    return;
+    throw new UnauthorizedError('User not found', 'profile');
   }
   res.json(getProfile);
 };
