@@ -69,7 +69,7 @@ export const authService = {
       extensions: [],
     };
   },
-  async confirmEmail(code: string): Promise<Result<WithId<UserType> | null>> {
+  async confirmEmail(code: string): Promise<Result> {
     const user: WithId<UserType> | null =
       await usersRepository.findUserByCode(code);
 
@@ -78,13 +78,12 @@ export const authService = {
         status: ResultStatus.BadRequest,
         errorMessage: 'Bad Request',
         data: null,
-        extensions: [{ field: code, message: 'Invalid confirmation code' }],
+        extensions: [{ field: 'code', message: 'Invalid confirmation code' }],
       };
     }
 
     if (
       user.emailConfirmation.isConfirmed ||
-      user.emailConfirmation.confirmationCode !== code ||
       user.emailConfirmation.expirationDate < new Date()
     ) {
       return {
@@ -99,7 +98,7 @@ export const authService = {
 
     return {
       status: ResultStatus.Success,
-      data: user,
+      data: null,
       extensions: [],
     };
   },
