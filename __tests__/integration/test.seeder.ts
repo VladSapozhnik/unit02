@@ -1,6 +1,6 @@
 import { hashAdapter } from '../../src/core/adapters/hash.adapter';
 import { usersRepository } from '../../src/modules/users/repositories/users.repository';
-import { UserDbType } from '../../src/modules/users/type/user.type';
+import { UserWithPasswordType } from '../../src/modules/users/type/user.type';
 import { createdAtHelper } from '../../src/core/helpers/created-at.helper';
 import { add } from 'date-fns/add';
 import { randomUUID } from 'node:crypto';
@@ -33,7 +33,7 @@ export const testSeeder = {
   }: RegisterUserPayloadType) {
     const hash: string = await hashAdapter.hashPassword(password);
 
-    const user: UserDbType = {
+    const user: UserWithPasswordType = {
       login,
       email,
       password: hash,

@@ -1,6 +1,6 @@
 import { CreateUserDto } from '../dto/create-user.dto';
 import { createdAtHelper } from '../../../core/helpers/created-at.helper';
-import { UserDbType, UserType } from '../type/user.type';
+import { UserType, UserWithPasswordType } from '../type/user.type';
 import { usersRepository } from '../repositories/users.repository';
 import { BadRequestError } from '../../../core/errors/bad-request.error';
 import { hashAdapter } from '../../../core/adapters/hash.adapter';
@@ -10,7 +10,7 @@ export const usersService = {
   async createUser(dto: CreateUserDto): Promise<string> {
     const hash: string = await hashAdapter.hashPassword(dto.password);
 
-    const payload: UserDbType = {
+    const newUser: UserWithPasswordType = {
       ...dto,
       password: hash,
       createdAt: createdAtHelper(),
@@ -28,7 +28,7 @@ export const usersService = {
       throw new BadRequestError('User already exists', 'user');
     }
 
-    return usersRepository.createUser(payload);
+    return usersRepository.createUser(newUser);
   },
   async removeUser(id: string): Promise<boolean> {
     return await usersRepository.removeUser(id);

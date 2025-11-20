@@ -1,5 +1,5 @@
 import { usersCollection } from '../../../core/db/mango.db';
-import { UserDbType, UserType } from '../type/user.type';
+import { UserType, UserWithPasswordType } from '../type/user.type';
 import {
   DeleteResult,
   InsertOneResult,
@@ -10,8 +10,8 @@ import {
 import { ResendEmailType } from '../../auth/type/resend-email.type';
 
 export const usersRepository = {
-  async createUser(dto: UserDbType): Promise<string> {
-    const result: InsertOneResult<WithId<UserDbType>> =
+  async createUser(dto: UserWithPasswordType): Promise<string> {
+    const result: InsertOneResult<WithId<UserWithPasswordType>> =
       await usersCollection.insertOne(dto);
 
     return result.insertedId?.toString() ?? null;
@@ -32,23 +32,18 @@ export const usersRepository = {
       'emailConfirmation.confirmationCode': code,
     });
   },
-  async findUserByEmail(email: string): Promise<WithId<UserType> | null> {
-    return await usersCollection.findOne({
-      email,
-    });
-  },
   async getUserByLoginOrEmail(login: string, email: string) {
     return usersCollection.findOne({ $or: [{ login }, { email }] });
   },
   async findByLoginOrEmail(
     loginOrEmail: string,
-  ): Promise<WithId<UserDbType> | null> {
+  ): Promise<WithId<UserWithPasswordType> | null> {
     return usersCollection.findOne({
       $or: [{ login: loginOrEmail }, { email: loginOrEmail }],
     });
   },
   async updateConfirmation(id: string): Promise<boolean> {
-    const result: UpdateResult<WithId<UserDbType>> =
+    const result: UpdateResult<WithId<UserWithPasswordType>> =
       await usersCollection.updateOne(
         { _id: new ObjectId(id) },
         { $set: { 'emailConfirmation.isConfirmed': true } },
@@ -59,7 +54,7 @@ export const usersRepository = {
   async resendEmail(
     email: string,
     updateData: ResendEmailType,
-  ): Promise<WithId<UserDbType> | null> {
+  ): Promise<WithId<UserWithPasswordType> | null> {
     return usersCollection.findOneAndUpdate(
       {
         email,

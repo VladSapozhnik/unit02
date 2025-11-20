@@ -1,11 +1,10 @@
 import { LoginDto } from '../dto/login.dto';
 import { usersRepository } from '../../users/repositories/users.repository';
-import { UserDbType, UserType } from '../../users/type/user.type';
+import { UserType, UserWithPasswordType } from '../../users/type/user.type';
 import { hashAdapter } from '../../../core/adapters/hash.adapter';
 import { CreateUserDto } from '../../users/dto/create-user.dto';
 import { createdAtHelper } from '../../../core/helpers/created-at.helper';
 import { WithId } from 'mongodb';
-import { BadRequestError } from '../../../core/errors/bad-request.error';
 import { generateId } from '../../../core/constants/generate-id';
 import { add } from 'date-fns/add';
 import { ResendEmailType } from '../type/resend-email.type';
@@ -14,12 +13,14 @@ import { ResultStatus } from '../../../core/enums/result-status.enum';
 import { Result } from '../../../core/types/result.type';
 
 export const authService = {
-  async registration(dto: CreateUserDto): Promise<Result<UserDbType | null>> {
+  async registration(
+    dto: CreateUserDto,
+  ): Promise<Result<UserWithPasswordType | null>> {
     const hash: string = await hashAdapter.hashPassword(dto.password);
 
     const randomUUID = generateId();
 
-    const newUser: UserDbType = {
+    const newUser: UserWithPasswordType = {
       ...dto,
       password: hash,
       createdAt: createdAtHelper(),
@@ -68,7 +69,7 @@ export const authService = {
       extensions: [],
     };
   },
-  async confirmEmail(code: string): Promise<Result> {
+  async confirmEmail(code: string): Promise<Result<WithId<UserType> | null>> {
     const user: WithId<UserType> | null =
       await usersRepository.findUserByCode(code);
 
@@ -98,7 +99,7 @@ export const authService = {
 
     return {
       status: ResultStatus.Success,
-      data: null,
+      data: user,
       extensions: [],
     };
   },
@@ -111,7 +112,7 @@ export const authService = {
       'emailConfirmation.expirationDate': newExpiration,
     };
 
-    const isUpdated: WithId<UserDbType> | null =
+    const isUpdated: WithId<UserWithPasswordType> | null =
       await usersRepository.resendEmail(email, updateData);
 
     if (!isUpdated) {
@@ -141,9 +142,8 @@ export const authService = {
     };
   },
   async login(dto: LoginDto): Promise<false | string> {
-    const user: UserDbType | null = await usersRepository.findByLoginOrEmail(
-      dto.loginOrEmail,
-    );
+    const user: WithId<UserWithPasswordType> | null =
+      await usersRepository.findByLoginOrEmail(dto.loginOrEmail);
 
     if (!user || !user._id) {
       return false;

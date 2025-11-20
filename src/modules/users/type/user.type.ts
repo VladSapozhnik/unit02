@@ -15,6 +15,10 @@ export type UserType = {
   };
 };
 
+export type UserWithPasswordType = UserType & {
+  password: string;
+};
+
 export type UserDbType = {
   /**
    * Represents a user in the database

@@ -1,7 +1,10 @@
 import { emailAdapter } from '../../src/core/adapters/email.adapter';
 import { authService } from '../../src/modules/auth/application/auth.service';
 import { Result } from '../../src/core/types/result.type';
-import { UserDbType } from '../../src/modules/users/type/user.type';
+import {
+  UserType,
+  UserWithPasswordType,
+} from '../../src/modules/users/type/user.type';
 import { ResultStatus } from '../../src/core/enums/result-status.enum';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { runDB, stopDB } from '../../src/core/db/mango.db';
@@ -10,6 +13,10 @@ import express, { type Express } from 'express';
 import { setupApp } from '../../src/setup-app';
 import { testSeeder } from './test.seeder';
 import { CreateUserDto } from '../../src/modules/users/dto/create-user.dto';
+import { createdAtHelper } from '../../src/core/helpers/created-at.helper';
+import { add } from 'date-fns/add';
+import { usersRepository } from '../../src/modules/users/repositories/users.repository';
+import { WithId } from 'mongodb';
 
 describe('auth-integration test', () => {
   const app: Express = express();
@@ -47,7 +54,7 @@ describe('auth-integration test', () => {
         email: 'example@example.com',
       };
 
-      const result: Result<UserDbType | null> =
+      const result: Result<UserWithPasswordType | null> =
         await registrationUserUseCase(emailSend);
 
       expect(result.status).toEqual(ResultStatus.Success);
@@ -67,7 +74,7 @@ describe('auth-integration test', () => {
 
       await testSeeder.insertUser(user);
 
-      const resultDuplicateLogin: Result<UserDbType | null> =
+      const resultDuplicateLogin: Result<UserWithPasswordType | null> =
         await registrationUserUseCase(emailSendDuplicateLogin);
 
       expect(resultDuplicateLogin.status).toEqual(ResultStatus.BadRequest);
@@ -87,13 +94,42 @@ describe('auth-integration test', () => {
 
       await testSeeder.insertUser(user);
 
-      const resultDuplicateLogin: Result<UserDbType | null> =
+      const resultDuplicateLogin: Result<UserWithPasswordType | null> =
         await registrationUserUseCase(emailSendDuplicateLogin);
 
       expect(resultDuplicateLogin.status).toEqual(ResultStatus.BadRequest);
       expect(resultDuplicateLogin.extensions).toEqual([
         { field: 'email', message: 'Email already exists' },
       ]);
+    });
+  });
+
+  describe('confirm email by code', () => {
+    const confirmedEmailUseCase = authService.confirmEmail;
+
+    it('should', async () => {
+      const createUser: CreateUserDto = testSeeder.createUserDto();
+
+      const code: string = '123123123';
+
+      const newUser: UserWithPasswordType = {
+        ...createUser,
+        password: 'user123hash',
+        createdAt: createdAtHelper(),
+        emailConfirmation: {
+          confirmationCode: code,
+          expirationDate: add(new Date(), {
+            hours: 1,
+            minutes: 30,
+          }),
+          isConfirmed: false,
+        },
+      };
+
+      await usersRepository.createUser(newUser);
+
+      const userByCode: Result<WithId<UserType> | null> =
+        await confirmedEmailUseCase(code);
     });
   });
 
