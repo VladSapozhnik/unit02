@@ -13,6 +13,7 @@ import { ResultStatus } from '../../../core/enums/result-status.enum';
 import { Result } from '../../../core/types/result.type';
 import { jwtAdapter } from '../../../core/adapters/jwt.adapter';
 import { AccessTokenType } from '../type/access-token.type';
+import { UnauthorizedError } from '../../../core/errors/unauthorized.error';
 
 export const authService = {
   async registration(
@@ -142,17 +143,12 @@ export const authService = {
       extensions: [],
     };
   },
-  async login(dto: LoginDto): Promise<Result<AccessTokenType | null>> {
+  async login(dto: LoginDto): Promise<AccessTokenType> {
     const user: WithId<UserWithPasswordType> | null =
       await usersRepository.findByLoginOrEmail(dto.loginOrEmail);
 
     if (!user || !user._id) {
-      return {
-        status: ResultStatus.Unauthorized,
-        errorMessage: 'Unauthorized',
-        data: null,
-        extensions: [{ field: 'login', message: 'User not found' }],
-      };
+      throw new UnauthorizedError('User not found', 'login');
     }
 
     const isValidatePassword: boolean = await hashAdapter.compare(
@@ -161,22 +157,13 @@ export const authService = {
     );
 
     if (!isValidatePassword) {
-      return {
-        status: ResultStatus.Unauthorized,
-        errorMessage: 'Unauthorized',
-        data: null,
-        extensions: [{ field: 'login', message: 'User not found' }],
-      };
+      throw new UnauthorizedError('User not found', 'login');
     }
 
     const jwt: string = await jwtAdapter.createAccessToken(user._id.toString());
 
     return {
-      status: ResultStatus.Success,
-      data: {
-        accessToken: jwt,
-      },
-      extensions: [],
+      accessToken: jwt,
     };
   },
 };
