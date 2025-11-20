@@ -11,6 +11,8 @@ import { ResendEmailType } from '../type/resend-email.type';
 import { emailAdapter } from '../../../core/adapters/email.adapter';
 import { ResultStatus } from '../../../core/enums/result-status.enum';
 import { Result } from '../../../core/types/result.type';
+import { jwtAdapter } from '../../../core/adapters/jwt.adapter';
+import { AccessTokenType } from '../type/access-token.type';
 
 export const authService = {
   async registration(
@@ -140,12 +142,17 @@ export const authService = {
       extensions: [],
     };
   },
-  async login(dto: LoginDto): Promise<false | string> {
+  async login(dto: LoginDto): Promise<Result<AccessTokenType | null>> {
     const user: WithId<UserWithPasswordType> | null =
       await usersRepository.findByLoginOrEmail(dto.loginOrEmail);
 
     if (!user || !user._id) {
-      return false;
+      return {
+        status: ResultStatus.Unauthorized,
+        errorMessage: 'Unauthorized',
+        data: null,
+        extensions: [{ field: 'login', message: 'User not found' }],
+      };
     }
 
     const isValidatePassword: boolean = await hashAdapter.compare(
@@ -154,9 +161,22 @@ export const authService = {
     );
 
     if (!isValidatePassword) {
-      return false;
+      return {
+        status: ResultStatus.Unauthorized,
+        errorMessage: 'Unauthorized',
+        data: null,
+        extensions: [{ field: 'login', message: 'User not found' }],
+      };
     }
 
-    return user._id.toString();
+    const jwt: string = await jwtAdapter.createAccessToken(user._id.toString());
+
+    return {
+      status: ResultStatus.Success,
+      data: {
+        accessToken: jwt,
+      },
+      extensions: [],
+    };
   },
 };

@@ -1,24 +1,16 @@
 import { Response } from 'express';
 import { authService } from '../../application/auth.service';
-import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { LoginDto } from '../../dto/login.dto';
 import { RequestWithBody } from '../../../../core/types/request.type';
 import { AccessTokenType } from '../../type/access-token.type';
-import { jwtAdapter } from '../../../../core/adapters/jwt.adapter';
+import { Result } from '../../../../core/types/result.type';
 
 export const loginHandler = async (
   req: RequestWithBody<LoginDto>,
-  res: Response<AccessTokenType>,
+  res: Response<Result<AccessTokenType | null>>,
 ) => {
-  const isLogin: false | string = await authService.login(req.body);
-
-  if (!isLogin) {
-    res.sendStatus(HTTP_STATUS.UNAUTHORIZED_401);
-    return;
-  }
-  const jwt: string = await jwtAdapter.createAccessToken(isLogin);
-
-  res.json({
-    accessToken: jwt,
-  });
+  const date: Result<AccessTokenType | null> = await authService.login(
+    req.body,
+  );
+  res.json(date);
 };
