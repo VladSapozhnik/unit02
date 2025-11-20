@@ -68,12 +68,17 @@ export const authService = {
       extensions: [],
     };
   },
-  async confirmEmail(code: string) {
+  async confirmEmail(code: string): Promise<Result> {
     const user: WithId<UserType> | null =
       await usersRepository.findUserByCode(code);
 
     if (!user) {
-      throw new BadRequestError('Invalid confirmation code', 'code');
+      return {
+        status: ResultStatus.BadRequest,
+        errorMessage: 'Bad Request',
+        data: null,
+        extensions: [{ field: code, message: 'Invalid confirmation code' }],
+      };
     }
 
     if (
@@ -81,10 +86,21 @@ export const authService = {
       user.emailConfirmation.confirmationCode !== code ||
       user.emailConfirmation.expirationDate < new Date()
     ) {
-      throw new BadRequestError('Bad code for registration', 'code');
+      return {
+        status: ResultStatus.BadRequest,
+        errorMessage: 'Bad Request',
+        data: null,
+        extensions: [{ field: 'code', message: 'Bad code for registration' }],
+      };
     }
 
     await usersRepository.updateConfirmation(user._id.toString());
+
+    return {
+      status: ResultStatus.Success,
+      data: null,
+      extensions: [],
+    };
   },
   async resendEmail(email: string): Promise<Result> {
     const newExpiration: Date = add(new Date(), { hours: 1, minutes: 30 });

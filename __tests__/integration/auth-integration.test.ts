@@ -10,8 +10,6 @@ import express, { type Express } from 'express';
 import { setupApp } from '../../src/setup-app';
 import { testSeeder } from './test.seeder';
 import { CreateUserDto } from '../../src/modules/users/dto/create-user.dto';
-import { exec } from 'node:child_process';
-import e from 'express';
 
 describe('auth-integration test', () => {
   const app: Express = express();
