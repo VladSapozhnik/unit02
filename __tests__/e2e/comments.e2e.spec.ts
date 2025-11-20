@@ -5,7 +5,6 @@ import express from 'express';
 import { clearDbE2eUtil } from './utils/clear-db.e2e.util';
 import { RouterPathConst } from '../../src/core/constants/router-path.const';
 import { runDB, stopDB } from '../../src/core/db/mango.db';
-import { settings } from '../../src/core/settings/settings';
 import {
   ACTION_CREATE_USER,
   createUserE2eUtil,
@@ -22,18 +21,23 @@ import { ObjectIdValid } from './blogs.e2e.spec';
 import { removeCommentE2eUtil } from './utils/comments/remove-comment.e2e.util';
 import { getCommentsForPostE2eUtil } from './utils/comments/get-comments-for-post-e2e.util';
 import { CommentType } from '../../src/modules/comments/types/comment.type';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 
 describe('test' + RouterPathConst.comments, () => {
   const app = express();
   setupApp(app);
+  let mongoServer: MongoMemoryServer;
 
   beforeAll(async () => {
-    await runDB(settings.MONGO_URI_TESTING);
+    mongoServer = await MongoMemoryServer.create();
+    const url: string = mongoServer.getUri();
+    await runDB(url);
     await clearDbE2eUtil(app);
   });
 
   afterAll(async () => {
     await clearDbE2eUtil(app);
+    await mongoServer.stop();
     await stopDB();
   });
   let userToken: any;

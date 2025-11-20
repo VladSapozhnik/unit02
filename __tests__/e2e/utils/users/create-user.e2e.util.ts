@@ -12,33 +12,18 @@ export const exampleCreateUser: CreateUserDto = {
   login: 'PBvSR4UeDA',
   password: 'string',
   email: 'example@example.com',
-  emailConfirmation: {
-    confirmationCode: '',
-    expirationDate: new Date(),
-    isConfirmed: true,
-  },
 };
 
 export const exampleNonCreateUser: CreateUserDto = {
   login: '',
   password: '',
   email: '',
-  emailConfirmation: {
-    confirmationCode: '',
-    expirationDate: new Date(),
-    isConfirmed: true,
-  },
 };
 
 export const exampleCreateTwoUser: CreateUserDto = {
   login: 'vLaD356',
   password: 'string',
   email: 'example@gmail.com',
-  emailConfirmation: {
-    confirmationCode: '',
-    expirationDate: new Date(),
-    isConfirmed: true,
-  },
 };
 
 export enum ACTION_CREATE_USER {

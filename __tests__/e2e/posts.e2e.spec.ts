@@ -19,6 +19,7 @@ import { SortDirectionEnum } from '../../src/core/enums/sort-direction.enum';
 import { PostQueryInput } from '../../src/modules/posts/routes/input/post-query.input';
 import { PostSortFieldEnum } from '../../src/modules/posts/enum/post-sort-field.enum';
 import { createPostForBlogE2eUtil } from './utils/posts/create-post-by-blogId-e2e.util';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 
 const validateErrors: ErrorType[] = [
   { message: expect.any(String), field: expect.any(String) },
@@ -29,15 +30,19 @@ const validateErrors: ErrorType[] = [
 
 describe('test' + RouterPathConst.posts, () => {
   const app = express();
+  let mongoServer: MongoMemoryServer;
   setupApp(app);
 
   beforeAll(async () => {
-    await runDB(settings.MONGO_URI_TESTING);
+    mongoServer = await MongoMemoryServer.create();
+    const url: string = mongoServer.getUri();
+    await runDB(url);
     await clearDbE2eUtil(app);
   });
 
   afterAll(async () => {
     await clearDbE2eUtil(app);
+    await mongoServer.stop();
     await stopDB();
   });
 

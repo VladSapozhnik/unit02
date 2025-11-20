@@ -20,6 +20,7 @@ import { settings } from '../../src/core/settings/settings';
 import { BlogSortFieldEnum } from '../../src/modules/blogs/enum/blog-sort-field.enum';
 import { SortDirectionEnum } from '../../src/core/enums/sort-direction.enum';
 import { BlogQueryInput } from '../../src/modules/blogs/routes/input/blog-query.input';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 
 export const ObjectIdValid = '68f2b37aec3bd9b7be0c000c';
 
@@ -31,16 +32,20 @@ const validateErrors: ErrorType[] = [
 
 describe('test' + RouterPathConst.blogs, () => {
   const app = express();
+  let mongoServer: MongoMemoryServer;
 
   setupApp(app);
 
   beforeAll(async () => {
-    await runDB(settings.MONGO_URI_TESTING);
+    mongoServer = await MongoMemoryServer.create();
+    const url: string = mongoServer.getUri();
+    await runDB(url);
     await clearDbE2eUtil(app);
   });
 
   afterAll(async () => {
     await clearDbE2eUtil(app);
+    await mongoServer.stop();
     await stopDB();
   });
 

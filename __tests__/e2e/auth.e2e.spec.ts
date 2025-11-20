@@ -2,19 +2,21 @@ import { RouterPathConst } from '../../src/core/constants/router-path.const';
 import express from 'express';
 import { setupApp } from '../../src/setup-app';
 import { runDB, stopDB } from '../../src/core/db/mango.db';
-import { settings } from '../../src/core/settings/settings';
 import { clearDbE2eUtil } from './utils/clear-db.e2e.util';
 import { createUserE2eUtil } from './utils/users/create-user.e2e.util';
 import { HTTP_STATUS } from '../../src/core/enums/http-status.enum';
 import { loginE2eUtil } from './utils/auth/login.e2e.util';
 import { profileE2eUtil } from './utils/auth/profile.e2e.util';
+import { MongoMemoryServer } from 'mongodb-memory-server';
 
 describe('test' + RouterPathConst.users, () => {
   const app = express();
   setupApp(app);
-
+  let mongoServer: MongoMemoryServer;
   beforeAll(async () => {
-    await runDB(settings.MONGO_URI_TESTING);
+    mongoServer = await MongoMemoryServer.create();
+    const url: string = mongoServer.getUri();
+    await runDB(url);
     await clearDbE2eUtil(app);
   });
 
@@ -24,6 +26,7 @@ describe('test' + RouterPathConst.users, () => {
 
   afterAll(async () => {
     await clearDbE2eUtil(app);
+    await mongoServer.stop();
     await stopDB();
   });
 
