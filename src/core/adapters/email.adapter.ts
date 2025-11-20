@@ -2,7 +2,11 @@ import nodemailer from 'nodemailer';
 import { settings } from '../settings/settings';
 
 export const emailAdapter = {
-  async sendEmail(email: string, code: string) {
+  async sendEmail(
+    email: string,
+    code: string,
+    template: (code: string) => string,
+  ): Promise<boolean> {
     const transporter = nodemailer.createTransport({
       service: 'gmail',
       auth: {
@@ -11,18 +15,13 @@ export const emailAdapter = {
       },
     });
 
-    const mailOptions = {
-      from: `Vlad Mirage <${settings.USER_GMAIL}>`,
-      to: email,
-      subject: 'Code registration my sait',
-      html: ` <h1>Thank for your registration</h1>
-             <p>To finish registration please follow the link below:
-                 <a href='https://somesite.com/confirm-email?code=${code}'>complete registration</a>
-             </p>`,
-    };
-
     try {
-      await transporter.sendMail(mailOptions);
+      await transporter.sendMail({
+        from: `Vlad Mirage <${settings.USER_GMAIL}>`,
+        to: email,
+        subject: 'Code registration my sait',
+        html: template(code),
+      });
     } catch (e) {
       console.log('Send email error' + e);
     }

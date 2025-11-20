@@ -14,6 +14,7 @@ import { Result } from '../../../core/types/result.type';
 import { jwtAdapter } from '../../../core/adapters/jwt.adapter';
 import { AccessTokenType } from '../type/access-token.type';
 import { UnauthorizedError } from '../../../core/errors/unauthorized.error';
+import { emailExamples } from '../../../core/adapters/email.examples';
 
 export const authService = {
   async registration(
@@ -61,7 +62,11 @@ export const authService = {
     await usersRepository.createUser(newUser);
 
     try {
-      await emailAdapter.sendEmail(dto.email, randomUUID);
+      await emailAdapter.sendEmail(
+        dto.email,
+        randomUUID,
+        emailExamples.registrationEmail,
+      );
     } catch (e) {
       console.log(e);
     }
@@ -132,7 +137,11 @@ export const authService = {
     }
 
     try {
-      await emailAdapter.sendEmail(email, newCode);
+      await emailAdapter.sendEmail(
+        email,
+        newCode,
+        emailExamples.registrationEmail,
+      );
     } catch (e) {
       console.log(e);
     }
