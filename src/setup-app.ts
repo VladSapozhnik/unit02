@@ -1,4 +1,9 @@
-import express, { type Request, type Response, type Express } from 'express';
+import express, {
+  type Request,
+  type Response,
+  type Express,
+  type NextFunction,
+} from 'express';
 import { blogsRouter } from './modules/blogs/routes/blogs.router';
 import { postsRouter } from './modules/posts/routes/posts.router';
 import { HTTP_STATUS } from './core/enums/http-status.enum';
@@ -19,7 +24,7 @@ export const setupApp = (app: Express) => {
   app.use(express.json());
   app.use(cookieParser());
 
-  app.get('/', (req: Request, res: Response) => {
+  app.get('/', (req, res) => {
     res.send('Main page!');
   });
 
@@ -29,7 +34,7 @@ export const setupApp = (app: Express) => {
   app.use(RouterPathConst.auth, authRouter);
   app.use(RouterPathConst.comments, commentsRouter);
 
-  app.use((err: unknown, req: Request, res: Response) => {
+  app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
     errorsHandler(err, res);
   });
 
