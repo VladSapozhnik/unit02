@@ -12,9 +12,9 @@ import { emailAdapter } from '../../../core/adapters/email.adapter';
 import { ResultStatus } from '../../../core/enums/result-status.enum';
 import { Result } from '../../../core/types/result.type';
 import { jwtAdapter } from '../../../core/adapters/jwt.adapter';
-import { AccessTokenType } from '../type/access-token.type';
 import { UnauthorizedError } from '../../../core/errors/unauthorized.error';
 import { emailExamples } from '../../../core/adapters/email.examples';
+import { AccessAndRefreshTokensType } from '../type/access-and-refresh-tokens.type';
 
 export const authService = {
   async registration(
@@ -152,7 +152,7 @@ export const authService = {
       extensions: [],
     };
   },
-  async login(dto: LoginDto): Promise<AccessTokenType> {
+  async login(dto: LoginDto): Promise<AccessAndRefreshTokensType> {
     const user: WithId<UserWithPasswordType> | null =
       await usersRepository.findByLoginOrEmail(dto.loginOrEmail);
 
@@ -169,10 +169,16 @@ export const authService = {
       throw new UnauthorizedError('User not found', 'login');
     }
 
-    const jwt: string = await jwtAdapter.createAccessToken(user._id.toString());
+    const accessToken: string = await jwtAdapter.createAccessToken(
+      user._id.toString(),
+    );
+    const refreshToken: string = await jwtAdapter.createRefreshToken(
+      user._id.toString(),
+    );
 
     return {
-      accessToken: jwt,
+      accessToken,
+      refreshToken,
     };
   },
 };

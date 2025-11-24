@@ -5,7 +5,6 @@ import { usersRepository } from '../repositories/users.repository';
 import { BadRequestError } from '../../../core/errors/bad-request.error';
 import { hashAdapter } from '../../../core/adapters/hash.adapter';
 import { WithId } from 'mongodb';
-import { HTTP_STATUS } from '../../../core/enums/http-status.enum';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 
 export const usersService = {

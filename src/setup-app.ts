@@ -1,9 +1,4 @@
-import express, {
-  type Request,
-  type Response,
-  type Express,
-  type NextFunction,
-} from 'express';
+import express, { type Request, type Response, type Express } from 'express';
 import { blogsRouter } from './modules/blogs/routes/blogs.router';
 import { postsRouter } from './modules/posts/routes/posts.router';
 import { HTTP_STATUS } from './core/enums/http-status.enum';
@@ -18,11 +13,13 @@ import { usersRouter } from './modules/users/routes/users.router';
 import { errorsHandler } from './core/errors/errors.handler';
 import { authRouter } from './modules/auth/routes/auth.router';
 import { commentsRouter } from './modules/comments/routes/comments.router';
+import cookieParser from 'cookie-parser';
 
 export const setupApp = (app: Express) => {
   app.use(express.json());
+  app.use(cookieParser());
 
-  app.get('/', (req, res) => {
+  app.get('/', (req: Request, res: Response) => {
     res.send('Main page!');
   });
 
@@ -32,7 +29,7 @@ export const setupApp = (app: Express) => {
   app.use(RouterPathConst.auth, authRouter);
   app.use(RouterPathConst.comments, commentsRouter);
 
-  app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
+  app.use((err: unknown, req: Request, res: Response) => {
     errorsHandler(err, res);
   });
 

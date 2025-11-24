@@ -5,12 +5,13 @@ import { inputValidationErrorsMiddleware } from '../../../core/middleware/input-
 import { jwtAuthGuardMiddleware } from '../../../core/middleware/jwt-auth-guard.middleware';
 import { getProfileHandler } from './handlers/get-profile.handler';
 import { registerUserHandler } from './handlers/register-user.handler';
-import { userValidation } from '../../users/validators/user.validation';
 import { confirmEmailHandler } from './handlers/confirm-email.handler';
 import { confirmEmailValidation } from '../validators/confirm-email.validation';
 import { resendEmailHandler } from './handlers/resend-email.handler';
 import { resendEmailValidation } from '../validators/resend-email.validation';
 import { registerValidation } from '../validators/register.validation';
+import { logoutHandler } from './handlers/logout.handler';
+import { refreshTokenHandler } from './handlers/refresh-token.handler';
 
 export const authRouter: Router = Router();
 
@@ -19,6 +20,20 @@ authRouter.post(
   authValidation,
   inputValidationErrorsMiddleware,
   loginHandler,
+);
+
+authRouter.post(
+  '/logout',
+  authValidation,
+  inputValidationErrorsMiddleware,
+  logoutHandler,
+);
+
+authRouter.post(
+  '/refresh-token',
+  authValidation,
+  inputValidationErrorsMiddleware,
+  refreshTokenHandler,
 );
 
 authRouter.post(

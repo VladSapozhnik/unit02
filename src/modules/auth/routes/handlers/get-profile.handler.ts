@@ -1,6 +1,5 @@
 import { Request, Response } from 'express';
 import { usersQueryRepository } from '../../../users/repositories/users.query.repository';
-import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { ProfileType } from '../../../users/type/profile.type';
 import { UnauthorizedError } from '../../../../core/errors/unauthorized.error';
 

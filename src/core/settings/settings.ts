@@ -10,7 +10,10 @@ export const settings = {
 
   DB_NAME: process.env.DB_NAME || 'dto-it-incubator',
   JWT_SECRET_KEY: process.env.JWT_SECRET_KEY || 'secretkey',
+  JWT_REFRESH_SECRET_KEY:
+    process.env.JWT_REFRESH_SECRET_KEY || 'secretRefreshKey',
   USER_GMAIL: process.env.USER_GMAIL || 'example@gmail.com',
   USER_GMAIL_PASSWORD: process.env.USER_GMAIL_PASSWORD || 'example_password',
   BASE_URL: process.env.BASE_URL || `http://localhost:${PORT}`,
+  NODE_ENV: process.env.NODE_ENV || 'development',
 };

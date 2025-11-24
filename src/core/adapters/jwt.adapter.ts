@@ -1,12 +1,20 @@
 import jwt from 'jsonwebtoken';
-import { ObjectId } from 'mongodb';
 import { settings } from '../settings/settings';
 
 export const jwtAdapter = {
-  async createAccessToken(userId: string | ObjectId): Promise<string> {
+  async createAccessToken(userId: string): Promise<string> {
     return jwt.sign({ userId: userId.toString() }, settings.JWT_SECRET_KEY, {
-      expiresIn: '1h',
+      expiresIn: '10s',
     });
+  },
+  async createRefreshToken(userId: string): Promise<string> {
+    return jwt.sign(
+      { userId: userId.toString() },
+      settings.JWT_REFRESH_SECRET_KEY,
+      {
+        expiresIn: '20s',
+      },
+    );
   },
   async verifyAccessToken(jwtToken: string): Promise<string | null> {
     try {
@@ -15,5 +23,8 @@ export const jwtAdapter = {
     } catch {
       return null;
     }
+  },
+  verifyRefreshToken(token: string) {
+    return jwt.verify(token, settings.JWT_REFRESH_SECRET_KEY);
   },
 };
