@@ -5,8 +5,6 @@ import { JwtPayload } from 'jsonwebtoken';
 import { UnauthorizedError } from '../../../../core/errors/unauthorized.error';
 
 export const refreshTokenHandler = async (req: Request, res: Response) => {
-  const userId: string = req.userId as string;
-
   const oldRefreshToken: string = req.cookies.refreshToken;
 
   let payload: JwtPayload;
@@ -16,9 +14,7 @@ export const refreshTokenHandler = async (req: Request, res: Response) => {
     throw new UnauthorizedError('Unauthorized', 'auth');
   }
 
-  if (!payload) {
-    throw new UnauthorizedError('Unauthorized', 'auth');
-  }
+  const userId: string = payload.userId as string;
 
   const accessToken: string = await jwtAdapter.createAccessToken(userId);
   const refreshToken: string = await jwtAdapter.createRefreshToken(userId);

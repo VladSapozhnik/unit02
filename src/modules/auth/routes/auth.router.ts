@@ -29,12 +29,7 @@ authRouter.post(
   logoutHandler,
 );
 
-authRouter.post(
-  '/refresh-token',
-  authValidation,
-  inputValidationErrorsMiddleware,
-  refreshTokenHandler,
-);
+authRouter.post('/refresh-token', refreshTokenHandler);
 
 authRouter.post(
   '/registration',
