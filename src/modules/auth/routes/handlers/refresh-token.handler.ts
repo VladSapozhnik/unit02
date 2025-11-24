@@ -7,11 +7,15 @@ import { UnauthorizedError } from '../../../../core/errors/unauthorized.error';
 export const refreshTokenHandler = async (req: Request, res: Response) => {
   const oldRefreshToken: string = req.cookies.refreshToken;
 
+  if (!oldRefreshToken) {
+    throw new UnauthorizedError('Unauthorized', 'refreshToken');
+  }
+
   let payload: JwtPayload;
   try {
     payload = jwtAdapter.verifyRefreshToken(oldRefreshToken) as JwtPayload;
   } catch {
-    throw new UnauthorizedError('Unauthorized', 'auth');
+    throw new UnauthorizedError('Unauthorized', 'refreshToken');
   }
 
   const userId: string = payload.userId as string;
