@@ -20,6 +20,7 @@ export const usersService = {
         expirationDate: new Date(),
         isConfirmed: true,
       },
+      currentRefreshToken: '',
     };
 
     const isUser: WithId<UserType> | null =

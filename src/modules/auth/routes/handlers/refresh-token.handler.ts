@@ -3,6 +3,7 @@ import { jwtAdapter } from '../../../../core/adapters/jwt.adapter';
 import { cookieAdapter } from '../../../../core/adapters/cookie.adapter';
 import { JwtPayload } from 'jsonwebtoken';
 import { UnauthorizedError } from '../../../../core/errors/unauthorized.error';
+import { authService } from '../../application/auth.service';
 
 export const refreshTokenHandler = async (req: Request, res: Response) => {
   const oldRefreshToken: string = req.cookies.refreshToken;
@@ -22,6 +23,8 @@ export const refreshTokenHandler = async (req: Request, res: Response) => {
 
   const accessToken: string = await jwtAdapter.createAccessToken(userId);
   const refreshToken: string = await jwtAdapter.createRefreshToken(userId);
+
+  await authService.saveRefreshToken(userId, refreshToken);
 
   cookieAdapter.setRefreshCookie(res, refreshToken);
 

@@ -73,4 +73,16 @@ export const usersRepository = {
 
     return result.deletedCount === 1;
   },
+  async saveRefreshToken(
+    userId: string,
+    refreshToken: string,
+  ): Promise<boolean> {
+    const result: UpdateResult<WithId<UserWithPasswordType>> =
+      await usersCollection.updateOne(
+        { _id: new ObjectId(userId) },
+        { $set: { currentRefreshToken: refreshToken } },
+      );
+
+    return result.modifiedCount === 1;
+  },
 };

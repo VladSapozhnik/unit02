@@ -13,6 +13,7 @@ export type UserType = {
     expirationDate: Date;
     isConfirmed: boolean;
   };
+  currentRefreshToken: string;
 };
 
 export type UserWithPasswordType = UserType & {
@@ -33,4 +34,5 @@ export type UserDbType = {
     expirationDate: Date;
     isConfirmed: boolean;
   };
+  currentRefreshToken: string;
 };

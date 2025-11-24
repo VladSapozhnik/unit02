@@ -36,6 +36,7 @@ export const authService = {
         }),
         isConfirmed: false,
       },
+      currentRefreshToken: '',
     };
 
     const isUser: WithId<UserType> | null =
@@ -176,9 +177,22 @@ export const authService = {
       user._id.toString(),
     );
 
+    await authService.saveRefreshToken(user._id.toString(), refreshToken);
+
     return {
       accessToken,
       refreshToken,
     };
+  },
+
+  async saveRefreshToken(userId: string, refreshToken: string) {
+    const isSaveRefreshToken: boolean = await usersRepository.saveRefreshToken(
+      userId,
+      refreshToken,
+    );
+
+    if (!isSaveRefreshToken) {
+      throw new UnauthorizedError('User not found', 'auth');
+    }
   },
 };
