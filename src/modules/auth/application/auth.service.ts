@@ -15,6 +15,8 @@ import { jwtAdapter } from '../../../core/adapters/jwt.adapter';
 import { UnauthorizedError } from '../../../core/errors/unauthorized.error';
 import { emailExamples } from '../../../core/adapters/email.examples';
 import { AccessAndRefreshTokensType } from '../type/access-and-refresh-tokens.type';
+import { refreshTokenHandler } from '../routes/handlers/refresh-token.handler';
+import { JwtPayload } from 'jsonwebtoken';
 
 export const authService = {
   async registration(
@@ -194,5 +196,37 @@ export const authService = {
     if (!isSaveRefreshToken) {
       throw new UnauthorizedError('User not found', 'auth');
     }
+  },
+
+  async refreshToken(
+    oldRefreshToken: string,
+  ): Promise<AccessAndRefreshTokensType> {
+    if (!oldRefreshToken) {
+      throw new UnauthorizedError('Unauthorized', 'refreshToken');
+    }
+
+    let payload: JwtPayload;
+    try {
+      payload = jwtAdapter.verifyRefreshToken(oldRefreshToken) as JwtPayload;
+    } catch {
+      throw new UnauthorizedError('Unauthorized', 'refreshToken');
+    }
+
+    const userId: string = payload.userId as string;
+
+    const currentRefreshToken: string | null =
+      await usersRepository.getRefreshTokenByUserId(userId);
+
+    if (!currentRefreshToken || currentRefreshToken !== oldRefreshToken) {
+      throw new UnauthorizedError('Unauthorized', 'logout');
+    }
+
+    const accessToken: string = await jwtAdapter.createAccessToken(userId);
+    const refreshToken: string = await jwtAdapter.createRefreshToken(userId);
+
+    return {
+      accessToken,
+      refreshToken,
+    };
   },
 };
