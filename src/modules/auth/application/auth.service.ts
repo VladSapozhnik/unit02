@@ -4,7 +4,7 @@ import { UserType, UserWithPasswordType } from '../../users/type/user.type';
 import { hashAdapter } from '../../../core/adapters/hash.adapter';
 import { CreateUserDto } from '../../users/dto/create-user.dto';
 import { createdAtHelper } from '../../../core/helpers/created-at.helper';
-import { WithId } from 'mongodb';
+import { ObjectId, WithId } from 'mongodb';
 import { generateId } from '../../../core/constants/generate-id';
 import { add } from 'date-fns/add';
 import { ResendEmailType } from '../type/resend-email.type';
@@ -184,23 +184,10 @@ export const authService = {
       deviceId,
     );
 
-    await authService.saveRefreshToken(user._id.toString(), refreshToken);
-
     return {
       accessToken,
       refreshToken,
     };
-  },
-
-  async saveRefreshToken(userId: string, refreshToken: string) {
-    const isSaveRefreshToken: boolean = await usersRepository.saveRefreshToken(
-      userId,
-      refreshToken,
-    );
-
-    if (!isSaveRefreshToken) {
-      throw new UnauthorizedError('User not found', 'auth');
-    }
   },
 
   async refreshToken(
@@ -220,24 +207,15 @@ export const authService = {
     const userId: string = payload.userId as string;
     const deviceId: string = payload.deviceId as string;
 
-    const currentRefreshToken: string | null =
-      await usersRepository.getRefreshTokenByUserId(userId);
-
-    if (!payload.exp) {
+    if (!payload.exp || !payload.userId || !payload.deviceId) {
       throw new UnauthorizedError('Unauthorized', 'refreshToken');
     }
 
-    const blackList: BlacklistType = {
-      token: oldRefreshToken,
-      userId: userId,
-      deviceId: deviceId,
-      expiresAt: new Date(payload.exp * 1000),
-    };
+    const isBlacklisted: WithId<BlacklistType> | null =
+      await blacklistRepository.isTokenBlacklisted(oldRefreshToken, userId);
 
-    await blacklistRepository.addToBlacklist(blackList);
-
-    if (!currentRefreshToken || currentRefreshToken !== oldRefreshToken) {
-      throw new UnauthorizedError('Unauthorized', 'logout');
+    if (isBlacklisted) {
+      throw new UnauthorizedError('Unauthorized', 'refreshToken');
     }
 
     const accessToken: string = await jwtAdapter.createAccessToken(userId);
@@ -245,6 +223,15 @@ export const authService = {
       userId,
       deviceId,
     );
+
+    const blackList: BlacklistType = {
+      token: oldRefreshToken,
+      userId: new ObjectId(userId),
+      deviceId: deviceId,
+      expiresAt: new Date(payload.exp * 1000),
+    };
+
+    await blacklistRepository.addToBlacklist(blackList);
 
     return {
       accessToken,
@@ -264,13 +251,11 @@ export const authService = {
 
     const userId: string = payload.userId;
 
-    const currentRefreshToken: string | null =
-      await usersRepository.getRefreshTokenByUserId(userId);
+    const isBlacklisted: WithId<BlacklistType> | null =
+      await blacklistRepository.isTokenBlacklisted(oldRefreshToken, userId);
 
-    if (!currentRefreshToken || currentRefreshToken !== oldRefreshToken) {
+    if (isBlacklisted) {
       throw new UnauthorizedError('Unauthorized', 'logout');
     }
-
-    await authService.saveRefreshToken(userId, '');
   },
 };

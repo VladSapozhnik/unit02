@@ -8,7 +8,6 @@ import {
   WithId,
 } from 'mongodb';
 import { ResendEmailType } from '../../auth/type/resend-email.type';
-import { RefreshTokenOnlyType } from '../type/refresh-token-only.type';
 
 export const usersRepository = {
   async createUser(dto: UserWithPasswordType): Promise<string> {
@@ -73,26 +72,5 @@ export const usersRepository = {
     });
 
     return result.deletedCount === 1;
-  },
-  async getRefreshTokenByUserId(userId: string): Promise<string | null> {
-    const result: WithId<RefreshTokenOnlyType> | null =
-      await usersCollection.findOne(
-        { _id: new ObjectId(userId) },
-        { projection: { currentRefreshToken: 1 } },
-      );
-
-    return result?.currentRefreshToken ?? null;
-  },
-  async saveRefreshToken(
-    userId: string,
-    refreshToken: string,
-  ): Promise<boolean> {
-    const result: UpdateResult<WithId<UserWithPasswordType>> =
-      await usersCollection.updateOne(
-        { _id: new ObjectId(userId) },
-        { $set: { currentRefreshToken: refreshToken } },
-      );
-
-    return result.modifiedCount === 1;
   },
 };
