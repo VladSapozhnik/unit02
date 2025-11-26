@@ -22,8 +22,8 @@ import { authRouter } from './modules/auth/routes/auth.router';
 import { commentsRouter } from './modules/comments/routes/comments.router';
 import cookieParser from 'cookie-parser';
 import { securityDevicesRouter } from './modules/security-devices/routes/security-devices.router';
-import crone from 'node-cron';
-import { blacklistRepository } from './modules/blacklist/repositories/blacklist.repository';
+// import crone from 'node-cron';
+// import { blacklistRepository } from './modules/blacklist/repositories/blacklist.repository';
 
 export const setupApp = (app: Express) => {
   app.use(express.json());
@@ -44,14 +44,14 @@ export const setupApp = (app: Express) => {
     errorsHandler(err, res);
   });
 
-  crone.schedule('*/30 * * * *', async () => {
-    try {
-      await blacklistRepository.cleanExpiredBlacklist();
-      console.log('clear blacklist');
-    } catch (e) {
-      console.error(e);
-    }
-  });
+  // crone.schedule('*/30 * * * *', async () => {
+  //   try {
+  //     await blacklistRepository.cleanExpiredBlacklist();
+  //     console.log('clear blacklist');
+  //   } catch (e) {
+  //     console.error(e);
+  //   }
+  // });
 
   app.delete(RouterPathConst.__tests__, async (req: Request, res: Response) => {
     await Promise.all([
