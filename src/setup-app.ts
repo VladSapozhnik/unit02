@@ -12,6 +12,7 @@ import {
   blogsCollection,
   commentsCollection,
   postsCollection,
+  securityDevicesCollection,
   usersCollection,
 } from './core/db/mango.db';
 import { usersRouter } from './modules/users/routes/users.router';
@@ -19,6 +20,7 @@ import { errorsHandler } from './core/errors/errors.handler';
 import { authRouter } from './modules/auth/routes/auth.router';
 import { commentsRouter } from './modules/comments/routes/comments.router';
 import cookieParser from 'cookie-parser';
+import { securityDevicesRouter } from './modules/security-devices/routes/security-devices.router';
 
 export const setupApp = (app: Express) => {
   app.use(express.json());
@@ -33,6 +35,7 @@ export const setupApp = (app: Express) => {
   app.use(RouterPathConst.users, usersRouter);
   app.use(RouterPathConst.auth, authRouter);
   app.use(RouterPathConst.comments, commentsRouter);
+  app.use(RouterPathConst.securityDevices, securityDevicesRouter);
 
   app.use((err: unknown, req: Request, res: Response, next: NextFunction) => {
     errorsHandler(err, res);
@@ -44,6 +47,7 @@ export const setupApp = (app: Express) => {
       postsCollection.deleteMany(),
       usersCollection.deleteMany(),
       commentsCollection.deleteMany(),
+      securityDevicesCollection.deleteMany(),
     ]);
 
     res.sendStatus(HTTP_STATUS.NO_CONTENT_204);

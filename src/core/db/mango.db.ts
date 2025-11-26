@@ -4,17 +4,23 @@ import { BlogType } from '../../modules/blogs/types/blog.type';
 import { PostType } from '../../modules/posts/types/post.type';
 import { UserDbType } from '../../modules/users/type/user.type';
 import { CommentType } from '../../modules/comments/types/comment.type';
+import { SecurityDevicesType } from '../../modules/security-devices/types/security-devices.type';
+import { BlacklistType } from '../../modules/blacklist/types/blacklist.type';
 
 const BLOG_COLLECTION_NAME = 'blogs';
 const POST_COLLECTION_NAME = 'posts';
 const USER_COLLECTION_NAME = 'users';
 const COMMENT_COLLECTION_NAME = 'comments';
+const BLACKLIST_COLLECTION_NAME = 'blacklist';
+const SECURITY_DEVICES_COLLECTION_NAME = 'device_sessions';
 
 export let client: MongoClient;
 export let blogsCollection: Collection<BlogType>;
 export let postsCollection: Collection<PostType>;
 export let usersCollection: Collection<UserDbType>;
 export let commentsCollection: Collection<CommentType>;
+export let blacklistCollection: Collection<BlacklistType>;
+export let securityDevicesCollection: Collection<SecurityDevicesType>;
 
 export async function runDB(db_url: string): Promise<void> {
   client = new MongoClient(db_url);
@@ -25,6 +31,10 @@ export async function runDB(db_url: string): Promise<void> {
   postsCollection = db.collection<PostType>(POST_COLLECTION_NAME);
   usersCollection = db.collection<UserDbType>(USER_COLLECTION_NAME);
   commentsCollection = db.collection<CommentType>(COMMENT_COLLECTION_NAME);
+  blacklistCollection = db.collection<BlacklistType>(BLACKLIST_COLLECTION_NAME);
+  securityDevicesCollection = db.collection<SecurityDevicesType>(
+    SECURITY_DEVICES_COLLECTION_NAME,
+  );
 
   try {
     await client.connect();

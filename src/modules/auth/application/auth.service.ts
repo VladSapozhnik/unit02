@@ -15,8 +15,10 @@ import { jwtAdapter } from '../../../core/adapters/jwt.adapter';
 import { UnauthorizedError } from '../../../core/errors/unauthorized.error';
 import { emailExamples } from '../../../core/adapters/email.examples';
 import { AccessAndRefreshTokensType } from '../type/access-and-refresh-tokens.type';
-import { refreshTokenHandler } from '../routes/handlers/refresh-token.handler';
 import { JwtPayload } from 'jsonwebtoken';
+import { randomUUID } from 'node:crypto';
+import { blacklistRepository } from '../../blacklist/repositories/blacklist.repository';
+import { BlacklistType } from '../../blacklist/types/blacklist.type';
 
 export const authService = {
   async registration(
@@ -159,6 +161,8 @@ export const authService = {
     const user: WithId<UserWithPasswordType> | null =
       await usersRepository.findByLoginOrEmail(dto.loginOrEmail);
 
+    const deviceId: string = randomUUID();
+
     if (!user || !user._id) {
       throw new UnauthorizedError('User not found', 'login');
     }
@@ -177,6 +181,7 @@ export const authService = {
     );
     const refreshToken: string = await jwtAdapter.createRefreshToken(
       user._id.toString(),
+      deviceId,
     );
 
     await authService.saveRefreshToken(user._id.toString(), refreshToken);
@@ -213,6 +218,51 @@ export const authService = {
     }
 
     const userId: string = payload.userId as string;
+    const deviceId: string = payload.deviceId as string;
+
+    const currentRefreshToken: string | null =
+      await usersRepository.getRefreshTokenByUserId(userId);
+
+    if (!payload.exp) {
+      throw new UnauthorizedError('Unauthorized', 'refreshToken');
+    }
+
+    const blackList: BlacklistType = {
+      token: oldRefreshToken,
+      userId: userId,
+      deviceId: deviceId,
+      expiresAt: new Date(payload.exp * 1000),
+    };
+
+    await blacklistRepository.addToBlacklist(blackList);
+
+    if (!currentRefreshToken || currentRefreshToken !== oldRefreshToken) {
+      throw new UnauthorizedError('Unauthorized', 'logout');
+    }
+
+    const accessToken: string = await jwtAdapter.createAccessToken(userId);
+    const refreshToken: string = await jwtAdapter.createRefreshToken(
+      userId,
+      deviceId,
+    );
+
+    return {
+      accessToken,
+      refreshToken,
+    };
+  },
+  async logout(oldRefreshToken: string) {
+    if (!oldRefreshToken) {
+      throw new UnauthorizedError('Unauthorized', 'logout');
+    }
+    let payload: JwtPayload;
+    try {
+      payload = jwtAdapter.verifyRefreshToken(oldRefreshToken) as JwtPayload;
+    } catch {
+      throw new UnauthorizedError('Unauthorized', 'logout');
+    }
+
+    const userId: string = payload.userId;
 
     const currentRefreshToken: string | null =
       await usersRepository.getRefreshTokenByUserId(userId);
@@ -221,12 +271,6 @@ export const authService = {
       throw new UnauthorizedError('Unauthorized', 'logout');
     }
 
-    const accessToken: string = await jwtAdapter.createAccessToken(userId);
-    const refreshToken: string = await jwtAdapter.createRefreshToken(userId);
-
-    return {
-      accessToken,
-      refreshToken,
-    };
+    await authService.saveRefreshToken(userId, '');
   },
 };

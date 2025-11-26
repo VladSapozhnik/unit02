@@ -7,9 +7,9 @@ export const jwtAdapter = {
       expiresIn: '10s',
     });
   },
-  async createRefreshToken(userId: string): Promise<string> {
+  async createRefreshToken(userId: string, deviceId: string): Promise<string> {
     return jwt.sign(
-      { userId: userId.toString() },
+      { userId: userId, deviceId: deviceId },
       settings.JWT_REFRESH_SECRET_KEY,
       {
         expiresIn: '20s',
