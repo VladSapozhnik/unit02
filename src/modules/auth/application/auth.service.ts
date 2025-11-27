@@ -40,7 +40,6 @@ export const authService = {
         }),
         isConfirmed: false,
       },
-      currentRefreshToken: '',
     };
 
     const isUser: WithId<UserType> | null =
