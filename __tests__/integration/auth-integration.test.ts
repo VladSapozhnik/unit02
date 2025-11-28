@@ -14,6 +14,11 @@ import { createdAtHelper } from '../../src/core/helpers/created-at.helper';
 import { add } from 'date-fns/add';
 import { sub } from 'date-fns/sub';
 import { usersRepository } from '../../src/modules/users/repositories/users.repository';
+import { cookieAdapter } from '../../src/core/adapters/cookie.adapter';
+import { LoginDto } from '../../src/modules/auth/dto/login.dto';
+import { AccessAndRefreshTokensType } from '../../src/modules/auth/type/access-and-refresh-tokens.type';
+import { jwtAdapter } from '../../src/core/adapters/jwt.adapter';
+import { exec } from 'node:child_process';
 
 describe('auth-integration test', () => {
   const app: Express = express();
@@ -242,5 +247,39 @@ describe('auth-integration test', () => {
     });
   });
 
-  describe('', () => {});
+  describe('refresh token in cookie', () => {
+    const findUserByCodeUseCase = usersRepository.findUserByCode;
+    const refreshTokenUseCase = authService.refreshToken;
+
+    const code: string = '123123123';
+
+    it('should access and refresh tokens and status 200', async () => {
+      const createUser: CreateUserDto = testSeeder.createUserDto();
+
+      const newUserDto = {
+        ...createUser,
+        code,
+      };
+
+      await testSeeder.insertUser(newUserDto);
+
+      const user = await findUserByCodeUseCase(code);
+
+      const deviceId = '321321321';
+
+      const refreshToken: string = await jwtAdapter.createRefreshToken(
+        user!._id.toString(),
+        deviceId,
+      );
+
+      const result: Result<AccessAndRefreshTokensType | null> =
+        await refreshTokenUseCase(refreshToken);
+
+      expect(result.status).toEqual(ResultStatus.Success);
+      expect(result.data).toEqual({
+        accessToken: expect.any(String),
+        refreshToken: expect.any(String),
+      });
+    });
+  });
 });

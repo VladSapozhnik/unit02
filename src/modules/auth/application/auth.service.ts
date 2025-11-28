@@ -191,7 +191,7 @@ export const authService = {
 
   async refreshToken(
     oldRefreshToken: string,
-  ): Promise<AccessAndRefreshTokensType> {
+  ): Promise<Result<AccessAndRefreshTokensType | null>> {
     if (!oldRefreshToken) {
       throw new UnauthorizedError('Unauthorized', 'refreshToken');
     }
@@ -200,21 +200,39 @@ export const authService = {
     try {
       payload = jwtAdapter.verifyRefreshToken(oldRefreshToken) as JwtPayload;
     } catch {
-      throw new UnauthorizedError('Unauthorized', 'refreshToken');
+      return {
+        status: ResultStatus.Unauthorized,
+        errorMessage: 'Unauthorized',
+        data: null,
+        extensions: [{ field: 'refreshToken', message: 'Unauthorized' }],
+      };
+      // throw new UnauthorizedError('Unauthorized', 'refreshToken');
     }
 
     const userId: string = payload.userId as string;
     const deviceId: string = payload.deviceId as string;
 
     if (!payload.exp || !payload.userId || !payload.deviceId) {
-      throw new UnauthorizedError('Unauthorized', 'refreshToken');
+      return {
+        status: ResultStatus.Unauthorized,
+        errorMessage: 'Unauthorized',
+        data: null,
+        extensions: [{ field: 'refreshToken', message: 'Unauthorized' }],
+      };
+      // throw new UnauthorizedError('Unauthorized', 'refreshToken');
     }
 
     const isBlacklisted: WithId<BlacklistType> | null =
       await blacklistRepository.isTokenBlacklisted(oldRefreshToken, userId);
 
     if (isBlacklisted) {
-      throw new UnauthorizedError('Unauthorized', 'refreshToken');
+      // throw new UnauthorizedError('Unauthorized', 'refreshToken');
+      return {
+        status: ResultStatus.Unauthorized,
+        errorMessage: 'Unauthorized',
+        data: null,
+        extensions: [{ field: 'refreshToken', message: 'Unauthorized' }],
+      };
     }
 
     const accessToken: string = await jwtAdapter.createAccessToken(userId);
@@ -233,8 +251,12 @@ export const authService = {
     await blacklistRepository.addToBlacklist(blackList);
 
     return {
-      accessToken,
-      refreshToken,
+      status: ResultStatus.Success,
+      data: {
+        accessToken,
+        refreshToken,
+      },
+      extensions: [],
     };
   },
   async logout(oldRefreshToken: string) {

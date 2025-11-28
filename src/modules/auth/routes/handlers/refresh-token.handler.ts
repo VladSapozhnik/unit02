@@ -1,14 +1,25 @@
 import { Request, Response } from 'express';
 import { cookieAdapter } from '../../../../core/adapters/cookie.adapter';
 import { authService } from '../../application/auth.service';
+import { Result } from '../../../../core/types/result.type';
+import { ResultStatus } from '../../../../core/enums/result-status.enum';
+import { AccessAndRefreshTokensType } from '../../type/access-and-refresh-tokens.type';
 
 export const refreshTokenHandler = async (req: Request, res: Response) => {
   const oldRefreshToken: string = req.cookies.refreshToken;
 
-  const { accessToken, refreshToken } =
+  const result: Result<AccessAndRefreshTokensType | null> =
     await authService.refreshToken(oldRefreshToken);
+
+  if (result.status === ResultStatus.Unauthorized || result.data === null) {
+    res.status(401).json(result.extensions);
+    return;
+  }
+
+  const { accessToken, refreshToken } = result.data;
 
   cookieAdapter.setRefreshCookie(res, refreshToken);
 
   res.json({ accessToken });
+  // res.json(result);
 };
