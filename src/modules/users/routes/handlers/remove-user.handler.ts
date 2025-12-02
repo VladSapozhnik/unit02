@@ -2,10 +2,10 @@ import { Response } from 'express';
 import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { usersService } from '../../application/users.service';
 import { RequestWithParam } from '../../../../core/types/request.type';
-import { idUserParamDto } from '../../dto/id-user-param.dto';
+import { IdUserParamDto } from '../../dto/id-user-param.dto';
 
 export const removeUserHandler = async (
-  req: RequestWithParam<idUserParamDto>,
+  req: RequestWithParam<IdUserParamDto>,
   res: Response,
 ) => {
   await usersService.removeUser(req.params.id);

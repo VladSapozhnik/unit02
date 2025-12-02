@@ -42,6 +42,9 @@ export async function runDB(db_url: string): Promise<void> {
     await db
       .collection(BLACKLIST_COLLECTION_NAME)
       .createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+    await db
+      .collection(SECURITY_DEVICES_COLLECTION_NAME)
+      .createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
     console.log('✅ Connected to the database');
   } catch (e) {
     await client.close();

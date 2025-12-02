@@ -1,4 +1,4 @@
-export type idUserParamDto = {
+export type IdUserParamDto = {
   /**
    * id of existing dto
    */

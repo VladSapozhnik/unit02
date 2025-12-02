@@ -19,6 +19,8 @@ import { JwtPayload } from 'jsonwebtoken';
 import { randomUUID } from 'node:crypto';
 import { blacklistRepository } from '../../blacklist/repositories/blacklist.repository';
 import { BlacklistType } from '../../blacklist/types/blacklist.type';
+import { securityDevicesRepository } from '../../security-devices/repositories/security-devices.repository';
+import { CreateSessionDto } from '../../security-devices/dto/create-session.dto';
 
 export const authService = {
   async registration(
@@ -156,7 +158,11 @@ export const authService = {
       extensions: [],
     };
   },
-  async login(dto: LoginDto): Promise<AccessAndRefreshTokensType> {
+  async login(
+    dto: LoginDto,
+    ip: string,
+    title: string,
+  ): Promise<AccessAndRefreshTokensType> {
     const user: WithId<UserWithPasswordType> | null =
       await usersRepository.findByLoginOrEmail(dto.loginOrEmail);
 
@@ -183,6 +189,37 @@ export const authService = {
       deviceId,
     );
 
+    let payload: JwtPayload;
+    try {
+      payload = jwtAdapter.verifyRefreshToken(refreshToken) as JwtPayload;
+    } catch {
+      throw new UnauthorizedError('Unauthorized', 'refreshToken');
+    }
+
+    if (
+      !payload.exp ||
+      !payload.userId ||
+      !ObjectId.isValid(payload.userId) ||
+      !payload.deviceId ||
+      !payload.iat
+    ) {
+      throw new UnauthorizedError('Unauthorized', 'refreshToken');
+    }
+
+    const issuedAt = new Date(payload.iat * 1000);
+    const expiresAt = new Date(payload.exp * 1000);
+
+    const sessionDeviceData: CreateSessionDto = {
+      userId: payload.userId,
+      deviceId,
+      ip,
+      title,
+      issuedAt,
+      expiresAt,
+    };
+
+    await securityDevicesRepository.addDeviceSession(sessionDeviceData);
+
     return {
       accessToken,
       refreshToken,
@@ -192,10 +229,6 @@ export const authService = {
   async refreshToken(
     oldRefreshToken: string,
   ): Promise<Result<AccessAndRefreshTokensType | null>> {
-    if (!oldRefreshToken) {
-      throw new UnauthorizedError('Unauthorized', 'refreshToken');
-    }
-
     let payload: JwtPayload;
     try {
       payload = jwtAdapter.verifyRefreshToken(oldRefreshToken) as JwtPayload;
@@ -260,9 +293,6 @@ export const authService = {
     };
   },
   async logout(oldRefreshToken: string) {
-    if (!oldRefreshToken) {
-      throw new UnauthorizedError('Unauthorized', 'logout');
-    }
     let payload: JwtPayload;
     try {
       payload = jwtAdapter.verifyRefreshToken(oldRefreshToken) as JwtPayload;

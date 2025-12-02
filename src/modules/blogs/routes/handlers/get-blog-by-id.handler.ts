@@ -1,12 +1,12 @@
 import { RequestWithParam } from '../../../../core/types/request.type';
-import { idBlogParamDto } from '../../dto/id-blog-param.dto';
+import { IdBlogParamDto } from '../../dto/id-blog-param.dto';
 import { Response } from 'express';
 import { BlogType } from '../../types/blog.type';
 import { blogsQueryRepository } from '../../repositories/blogs.query.repository';
 import { NotFoundError } from '../../../../core/errors/repository-not-found.error';
 
 export const getBlogByIdHandler = async (
-  req: RequestWithParam<idBlogParamDto>,
+  req: RequestWithParam<IdBlogParamDto>,
   res: Response,
 ) => {
   const existBlog: BlogType | null = await blogsQueryRepository.getBlogById(

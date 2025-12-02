@@ -1,13 +1,13 @@
 import { Response } from 'express';
 import { RequestWithParam } from '../../../../core/types/request.type';
-import { idPostParamDto } from '../../dto/id-post-param.dto';
+import { IdPostParamDto } from '../../dto/id-post-param.dto';
 import { PostType } from '../../types/post.type';
 import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { postsQueryRepository } from '../../repositories/posts.query.repository';
 import { NotFoundError } from '../../../../core/errors/repository-not-found.error';
 
 export const getPostByIdHandler = async (
-  req: RequestWithParam<idPostParamDto>,
+  req: RequestWithParam<IdPostParamDto>,
   res: Response,
 ) => {
   const existPost: PostType | null = await postsQueryRepository.getPostById(

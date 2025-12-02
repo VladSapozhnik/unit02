@@ -1,4 +1,4 @@
-export type idBlogParamDto = {
+export type IdBlogParamDto = {
   /**
    * id of existing dto
    */

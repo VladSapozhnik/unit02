@@ -2,7 +2,7 @@ import { ObjectId } from 'mongodb';
 
 export type SecurityDevicesType = {
   _id?: ObjectId;
-  userId: string;
+  userId: ObjectId;
   deviceId: string;
   ip: string;
   title: string;

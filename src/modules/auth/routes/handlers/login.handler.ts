@@ -9,7 +9,14 @@ export const loginHandler = async (
   req: RequestWithBody<LoginDto>,
   res: Response<AccessTokenType>,
 ) => {
-  const { accessToken, refreshToken } = await authService.login(req.body);
+  const clientIp: string = req.ip ?? 'unknown';
+  const userAgentString: string = req.headers['user-agent'] ?? 'unknown';
+
+  const { accessToken, refreshToken } = await authService.login(
+    req.body,
+    clientIp,
+    userAgentString,
+  );
 
   cookieAdapter.setRefreshCookie(res, refreshToken);
 

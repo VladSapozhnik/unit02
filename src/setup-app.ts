@@ -28,6 +28,7 @@ import { securityDevicesRouter } from './modules/security-devices/routes/securit
 export const setupApp = (app: Express) => {
   app.use(express.json());
   app.use(cookieParser());
+  app.set('trust proxy', true);
 
   app.get('/', (req, res) => {
     res.send('Main page!');
