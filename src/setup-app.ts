@@ -13,6 +13,7 @@ import {
   blogsCollection,
   commentsCollection,
   postsCollection,
+  rateLimitCollection,
   securityDevicesCollection,
   usersCollection,
 } from './core/db/mango.db';
@@ -62,6 +63,7 @@ export const setupApp = (app: Express) => {
       commentsCollection.deleteMany(),
       blacklistCollection.deleteMany(),
       securityDevicesCollection.deleteMany(),
+      rateLimitCollection.deleteMany(),
     ]);
 
     res.sendStatus(HTTP_STATUS.NO_CONTENT_204);

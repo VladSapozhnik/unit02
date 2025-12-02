@@ -6,6 +6,7 @@ import { UserDbType } from '../../modules/users/type/user.type';
 import { CommentType } from '../../modules/comments/types/comment.type';
 import { SecurityDevicesType } from '../../modules/security-devices/types/security-devices.type';
 import { BlacklistType } from '../../modules/blacklist/types/blacklist.type';
+import { RateLimitType } from '../../modules/rate-limit/types/rate-limit.type';
 
 const BLOG_COLLECTION_NAME = 'blogs';
 const POST_COLLECTION_NAME = 'posts';
@@ -13,6 +14,7 @@ const USER_COLLECTION_NAME = 'users';
 const COMMENT_COLLECTION_NAME = 'comments';
 const BLACKLIST_COLLECTION_NAME = 'blacklist';
 const SECURITY_DEVICES_COLLECTION_NAME = 'device_sessions';
+const RATE_LIMIT = 'rate_limit';
 
 export let client: MongoClient;
 export let blogsCollection: Collection<BlogType>;
@@ -21,6 +23,7 @@ export let usersCollection: Collection<UserDbType>;
 export let commentsCollection: Collection<CommentType>;
 export let blacklistCollection: Collection<BlacklistType>;
 export let securityDevicesCollection: Collection<SecurityDevicesType>;
+export let rateLimitCollection: Collection<RateLimitType>;
 
 export async function runDB(db_url: string): Promise<void> {
   client = new MongoClient(db_url);
@@ -35,6 +38,7 @@ export async function runDB(db_url: string): Promise<void> {
   securityDevicesCollection = db.collection<SecurityDevicesType>(
     SECURITY_DEVICES_COLLECTION_NAME,
   );
+  rateLimitCollection = db.collection<RateLimitType>(RATE_LIMIT);
 
   try {
     await client.connect();
