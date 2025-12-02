@@ -1,4 +1,4 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { HTTP_STATUS } from '../../../../core/enums/http-status.enum';
 import { RequestWithParam } from '../../../../core/types/request.type';
 import { DeviceIdParamDto } from '../../dto/device-id-param.dto';

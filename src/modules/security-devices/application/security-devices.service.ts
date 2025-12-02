@@ -3,6 +3,7 @@ import { securityDevicesRepository } from '../repositories/security-devices.repo
 import { JwtPayload } from 'jsonwebtoken';
 import { jwtAdapter } from '../../../core/adapters/jwt.adapter';
 import { SecurityDevicesType } from '../types/security-devices.type';
+import { ForbiddenRequestError } from '../../../core/errors/forbidden-request.error';
 
 export const securityDevicesService = {
   async getSessionByUser(refreshToken: string): Promise<SecurityDevicesType[]> {
@@ -48,7 +49,7 @@ export const securityDevicesService = {
       );
 
     if (!isRemoveSession) {
-      throw new UnauthorizedError('Unauthorized', 'session');
+      throw new ForbiddenRequestError('Unauthorized', 'session');
     }
   },
 
