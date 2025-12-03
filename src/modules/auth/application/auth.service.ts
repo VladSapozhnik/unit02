@@ -366,6 +366,17 @@ export const authService = {
     const userId: string = payload.userId;
     const deviceId: string = payload.deviceId;
 
+    const isBlacklisted: WithId<BlacklistType> | null =
+      await blacklistRepository.isTokenBlacklisted(
+        oldRefreshToken,
+        userId,
+        deviceId,
+      );
+
+    if (isBlacklisted) {
+      throw new UnauthorizedError('Unauthorized', 'logout');
+    }
+
     const blackList: AddBlacklistDto = {
       token: oldRefreshToken,
       userId: userId,
@@ -375,6 +386,11 @@ export const authService = {
 
     await blacklistRepository.addToBlacklist(blackList);
 
-    await securityDevicesRepository.removeDeviceSession(userId, deviceId);
+    const isRemovedSession: boolean =
+      await securityDevicesRepository.removeDeviceSession(userId, deviceId);
+
+    if (!isRemovedSession) {
+      throw new UnauthorizedError('Unauthorized', 'logout');
+    }
   },
 };
