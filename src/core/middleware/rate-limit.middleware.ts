@@ -26,7 +26,7 @@ export const rateLimitMiddleware = async (
   const attemptDate: RateLimitType = {
     ip,
     url,
-    date: add(new Date(), { seconds: 10 }),
+    date: new Date(),
   };
 
   await rateLimitRepository.addAttempt(attemptDate);

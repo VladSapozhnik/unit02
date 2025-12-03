@@ -1,6 +1,7 @@
 import { RateLimitType } from '../types/rate-limit.type';
 import { rateLimitCollection } from '../../../core/db/mango.db';
 import { InsertOneResult } from 'mongodb';
+import { subSeconds } from 'date-fns/subSeconds';
 
 export const rateLimitRepository = {
   async addAttempt(data: RateLimitType): Promise<string> {
@@ -10,6 +11,12 @@ export const rateLimitRepository = {
     return result.insertedId.toString() ?? null;
   },
   async getAttemptsCount(ip: string, url: string): Promise<number> {
-    return rateLimitCollection.countDocuments({ ip, url });
+    const tenSecondsAgo: Date = subSeconds(new Date(), 10);
+
+    return rateLimitCollection.countDocuments({
+      ip,
+      url,
+      date: { $gt: tenSecondsAgo },
+    });
   },
 };
