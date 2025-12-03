@@ -42,6 +42,14 @@ export const securityDevicesRepository = {
     });
   },
 
+  async findDeviceSessionByDeviceId(
+    deviceId: string,
+  ): Promise<SecurityDevicesType | null> {
+    return securityDevicesCollection.findOne({
+      deviceId,
+    });
+  },
+
   async removeDeviceSession(
     userId: string,
     deviceId: string,

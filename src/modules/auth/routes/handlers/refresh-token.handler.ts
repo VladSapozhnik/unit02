@@ -24,5 +24,4 @@ export const refreshTokenHandler = async (req: Request, res: Response) => {
   cookieAdapter.setRefreshCookie(res, refreshToken);
 
   res.json({ accessToken });
-  // res.json(result);
 };

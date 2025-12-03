@@ -3,6 +3,8 @@ import { securityDevicesRepository } from '../repositories/security-devices.repo
 import { JwtPayload } from 'jsonwebtoken';
 import { jwtAdapter } from '../../../core/adapters/jwt.adapter';
 import { ForbiddenRequestError } from '../../../core/errors/forbidden-request.error';
+import { SecurityDevicesType } from '../types/security-devices.type';
+import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 
 export const securityDevicesService = {
   async removeDeviceSession(deviceId: string, refreshToken: string) {
@@ -18,15 +20,21 @@ export const securityDevicesService = {
       throw new UnauthorizedError('Unauthorized', 'refreshToken');
     }
 
-    const isRemoveSession: boolean =
-      await securityDevicesRepository.removeDeviceSession(
-        payload.userId,
-        deviceId,
-      );
+    const findDeviceId: SecurityDevicesType | null =
+      await securityDevicesRepository.findDeviceSessionByDeviceId(deviceId);
 
-    if (!isRemoveSession) {
-      throw new ForbiddenRequestError('Unauthorized', 'session');
+    if (!findDeviceId) {
+      throw new NotFoundError('Device session not found', 'session');
     }
+
+    if (findDeviceId.userId !== payload.userId) {
+      throw new ForbiddenRequestError('Forbidden', 'session');
+    }
+
+    await securityDevicesRepository.removeDeviceSession(
+      payload.userId,
+      deviceId,
+    );
   },
 
   async removeOtherDeviceSession(refreshToken: string) {
