@@ -5,6 +5,8 @@ import { jwtAdapter } from '../../../core/adapters/jwt.adapter';
 import { ForbiddenRequestError } from '../../../core/errors/forbidden-request.error';
 import { SecurityDevicesType } from '../types/security-devices.type';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
+import { AddBlacklistDto } from '../../blacklist/dto/add-blacklist.dto';
+import { blacklistRepository } from '../../blacklist/repositories/blacklist.repository';
 
 export const securityDevicesService = {
   async removeDeviceSession(deviceId: string, refreshToken: string) {
@@ -16,7 +18,7 @@ export const securityDevicesService = {
       throw new UnauthorizedError('Unauthorized', 'refreshToken');
     }
 
-    if (!payload || !payload.userId) {
+    if (!payload || !payload.userId || !payload.exp) {
       throw new UnauthorizedError('Unauthorized', 'refreshToken');
     }
 
@@ -35,6 +37,15 @@ export const securityDevicesService = {
       payload.userId,
       deviceId,
     );
+
+    const blackList: AddBlacklistDto = {
+      token: refreshToken,
+      userId: payload.userId,
+      deviceId: deviceId,
+      expiresAt: new Date(payload.exp * 1000),
+    };
+
+    await blacklistRepository.addToBlacklist(blackList);
   },
 
   async removeOtherDeviceSession(refreshToken: string) {
