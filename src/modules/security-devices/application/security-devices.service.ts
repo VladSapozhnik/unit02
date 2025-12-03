@@ -2,33 +2,9 @@ import { UnauthorizedError } from '../../../core/errors/unauthorized.error';
 import { securityDevicesRepository } from '../repositories/security-devices.repository';
 import { JwtPayload } from 'jsonwebtoken';
 import { jwtAdapter } from '../../../core/adapters/jwt.adapter';
-import { SecurityDevicesType } from '../types/security-devices.type';
 import { ForbiddenRequestError } from '../../../core/errors/forbidden-request.error';
 
 export const securityDevicesService = {
-  async getSessionByUser(refreshToken: string): Promise<SecurityDevicesType[]> {
-    let payload: JwtPayload;
-
-    try {
-      payload = jwtAdapter.verifyRefreshToken(refreshToken) as JwtPayload;
-    } catch {
-      throw new UnauthorizedError('Unauthorized', 'refreshToken');
-    }
-
-    if (!payload || !payload.userId) {
-      throw new UnauthorizedError('Unauthorized', 'refreshToken');
-    }
-
-    const sessions: SecurityDevicesType[] | null =
-      await securityDevicesRepository.findDeviceSessionByUserId(payload.userId);
-
-    if (!sessions) {
-      throw new UnauthorizedError('Unauthorized', 'session');
-    }
-
-    return sessions;
-  },
-
   async removeDeviceSession(deviceId: string, refreshToken: string) {
     let payload: JwtPayload;
 

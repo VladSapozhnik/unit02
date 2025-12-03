@@ -42,16 +42,6 @@ export const securityDevicesRepository = {
     });
   },
 
-  async findDeviceSessionByUserId(
-    userId: string,
-  ): Promise<SecurityDevicesType[] | null> {
-    return securityDevicesCollection
-      .find({
-        userId: new ObjectId(userId),
-      })
-      .toArray();
-  },
-
   async removeDeviceSession(
     userId: string,
     deviceId: string,
