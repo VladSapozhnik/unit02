@@ -6,6 +6,6 @@ export type SecurityDevicesType = {
   deviceId: string;
   ip: string;
   title: string;
-  issuedAt: Date;
+  lastActiveDate: Date;
   expiresAt: Date;
 };

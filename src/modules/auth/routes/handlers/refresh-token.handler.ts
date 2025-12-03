@@ -8,8 +8,11 @@ import { AccessAndRefreshTokensType } from '../../type/access-and-refresh-tokens
 export const refreshTokenHandler = async (req: Request, res: Response) => {
   const oldRefreshToken: string = req.cookies.refreshToken;
 
+  const clientIp: string = req.ip ?? 'unknown';
+  const userAgentString: string = req.headers['user-agent'] ?? 'unknown';
+
   const result: Result<AccessAndRefreshTokensType | null> =
-    await authService.refreshToken(oldRefreshToken);
+    await authService.refreshToken(oldRefreshToken, clientIp, userAgentString);
 
   if (result.status === ResultStatus.Unauthorized || result.data === null) {
     res.status(401).json(result.extensions);

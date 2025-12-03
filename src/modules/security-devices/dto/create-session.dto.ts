@@ -3,6 +3,6 @@ export type CreateSessionDto = {
   deviceId: string;
   ip: string;
   title: string;
-  issuedAt: Date;
+  lastActiveDate: Date;
   expiresAt: Date;
 };

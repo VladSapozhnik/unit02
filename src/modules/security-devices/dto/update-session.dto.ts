@@ -1,6 +1,6 @@
 export type UpdateSessionDTO = {
   ip: string;
   title: string;
-  issuedAt: Date;
+  lastActiveDate: Date;
   expiresAt: Date;
 };

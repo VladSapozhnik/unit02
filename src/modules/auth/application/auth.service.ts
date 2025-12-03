@@ -21,6 +21,9 @@ import { blacklistRepository } from '../../blacklist/repositories/blacklist.repo
 import { BlacklistType } from '../../blacklist/types/blacklist.type';
 import { securityDevicesRepository } from '../../security-devices/repositories/security-devices.repository';
 import { CreateSessionDto } from '../../security-devices/dto/create-session.dto';
+import { SecurityDevicesType } from '../../security-devices/types/security-devices.type';
+import { UpdateSessionDTO } from '../../security-devices/dto/update-session.dto';
+import { AddBlacklistDto } from '../../blacklist/dto/add-blacklist.dto';
 
 export const authService = {
   async registration(
@@ -206,7 +209,7 @@ export const authService = {
       throw new UnauthorizedError('Unauthorized', 'refreshToken');
     }
 
-    const issuedAt = new Date(payload.iat * 1000);
+    const lastActiveDate = new Date(payload.iat * 1000);
     const expiresAt = new Date(payload.exp * 1000);
 
     const sessionDeviceData: CreateSessionDto = {
@@ -214,7 +217,7 @@ export const authService = {
       deviceId,
       ip,
       title,
-      issuedAt,
+      lastActiveDate,
       expiresAt,
     };
 
@@ -228,10 +231,12 @@ export const authService = {
 
   async refreshToken(
     oldRefreshToken: string,
+    ip: string,
+    title: string,
   ): Promise<Result<AccessAndRefreshTokensType | null>> {
-    let payload: JwtPayload;
+    let oldPayload: JwtPayload;
     try {
-      payload = jwtAdapter.verifyRefreshToken(oldRefreshToken) as JwtPayload;
+      oldPayload = jwtAdapter.verifyRefreshToken(oldRefreshToken) as JwtPayload;
     } catch {
       return {
         status: ResultStatus.Unauthorized,
@@ -242,10 +247,10 @@ export const authService = {
       // throw new UnauthorizedError('Unauthorized', 'refreshToken');
     }
 
-    const userId: string = payload.userId as string;
-    const deviceId: string = payload.deviceId as string;
+    const userId: string = oldPayload.userId as string;
+    const deviceId: string = oldPayload.deviceId as string;
 
-    if (!payload.exp || !payload.userId || !payload.deviceId) {
+    if (!oldPayload.userId || !oldPayload.deviceId || !oldPayload.exp) {
       return {
         status: ResultStatus.Unauthorized,
         errorMessage: 'Unauthorized',
@@ -256,10 +261,29 @@ export const authService = {
     }
 
     const isBlacklisted: WithId<BlacklistType> | null =
-      await blacklistRepository.isTokenBlacklisted(oldRefreshToken, userId);
+      await blacklistRepository.isTokenBlacklisted(
+        oldRefreshToken,
+        userId,
+        deviceId,
+      );
 
     if (isBlacklisted) {
       // throw new UnauthorizedError('Unauthorized', 'refreshToken');
+      return {
+        status: ResultStatus.Unauthorized,
+        errorMessage: 'Unauthorized',
+        data: null,
+        extensions: [{ field: 'refreshToken', message: 'Unauthorized' }],
+      };
+    }
+
+    const isActiveSession: SecurityDevicesType | null =
+      await securityDevicesRepository.findDeviceSessionByUserIdAndDeviceId(
+        oldPayload.userId,
+        oldPayload.deviceId,
+      );
+
+    if (!isActiveSession) {
       return {
         status: ResultStatus.Unauthorized,
         errorMessage: 'Unauthorized',
@@ -274,11 +298,46 @@ export const authService = {
       deviceId,
     );
 
-    const blackList: BlacklistType = {
+    let newPayload: JwtPayload = jwtAdapter.verifyRefreshToken(
+      refreshToken,
+    ) as JwtPayload;
+
+    if (
+      !newPayload.userId ||
+      !newPayload.deviceId ||
+      !newPayload.iat ||
+      !newPayload.exp
+    ) {
+      return {
+        status: ResultStatus.Unauthorized,
+        errorMessage: 'Unauthorized',
+        data: null,
+        extensions: [{ field: 'refreshToken', message: 'Unauthorized' }],
+      };
+      // throw new UnauthorizedError('Unauthorized', 'refreshToken');
+    }
+
+    const lastActiveDate = new Date(newPayload.iat * 1000);
+    const expiresAt = new Date(newPayload.exp * 1000);
+
+    const updatedSessionDate: UpdateSessionDTO = {
+      ip,
+      title,
+      lastActiveDate,
+      expiresAt,
+    };
+
+    await securityDevicesRepository.updateDeviceSession(
+      newPayload.userId,
+      newPayload.deviceId,
+      updatedSessionDate,
+    );
+
+    const blackList: AddBlacklistDto = {
       token: oldRefreshToken,
-      userId: new ObjectId(userId),
+      userId: userId,
       deviceId: deviceId,
-      expiresAt: new Date(payload.exp * 1000),
+      expiresAt: new Date(oldPayload.exp * 1000),
     };
 
     await blacklistRepository.addToBlacklist(blackList);
@@ -301,9 +360,14 @@ export const authService = {
     }
 
     const userId: string = payload.userId;
+    const deviceId: string = payload.deviceId;
 
     const isBlacklisted: WithId<BlacklistType> | null =
-      await blacklistRepository.isTokenBlacklisted(oldRefreshToken, userId);
+      await blacklistRepository.isTokenBlacklisted(
+        oldRefreshToken,
+        userId,
+        deviceId,
+      );
 
     if (isBlacklisted) {
       throw new UnauthorizedError('Unauthorized', 'logout');
