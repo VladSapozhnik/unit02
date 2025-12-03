@@ -359,6 +359,10 @@ export const authService = {
       throw new UnauthorizedError('Unauthorized', 'logout');
     }
 
+    if (!payload.exp || !payload.userId || !payload.deviceId) {
+      throw new UnauthorizedError('Unauthorized', 'logout');
+    }
+
     const userId: string = payload.userId;
     const deviceId: string = payload.deviceId;
 
@@ -369,7 +373,19 @@ export const authService = {
         deviceId,
       );
 
-    if (isBlacklisted) {
+    const blackList: AddBlacklistDto = {
+      token: oldRefreshToken,
+      userId: userId,
+      deviceId: deviceId,
+      expiresAt: new Date(payload.exp * 1000),
+    };
+
+    await blacklistRepository.addToBlacklist(blackList);
+
+    const isRemovedSession: boolean =
+      await securityDevicesRepository.removeDeviceSession(userId, deviceId);
+
+    if (isBlacklisted || !isRemovedSession) {
       throw new UnauthorizedError('Unauthorized', 'logout');
     }
   },

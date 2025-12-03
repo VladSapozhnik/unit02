@@ -5,6 +5,7 @@ import { ErrorResponse, ErrorType } from '../types/error.type';
 import { BadRequestError } from './bad-request.error';
 import { ForbiddenRequestError } from './forbidden-request.error';
 import { UnauthorizedError } from './unauthorized.error';
+import { TooManyRequestsError } from './too-many-requests.error';
 
 function errorMessage(error: ErrorType): ErrorResponse {
   return {
@@ -42,6 +43,12 @@ export function errorsHandler(error: unknown, res: Response): void {
 
     res.status(httpStatus).json(errorMessage(error));
     return;
+  }
+  if (error instanceof TooManyRequestsError) {
+    const httpStatus: HTTP_STATUS.TOO_MANY_REQUESTS =
+      HTTP_STATUS.TOO_MANY_REQUESTS;
+
+    res.status(httpStatus).json(errorMessage(error));
   }
 
   res.sendStatus(HTTP_STATUS.INTERNAL_SERVER_ERROR);
