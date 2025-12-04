@@ -31,33 +31,23 @@ export const securityDevicesService = {
       throw new NotFoundError('Device session not found', 'session');
     }
 
-    // if (
-    //   findDeviceId.userId !== payload.userId &&
-    //   findDeviceId.deviceId !== payload.deviceId
-    // ) {
-    //   throw new ForbiddenRequestError('Forbidden', 'session');
-    // }
+    if (findDeviceId.userId !== payload.userId) {
+      throw new ForbiddenRequestError('Forbidden', 'session');
+    }
 
     await securityDevicesRepository.removeDeviceSession(
       findDeviceId.userId.toString(),
       deviceId,
     );
 
-    const blackList: AddBlacklistDto = {
-      token: refreshToken,
-      userId: payload.userId,
-      deviceId: payload.deviceId,
-      expiresAt: new Date(payload.exp * 1000),
-    };
-
-    // const isBlacklisted: WithId<BlacklistType> | null =
-    //   await blacklistRepository.isTokenBlacklisted(
-    //     refreshToken,
-    //     userId,
-    //     deviceId,
-    //   );
-
-    await blacklistRepository.addToBlacklist(blackList);
+    // const blackList: AddBlacklistDto = {
+    //   token: refreshToken,
+    //   userId: payload.userId,
+    //   deviceId: payload.deviceId,
+    //   expiresAt: new Date(payload.exp * 1000),
+    // };
+    //
+    // await blacklistRepository.addToBlacklist(blackList);
   },
 
   async removeOtherDeviceSession(refreshToken: string) {
