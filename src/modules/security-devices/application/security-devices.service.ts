@@ -20,7 +20,7 @@ export const securityDevicesService = {
       throw new UnauthorizedError('Unauthorized', 'refreshToken');
     }
 
-    if (!payload || !payload.userId || !payload.exp) {
+    if (!payload || !payload.userId || payload.deviceId || !payload.exp) {
       throw new UnauthorizedError('Unauthorized', 'refreshToken');
     }
 
@@ -33,7 +33,10 @@ export const securityDevicesService = {
       throw new NotFoundError('Device session not found', 'session');
     }
 
-    if (findDeviceId.deviceId !== deviceId) {
+    if (
+      findDeviceId.userId !== payload.userId ||
+      findDeviceId.deviceId !== payload.deviceId
+    ) {
       throw new ForbiddenRequestError('Forbidden', 'session');
     }
 
