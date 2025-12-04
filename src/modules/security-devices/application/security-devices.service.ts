@@ -33,7 +33,7 @@ export const securityDevicesService = {
       throw new NotFoundError('Device session not found', 'session');
     }
 
-    if (findDeviceId.userId !== payload.userId) {
+    if (findDeviceId.deviceId !== deviceId) {
       throw new ForbiddenRequestError('Forbidden', 'session');
     }
 
