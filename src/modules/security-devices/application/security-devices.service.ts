@@ -31,12 +31,12 @@ export const securityDevicesService = {
       throw new NotFoundError('Device session not found', 'session');
     }
 
-    if (
-      findDeviceId.userId !== payload.userId &&
-      findDeviceId.deviceId !== payload.deviceId
-    ) {
-      throw new ForbiddenRequestError('Forbidden', 'session');
-    }
+    // if (
+    //   findDeviceId.userId !== payload.userId &&
+    //   findDeviceId.deviceId !== payload.deviceId
+    // ) {
+    //   throw new ForbiddenRequestError('Forbidden', 'session');
+    // }
 
     await securityDevicesRepository.removeDeviceSession(
       findDeviceId.userId.toString(),
