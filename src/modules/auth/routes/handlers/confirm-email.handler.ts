@@ -9,10 +9,10 @@ export const confirmEmailHandler = async (
   req: RequestWithBody<ConfirmEmailDto>,
   res: Response,
 ) => {
-  const { status } = await authService.confirmEmail(req.body.code);
+  const { status, extensions } = await authService.confirmEmail(req.body.code);
 
   if (status === ResultStatus.BadRequest) {
-    res.sendStatus(400);
+    res.sendStatus(400).json(extensions);
     return;
   }
 
