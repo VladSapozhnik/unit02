@@ -1,6 +1,12 @@
 import { SecurityDevicesType } from '../types/security-devices.type';
 import { securityDevicesCollection } from '../../../core/db/mango.db';
-import { DeleteResult, InsertOneResult, ObjectId, UpdateResult } from 'mongodb';
+import {
+  DeleteResult,
+  InsertOneResult,
+  ObjectId,
+  UpdateResult,
+  WithId,
+} from 'mongodb';
 import { CreateSessionDto } from '../dto/create-session.dto';
 import { UpdateSessionDTO } from '../dto/update-session.dto';
 
@@ -48,6 +54,15 @@ export const securityDevicesRepository = {
     return securityDevicesCollection.findOne({
       deviceId,
     });
+  },
+
+  async getOtherDeviceSessions(
+    userId: string,
+    deviceId: string,
+  ): Promise<WithId<SecurityDevicesType>[]> {
+    return securityDevicesCollection
+      .find({ userId: new ObjectId(userId), deviceId: { $ne: deviceId } })
+      .toArray();
   },
 
   async removeDeviceSession(

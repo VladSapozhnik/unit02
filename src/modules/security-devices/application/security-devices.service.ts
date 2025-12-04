@@ -5,6 +5,10 @@ import { jwtAdapter } from '../../../core/adapters/jwt.adapter';
 import { ForbiddenRequestError } from '../../../core/errors/forbidden-request.error';
 import { SecurityDevicesType } from '../types/security-devices.type';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
+import { WithId } from 'mongodb';
+import { blacklistRepository } from '../../blacklist/repositories/blacklist.repository';
+import { BlacklistType } from '../../blacklist/types/blacklist.type';
+import { AddBlacklistDto } from '../../blacklist/dto/add-blacklist.dto';
 
 export const securityDevicesService = {
   async removeDeviceSession(deviceId: string, refreshToken: string) {
@@ -20,6 +24,8 @@ export const securityDevicesService = {
       throw new UnauthorizedError('Unauthorized', 'refreshToken');
     }
 
+    const userId: string = payload.userId as string;
+
     const findDeviceId: SecurityDevicesType | null =
       await securityDevicesRepository.findDeviceSessionByDeviceId(deviceId);
 
@@ -30,6 +36,26 @@ export const securityDevicesService = {
     if (findDeviceId.userId !== payload.userId) {
       throw new ForbiddenRequestError('Forbidden', 'session');
     }
+
+    const isBlacklisted: WithId<BlacklistType> | null =
+      await blacklistRepository.isTokenBlacklisted(
+        refreshToken,
+        userId,
+        deviceId,
+      );
+
+    if (isBlacklisted) {
+      throw new UnauthorizedError('Unauthorized', 'logout');
+    }
+
+    const blackList: AddBlacklistDto = {
+      token: refreshToken,
+      userId: userId,
+      deviceId: deviceId,
+      expiresAt: new Date(payload.exp * 1000),
+    };
+
+    await blacklistRepository.addToBlacklist(blackList);
 
     await securityDevicesRepository.removeDeviceSession(
       payload.userId,
@@ -50,9 +76,9 @@ export const securityDevicesService = {
       throw new UnauthorizedError('Unauthorized', 'refreshToken');
     }
 
-    await securityDevicesRepository.removeOtherDeviceSession(
-      payload.userId,
-      payload.deviceId,
-    );
+    const userId: string = payload.userId;
+    const deviceId: string = payload.deviceId;
+
+    await securityDevicesRepository.removeOtherDeviceSession(userId, deviceId);
   },
 };
