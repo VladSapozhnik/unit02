@@ -20,7 +20,7 @@ export const securityDevicesService = {
       throw new UnauthorizedError('Unauthorized', 'refreshToken');
     }
 
-    if (!payload || !payload.userId || payload.deviceId || !payload.exp) {
+    if (!payload || !payload.userId || !payload.deviceId || !payload.exp) {
       throw new UnauthorizedError('Unauthorized', 'refreshToken');
     }
 
