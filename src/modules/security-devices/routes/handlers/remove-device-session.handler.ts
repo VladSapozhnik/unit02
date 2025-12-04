@@ -9,9 +9,9 @@ export const removeDeviceSessionHandler = async (
   res: Response,
 ) => {
   const refreshToken: string = req.cookies.refreshToken;
-
   const deviceId: string = req.params.deviceId;
 
+  console.log(refreshToken, deviceId);
   await securityDevicesService.removeDeviceSession(deviceId, refreshToken);
 
   res.sendStatus(HTTP_STATUS.NO_CONTENT_204);

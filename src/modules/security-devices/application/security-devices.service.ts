@@ -5,10 +5,10 @@ import { jwtAdapter } from '../../../core/adapters/jwt.adapter';
 import { ForbiddenRequestError } from '../../../core/errors/forbidden-request.error';
 import { SecurityDevicesType } from '../types/security-devices.type';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
-import { WithId } from 'mongodb';
-import { blacklistRepository } from '../../blacklist/repositories/blacklist.repository';
-import { BlacklistType } from '../../blacklist/types/blacklist.type';
 import { AddBlacklistDto } from '../../blacklist/dto/add-blacklist.dto';
+import { blacklistRepository } from '../../blacklist/repositories/blacklist.repository';
+import { WithId } from 'mongodb';
+import { BlacklistType } from '../../blacklist/types/blacklist.type';
 
 export const securityDevicesService = {
   async removeDeviceSession(deviceId: string, refreshToken: string) {
@@ -24,8 +24,6 @@ export const securityDevicesService = {
       throw new UnauthorizedError('Unauthorized', 'refreshToken');
     }
 
-    const userId: string = payload.userId as string;
-
     const findDeviceId: SecurityDevicesType | null =
       await securityDevicesRepository.findDeviceSessionByDeviceId(deviceId);
 
@@ -33,34 +31,33 @@ export const securityDevicesService = {
       throw new NotFoundError('Device session not found', 'session');
     }
 
-    if (findDeviceId.userId !== payload.userId) {
+    if (
+      findDeviceId.userId !== payload.userId &&
+      findDeviceId.deviceId !== payload.deviceId
+    ) {
       throw new ForbiddenRequestError('Forbidden', 'session');
     }
 
-    const isBlacklisted: WithId<BlacklistType> | null =
-      await blacklistRepository.isTokenBlacklisted(
-        refreshToken,
-        userId,
-        deviceId,
-      );
-
-    if (isBlacklisted) {
-      throw new UnauthorizedError('Unauthorized', 'logout');
-    }
+    await securityDevicesRepository.removeDeviceSession(
+      findDeviceId.userId.toString(),
+      deviceId,
+    );
 
     const blackList: AddBlacklistDto = {
       token: refreshToken,
-      userId: userId,
-      deviceId: deviceId,
+      userId: payload.userId,
+      deviceId: payload.deviceId,
       expiresAt: new Date(payload.exp * 1000),
     };
 
-    await blacklistRepository.addToBlacklist(blackList);
+    // const isBlacklisted: WithId<BlacklistType> | null =
+    //   await blacklistRepository.isTokenBlacklisted(
+    //     refreshToken,
+    //     userId,
+    //     deviceId,
+    //   );
 
-    await securityDevicesRepository.removeDeviceSession(
-      payload.userId,
-      deviceId,
-    );
+    await blacklistRepository.addToBlacklist(blackList);
   },
 
   async removeOtherDeviceSession(refreshToken: string) {
@@ -76,9 +73,9 @@ export const securityDevicesService = {
       throw new UnauthorizedError('Unauthorized', 'refreshToken');
     }
 
-    const userId: string = payload.userId;
-    const deviceId: string = payload.deviceId;
-
-    await securityDevicesRepository.removeOtherDeviceSession(userId, deviceId);
+    await securityDevicesRepository.removeOtherDeviceSession(
+      payload.userId,
+      payload.deviceId,
+    );
   },
 };
