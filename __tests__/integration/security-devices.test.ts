@@ -220,7 +220,7 @@ describe('auth-integration test', () => {
       ]);
     });
 
-    it('should23123223131 successfully sessions by device id', async () => {
+    it("should forbid deleting another user's session by device id", async () => {
       await testSeeder.insertUser(user);
 
       const loginDto: LoginDto = {
@@ -247,22 +247,29 @@ describe('auth-integration test', () => {
         },
       ]);
 
-      // await removeSessionUseCase(deviceId, userLoginOne.refreshToken);
-
-      const loginUserThreeDto: LoginDto = {
-        loginOrEmail: user.email,
-        password: user.password,
+      const createUserTwo: CreateUserDto = {
+        ...user,
+        login: 'sads23D',
+        email: 'boris22@gmail.com',
+        password: 'sads23D',
       };
 
-      const userLoginThree = await loginUseCase(
-        loginUserThreeDto,
+      await testSeeder.insertUser(createUserTwo);
+
+      const loginUserTwoDto: LoginDto = {
+        loginOrEmail: createUserTwo.email,
+        password: createUserTwo.password,
+      };
+
+      const userLoginTwo = await loginUseCase(
+        loginUserTwoDto,
         '123.242.44.55',
         '123NB',
       );
 
       const isRemoveSession: Result<null> = await removeSessionUseCase(
         deviceId,
-        userLoginThree.refreshToken,
+        userLoginTwo.refreshToken,
       );
 
       expect(isRemoveSession.status).toEqual(ResultStatus.Forbidden);
