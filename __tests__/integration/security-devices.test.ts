@@ -14,7 +14,7 @@ import { securityDevicesService } from '../../src/modules/security-devices/appli
 import { JwtPayload } from 'jsonwebtoken';
 import { securityDevicesQueryService } from '../../src/modules/security-devices/application/security-devices.query.service';
 
-describe('auth-integration test', () => {
+describe('security devices integration test', () => {
   const app: Express = express();
   setupApp(app);
 
