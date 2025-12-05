@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
 import { UnauthorizedError } from '../errors/unauthorized.error';
-import { blacklistRepository } from '../../modules/blacklist/repositories/blacklist.repository';
 import { securityDevicesRepository } from '../../modules/security-devices/repositories/security-devices.repository';
 import { jwtAdapter } from '../adapters/jwt.adapter';
 import { JwtPayload } from 'jsonwebtoken';
@@ -22,16 +21,6 @@ export const validateRefreshTokenMiddleware = async (
 
   const userId: string = payload.userId as string;
   const deviceId: string = payload.deviceId as string;
-
-  const isTokenBlacklisted = await blacklistRepository.isTokenBlacklisted(
-    refreshToken,
-    userId,
-    deviceId,
-  );
-
-  if (isTokenBlacklisted) {
-    throw new UnauthorizedError('Token is revoked', 'validate');
-  }
 
   const session =
     await securityDevicesRepository.findDeviceSessionByUserIdAndDeviceId(

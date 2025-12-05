@@ -5,8 +5,6 @@ import { jwtAdapter } from '../../../core/adapters/jwt.adapter';
 import { SecurityDevicesType } from '../types/security-devices.type';
 import { Result } from '../../../core/types/result.type';
 import { ResultStatus } from '../../../core/enums/result-status.enum';
-import { ObjectId, WithId } from 'mongodb';
-import { securityDevicesCollection } from '../../../core/db/mango.db';
 
 export const securityDevicesService = {
   async removeDeviceSession(
