@@ -36,10 +36,11 @@ export const createUserE2eUtil = async (
   app: Express,
   statusCode: HTTP_STATUS,
   action: ACTION_CREATE_USER = ACTION_CREATE_USER.CREATE_USER,
+  createUserDto: CreateUserDto = exampleCreateUser,
 ): Promise<Response> => {
   let username: string = ADMIN_USERNAME;
   let password: string = ADMIN_PASSWORD;
-  let body: CreateUserDto = exampleCreateUser;
+  let body: CreateUserDto = createUserDto;
 
   if (action === ACTION_CREATE_USER.DUPLICATE_USER) {
     statusCode = HTTP_STATUS.BAD_REQUEST_400;

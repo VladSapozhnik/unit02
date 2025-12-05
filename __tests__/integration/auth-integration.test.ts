@@ -14,11 +14,8 @@ import { createdAtHelper } from '../../src/core/helpers/created-at.helper';
 import { add } from 'date-fns/add';
 import { sub } from 'date-fns/sub';
 import { usersRepository } from '../../src/modules/users/repositories/users.repository';
-import { cookieAdapter } from '../../src/core/adapters/cookie.adapter';
-import { LoginDto } from '../../src/modules/auth/dto/login.dto';
 import { AccessAndRefreshTokensType } from '../../src/modules/auth/type/access-and-refresh-tokens.type';
 import { jwtAdapter } from '../../src/core/adapters/jwt.adapter';
-import { exec } from 'node:child_process';
 
 describe('auth-integration test', () => {
   const app: Express = express();
@@ -273,7 +270,7 @@ describe('auth-integration test', () => {
       );
 
       const result: Result<AccessAndRefreshTokensType | null> =
-        await refreshTokenUseCase(refreshToken);
+        await refreshTokenUseCase(refreshToken, 'testIp', 'testTitle');
 
       expect(result.status).toEqual(ResultStatus.Success);
       expect(result.data).toEqual({

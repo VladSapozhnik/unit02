@@ -5,10 +5,6 @@ import { jwtAdapter } from '../../../core/adapters/jwt.adapter';
 import { ForbiddenRequestError } from '../../../core/errors/forbidden-request.error';
 import { SecurityDevicesType } from '../types/security-devices.type';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
-import { AddBlacklistDto } from '../../blacklist/dto/add-blacklist.dto';
-import { blacklistRepository } from '../../blacklist/repositories/blacklist.repository';
-import { WithId } from 'mongodb';
-import { BlacklistType } from '../../blacklist/types/blacklist.type';
 
 export const securityDevicesService = {
   async removeDeviceSession(deviceId: string, refreshToken: string) {
@@ -39,15 +35,6 @@ export const securityDevicesService = {
       findDeviceId.userId.toString(),
       deviceId,
     );
-
-    // const blackList: AddBlacklistDto = {
-    //   token: refreshToken,
-    //   userId: payload.userId,
-    //   deviceId: payload.deviceId,
-    //   expiresAt: new Date(payload.exp * 1000),
-    // };
-    //
-    // await blacklistRepository.addToBlacklist(blackList);
   },
 
   async removeOtherDeviceSession(refreshToken: string) {

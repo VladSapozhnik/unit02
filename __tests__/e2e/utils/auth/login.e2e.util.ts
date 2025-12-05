@@ -32,8 +32,9 @@ export const loginE2eUtil = async (
   app: Express,
   statusCode: HTTP_STATUS,
   loginUserNumberTwo: boolean = false,
+  loginUser: LoginDto = exampleLogin,
 ): Promise<Response> => {
-  let body: LoginDto = exampleLogin;
+  let body: LoginDto = loginUser;
 
   if (statusCode === HTTP_STATUS.UNAUTHORIZED_401) {
     body = exampleNonLogin;

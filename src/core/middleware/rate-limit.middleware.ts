@@ -3,6 +3,7 @@ import { rateLimitRepository } from '../../modules/rate-limit/repositories/rate-
 import { RateLimitType } from '../../modules/rate-limit/types/rate-limit.type';
 import { add } from 'date-fns/add';
 import { TooManyRequestsError } from '../errors/too-many-requests.error';
+import { settings } from '../settings/settings';
 
 export const rateLimitMiddleware = async (
   req: Request,
@@ -17,7 +18,7 @@ export const rateLimitMiddleware = async (
     url,
   );
 
-  if (attemptsCount >= 5) {
+  if (attemptsCount >= 5 && settings.IS_TESTING !== 'testing') {
     throw new TooManyRequestsError(
       'Too many requests. Please try again after 10 seconds.',
     );

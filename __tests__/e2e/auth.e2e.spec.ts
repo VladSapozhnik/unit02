@@ -53,6 +53,10 @@ describe('test' + RouterPathConst.users, () => {
     await profileE2eUtil(app, HTTP_STATUS.OK_200);
   });
 
+  it('should be able to sign in', async () => {
+    await loginE2eUtil(app, HTTP_STATUS.OK_200);
+  });
+
   it('should refresh access token using refreshToken cookie', async () => {
     const response: Response = await loginE2eUtil(app, HTTP_STATUS.OK_200);
 
