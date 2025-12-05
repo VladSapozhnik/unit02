@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { rateLimitRepository } from '../../modules/rate-limit/repositories/rate-limit.repository';
 import { RateLimitType } from '../../modules/rate-limit/types/rate-limit.type';
-import { add } from 'date-fns/add';
 import { TooManyRequestsError } from '../errors/too-many-requests.error';
 import { settings } from '../settings/settings';
 

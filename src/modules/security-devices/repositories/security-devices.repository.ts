@@ -12,7 +12,7 @@ import { UpdateSessionDTO } from '../dto/update-session.dto';
 
 export const securityDevicesRepository = {
   async addDeviceSession(data: CreateSessionDto): Promise<string | null> {
-    const result: InsertOneResult<SecurityDevicesType> =
+    const result: InsertOneResult<WithId<SecurityDevicesType>> =
       await securityDevicesCollection.insertOne({
         ...data,
         userId: new ObjectId(data.userId),
@@ -26,7 +26,7 @@ export const securityDevicesRepository = {
     deviceId: string,
     data: UpdateSessionDTO,
   ): Promise<boolean> {
-    const result: UpdateResult<SecurityDevicesType> =
+    const result: UpdateResult<WithId<SecurityDevicesType>> =
       await securityDevicesCollection.updateOne(
         {
           userId: new ObjectId(userId),
@@ -41,7 +41,7 @@ export const securityDevicesRepository = {
   async findDeviceSessionByUserIdAndDeviceId(
     userId: string,
     deviceId: string,
-  ): Promise<SecurityDevicesType | null> {
+  ): Promise<WithId<SecurityDevicesType> | null> {
     return securityDevicesCollection.findOne({
       userId: new ObjectId(userId),
       deviceId,
@@ -50,21 +50,11 @@ export const securityDevicesRepository = {
 
   async findDeviceSessionByDeviceId(
     deviceId: string,
-  ): Promise<SecurityDevicesType | null> {
+  ): Promise<WithId<SecurityDevicesType> | null> {
     return securityDevicesCollection.findOne({
       deviceId,
     });
   },
-
-  async getOtherDeviceSessions(
-    userId: string,
-    deviceId: string,
-  ): Promise<WithId<SecurityDevicesType>[]> {
-    return securityDevicesCollection
-      .find({ userId: new ObjectId(userId), deviceId: { $ne: deviceId } })
-      .toArray();
-  },
-
   async removeDeviceSession(
     userId: string,
     deviceId: string,

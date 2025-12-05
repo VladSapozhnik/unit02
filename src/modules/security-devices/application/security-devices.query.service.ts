@@ -3,6 +3,8 @@ import { JwtPayload } from 'jsonwebtoken';
 import { jwtAdapter } from '../../../core/adapters/jwt.adapter';
 import { securityDevicesQueryRepository } from '../repositories/security-devices.query.repository';
 import { SecurityDevicesOutputType } from '../types/security-devices-output.type';
+import { securityDevicesMapper } from '../mappers/security-devices.mapper';
+import { SecurityDevicesType } from '../types/security-devices.type';
 
 export const securityDevicesQueryService = {
   async getSessionByUser(
@@ -20,7 +22,7 @@ export const securityDevicesQueryService = {
       throw new UnauthorizedError('Unauthorized', 'refreshToken');
     }
 
-    const sessions: SecurityDevicesOutputType[] | null =
+    const sessions: SecurityDevicesType[] | null =
       await securityDevicesQueryRepository.findDeviceSessionByUserId(
         payload.userId,
       );
@@ -29,6 +31,6 @@ export const securityDevicesQueryService = {
       throw new UnauthorizedError('Unauthorized', 'session');
     }
 
-    return sessions;
+    return sessions.map(securityDevicesMapper);
   },
 };
