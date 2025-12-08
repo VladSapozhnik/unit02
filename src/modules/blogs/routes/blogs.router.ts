@@ -2,20 +2,18 @@ import { Router } from 'express';
 import { blogValidation } from '../validators/blog.validation';
 import { inputValidationErrorsMiddleware } from '../../../core/middleware/input-validation-errors.middleware';
 import { superAdminGuardMiddleware } from '../../../core/middleware/super-admin-guard.middleware';
-import { getAllBlogsHandler } from './handlers/get-all.handler';
-import { getBlogByIdHandler } from './handlers/get-blog-by-id.handler';
-import { createBlogHandler } from './handlers/create-blog.handler';
-import { updateBlogHandler } from './handlers/update-blog.handler';
-import { removeBlogHandler } from './handlers/remove-blog.handler';
 import { idParamValidator } from '../../../core/validators/param-id.validation';
 import { paginationAndSortingValidation } from '../../../core/validators/pagination-and-sorting.validation';
 import { BlogSortFieldEnum } from '../enum/blog-sort-field.enum';
-import { createPostForBlogHandler } from '../../posts/routes/handlers/create-post-for-blog.handler';
 import { PostSortFieldEnum } from '../../posts/enum/post-sort-field.enum';
-import { getPostsByBlogIdHandler } from '../../posts/routes/handlers/get-posts-by-blogId.handler';
 import { blogQuerySearchValidation } from '../validators/blog-query-search.validation';
 import { postWithoutBlogIdValidation } from '../../posts/validators/post-without-blogId.validation';
 import { blogIdParamValidation } from '../validators/blogId-param.validation';
+import { BlogsController } from './blogs.controller';
+import { container } from '../../../composition-root';
+import { postsController } from '../../posts/routes/posts.router';
+
+const blogsController: BlogsController = container.get(BlogsController);
 
 export const blogsRouter: Router = Router();
 
@@ -24,7 +22,7 @@ blogsRouter.get(
   paginationAndSortingValidation(BlogSortFieldEnum),
   blogQuerySearchValidation,
   inputValidationErrorsMiddleware,
-  getAllBlogsHandler,
+  blogsController.getAllBlogs.bind(blogsController),
 );
 
 blogsRouter.post(
@@ -32,7 +30,7 @@ blogsRouter.post(
   superAdminGuardMiddleware,
   blogValidation,
   inputValidationErrorsMiddleware,
-  createBlogHandler,
+  blogsController.createBlog.bind(blogsController),
 );
 
 blogsRouter.post(
@@ -41,7 +39,7 @@ blogsRouter.post(
   blogIdParamValidation,
   postWithoutBlogIdValidation,
   inputValidationErrorsMiddleware,
-  createPostForBlogHandler,
+  postsController.createPostForBlog.bind(postsController),
 );
 
 blogsRouter.get(
@@ -49,14 +47,14 @@ blogsRouter.get(
   blogIdParamValidation,
   paginationAndSortingValidation(PostSortFieldEnum),
   inputValidationErrorsMiddleware,
-  getPostsByBlogIdHandler,
+  postsController.getPostsByBlogId.bind(postsController),
 );
 
 blogsRouter.get(
   '/:id',
   idParamValidator,
   inputValidationErrorsMiddleware,
-  getBlogByIdHandler,
+  blogsController.getBlogById.bind(blogsController),
 );
 
 blogsRouter.put(
@@ -65,7 +63,7 @@ blogsRouter.put(
   idParamValidator,
   blogValidation,
   inputValidationErrorsMiddleware,
-  updateBlogHandler,
+  blogsController.updateBlog.bind(blogsController),
 );
 
 blogsRouter.delete(
@@ -73,5 +71,5 @@ blogsRouter.delete(
   superAdminGuardMiddleware,
   idParamValidator,
   inputValidationErrorsMiddleware,
-  removeBlogHandler,
+  blogsController.removeBlog.bind(blogsController),
 );

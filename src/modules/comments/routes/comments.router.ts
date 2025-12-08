@@ -1,20 +1,22 @@
 import { Router } from 'express';
 import { idParamValidator } from '../../../core/validators/param-id.validation';
-import { getCommentsById } from './handlers/get-comment-by-id.handler';
 import { inputValidationErrorsMiddleware } from '../../../core/middleware/input-validation-errors.middleware';
 import { commentIdParamValidation } from '../validators/commentId-param.validation';
-import { removeCommentHandler } from './handlers/remove-comment.handler';
-import { updateCommentHandler } from './handlers/update-comment.handler';
 import { jwtAuthGuardMiddleware } from '../../../core/middleware/jwt-auth-guard.middleware';
 import { commentValidation } from '../validators/comment.validation';
+import { container } from '../../../composition-root';
+import { CommentsController } from './comments.controller';
 
 export const commentsRouter: Router = Router();
+
+const commentsController: CommentsController =
+  container.get(CommentsController);
 
 commentsRouter.get(
   '/:id',
   idParamValidator,
   inputValidationErrorsMiddleware,
-  getCommentsById,
+  commentsController.getCommentsById.bind(commentsController),
 );
 
 commentsRouter.put(
@@ -23,7 +25,7 @@ commentsRouter.put(
   commentIdParamValidation,
   commentValidation,
   inputValidationErrorsMiddleware,
-  updateCommentHandler,
+  commentsController.updateComment.bind(commentsController),
 );
 
 commentsRouter.delete(
@@ -31,5 +33,5 @@ commentsRouter.delete(
   jwtAuthGuardMiddleware,
   commentIdParamValidation,
   inputValidationErrorsMiddleware,
-  removeCommentHandler,
+  commentsController.removeComment.bind(commentsController),
 );

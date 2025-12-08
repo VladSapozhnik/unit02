@@ -2,20 +2,17 @@ import { Router } from 'express';
 import { postValidation } from '../validators/post.validation';
 import { inputValidationErrorsMiddleware } from '../../../core/middleware/input-validation-errors.middleware';
 import { superAdminGuardMiddleware } from '../../../core/middleware/super-admin-guard.middleware';
-import { getAllPostsHandler } from './handlers/get-all.handler';
-import { createPostHandler } from './handlers/create-post.handler';
-import { updatePostHandler } from './handlers/update-post.handler';
-import { getPostByIdHandler } from './handlers/get-post-by-id.handler';
-import { removePostHandler } from './handlers/remove-post.handler';
 import { idParamValidator } from '../../../core/validators/param-id.validation';
 import { paginationAndSortingValidation } from '../../../core/validators/pagination-and-sorting.validation';
 import { PostSortFieldEnum } from '../enum/post-sort-field.enum';
-import { createCommentForPostHandler } from './handlers/create-comment-for-post.handler';
 import { jwtAuthGuardMiddleware } from '../../../core/middleware/jwt-auth-guard.middleware';
 import { postIdParamValidation } from '../validators/postId-param.validation';
 import { commentValidation } from '../../comments/validators/comment.validation';
-import { getCommentsForPostIdHandler } from './handlers/get-comments-for-post-id.handler';
 import { CommentSortFieldEnum } from '../../comments/enum/comment-sort-field.enum';
+import { container } from '../../../composition-root';
+import { PostsController } from './posts.controller';
+
+export const postsController: PostsController = container.get(PostsController);
 
 export const postsRouter: Router = Router();
 
@@ -23,7 +20,7 @@ postsRouter.get(
   '/',
   paginationAndSortingValidation(PostSortFieldEnum),
   inputValidationErrorsMiddleware,
-  getAllPostsHandler,
+  postsController.getAllPosts.bind(postsController),
 );
 
 postsRouter.post(
@@ -31,7 +28,7 @@ postsRouter.post(
   superAdminGuardMiddleware,
   postValidation,
   inputValidationErrorsMiddleware,
-  createPostHandler,
+  postsController.createPost.bind(postsController),
 );
 
 postsRouter.post(
@@ -40,7 +37,7 @@ postsRouter.post(
   postIdParamValidation,
   commentValidation,
   inputValidationErrorsMiddleware,
-  createCommentForPostHandler,
+  postsController.createCommentForPost.bind(postsController),
 );
 
 postsRouter.get(
@@ -48,14 +45,14 @@ postsRouter.get(
   postIdParamValidation,
   paginationAndSortingValidation(CommentSortFieldEnum),
   inputValidationErrorsMiddleware,
-  getCommentsForPostIdHandler,
+  postsController.getCommentsForPostId.bind(postsController),
 );
 
 postsRouter.get(
   '/:id',
   idParamValidator,
   inputValidationErrorsMiddleware,
-  getPostByIdHandler,
+  postsController.getPostById.bind(postsController),
 );
 
 postsRouter.put(
@@ -64,7 +61,7 @@ postsRouter.put(
   idParamValidator,
   postValidation,
   inputValidationErrorsMiddleware,
-  updatePostHandler,
+  postsController.updatePost.bind(postsController),
 );
 
 postsRouter.delete(
@@ -72,5 +69,5 @@ postsRouter.delete(
   superAdminGuardMiddleware,
   idParamValidator,
   inputValidationErrorsMiddleware,
-  removePostHandler,
+  postsController.removePost.bind(postsController),
 );
