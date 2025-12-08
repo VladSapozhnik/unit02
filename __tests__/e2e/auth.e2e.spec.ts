@@ -61,7 +61,6 @@ describe('test' + RouterPathConst.users, () => {
     const response: Response = await loginE2eUtil(app, HTTP_STATUS.OK_200);
 
     const cookies: string = response.headers['set-cookie'];
-
     const responseRefreshToken: Response = await request(app)
       .post(RouterPathConst.auth + 'refresh-token')
       .set('Cookie', cookies)

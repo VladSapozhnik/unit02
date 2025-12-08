@@ -262,23 +262,6 @@ export const authService = {
     const userId: string = oldPayload.userId as string;
     const deviceId: string = oldPayload.deviceId as string;
 
-    // const isBlacklisted: WithId<BlacklistType> | null =
-    //   await blacklistRepository.isTokenBlacklisted(
-    //     oldRefreshToken,
-    //     userId,
-    //     deviceId,
-    //   );
-    //
-    // if (isBlacklisted) {
-    //   // throw new UnauthorizedError('Unauthorized', 'refreshToken');
-    //   return {
-    //     status: ResultStatus.Unauthorized,
-    //     errorMessage: 'Unauthorized',
-    //     data: null,
-    //     extensions: [{ field: 'refreshToken', message: 'Unauthorized' }],
-    //   };
-    // }
-
     const isActiveSession: SecurityDevicesType | null =
       await securityDevicesRepository.findDeviceSessionByUserIdAndDeviceId(
         oldPayload.userId,
@@ -288,7 +271,7 @@ export const authService = {
     if (
       !isActiveSession ||
       Math.floor(isActiveSession.lastActiveDate.getTime() / 1000) !==
-        oldPayload.iat * 1000
+        oldPayload.iat
     ) {
       return {
         status: ResultStatus.Unauthorized,
@@ -349,15 +332,6 @@ export const authService = {
       };
     }
 
-    // const blackList: AddBlacklistDto = {
-    //   token: oldRefreshToken,
-    //   userId: userId,
-    //   deviceId: deviceId,
-    //   expiresAt: new Date(oldPayload.exp * 1000),
-    // };
-    //
-    // await blacklistRepository.addToBlacklist(blackList);
-
     return {
       status: ResultStatus.Success,
       data: {
@@ -391,35 +365,10 @@ export const authService = {
     if (
       !isActiveSession ||
       Math.floor(isActiveSession.lastActiveDate.getTime() / 1000) !==
-        payload.iat * 1000
+        payload.iat
     ) {
-      return {
-        status: ResultStatus.Unauthorized,
-        errorMessage: 'Unauthorized',
-        data: null,
-        extensions: [{ field: 'refreshToken', message: 'Unauthorized' }],
-      };
+      throw new UnauthorizedError('Unauthorized', 'logout');
     }
-
-    // const isBlacklisted: WithId<BlacklistType> | null =
-    //   await blacklistRepository.isTokenBlacklisted(
-    //     oldRefreshToken,
-    //     userId,
-    //     deviceId,
-    //   );
-    //
-    // if (isBlacklisted) {
-    //   throw new UnauthorizedError('Unauthorized', 'logout');
-    // }
-    //
-    // const blackList: AddBlacklistDto = {
-    //   token: oldRefreshToken,
-    //   userId: userId,
-    //   deviceId: deviceId,
-    //   expiresAt: new Date(payload.exp * 1000),
-    // };
-    //
-    // await blacklistRepository.addToBlacklist(blackList);
 
     const isRemovedSession: boolean =
       await securityDevicesRepository.removeDeviceSession(userId, deviceId);
