@@ -1,8 +1,10 @@
 import { SecurityDevicesType } from '../types/security-devices.type';
 import { securityDevicesCollection } from '../../../core/db/mango.db';
 import { ObjectId, WithId } from 'mongodb';
+import { injectable } from 'inversify';
 
-export const securityDevicesQueryRepository = {
+@injectable()
+export class SecurityDevicesQueryRepository {
   async findDeviceSessionByUserId(
     userId: string,
   ): Promise<WithId<SecurityDevicesType>[]> {
@@ -11,5 +13,5 @@ export const securityDevicesQueryRepository = {
         userId: new ObjectId(userId),
       })
       .toArray();
-  },
-};
+  }
+}

@@ -11,8 +11,10 @@ import { buildUserFilter } from '../helpers/build-user-filter.helper';
 import { profileMapper } from '../mappers/profile.mapper';
 import { ProfileType } from '../type/profile.type';
 import { UserOutputType } from '../type/user-output.type';
+import { injectable } from 'inversify';
 
-export const usersQueryRepository = {
+@injectable()
+export class UsersQueryRepository {
   async getAllUsers(queryDto: UserQueryInput) {
     const skip: number = getSkipOffset(queryDto.pageNumber, queryDto.pageSize);
     const filter: any = buildUserFilter(queryDto);
@@ -37,7 +39,8 @@ export const usersQueryRepository = {
       pagination,
       userMapper,
     );
-  },
+  }
+
   async getUserById(id: ObjectId | string): Promise<UserOutputType | null> {
     const user: WithId<UserType> | null = await usersCollection.findOne({
       _id: new ObjectId(id),
@@ -48,7 +51,8 @@ export const usersQueryRepository = {
     }
 
     return userMapper(user);
-  },
+  }
+
   async getProfile(id: string): Promise<ProfileType | null> {
     const user: WithId<UserType> | null = await usersCollection.findOne({
       _id: new ObjectId(id),
@@ -59,5 +63,55 @@ export const usersQueryRepository = {
     }
 
     return profileMapper(user);
-  },
-};
+  }
+}
+
+// export const usersQueryRepository = {
+//   async getAllUsers(queryDto: UserQueryInput) {
+//     const skip: number = getSkipOffset(queryDto.pageNumber, queryDto.pageSize);
+//     const filter: any = buildUserFilter(queryDto);
+//
+//     const users: WithId<UserType>[] = await usersCollection
+//       .find(filter)
+//       .sort({ [queryDto.sortBy]: queryDto.sortDirection, _id: 1 })
+//       .skip(skip)
+//       .limit(queryDto.pageSize)
+//       .toArray();
+//
+//     const totalCount: number = await usersCollection.countDocuments(filter);
+//
+//     const pagination: PaginatedMetaType = buildPaginationHelper(
+//       totalCount,
+//       queryDto.pageNumber,
+//       queryDto.pageSize,
+//     );
+//
+//     return paginatedListMapper<UserType, UserOutputType>(
+//       users,
+//       pagination,
+//       userMapper,
+//     );
+//   },
+//   async getUserById(id: ObjectId | string): Promise<UserOutputType | null> {
+//     const user: WithId<UserType> | null = await usersCollection.findOne({
+//       _id: new ObjectId(id),
+//     });
+//
+//     if (!user) {
+//       return null;
+//     }
+//
+//     return userMapper(user);
+//   },
+//   async getProfile(id: string): Promise<ProfileType | null> {
+//     const user: WithId<UserType> | null = await usersCollection.findOne({
+//       _id: new ObjectId(id),
+//     });
+//
+//     if (!user) {
+//       return null;
+//     }
+//
+//     return profileMapper(user);
+//   },
+// };

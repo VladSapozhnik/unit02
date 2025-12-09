@@ -5,12 +5,15 @@ import { superAdminGuardMiddleware } from '../../../core/middleware/super-admin-
 import { idParamValidator } from '../../../core/validators/param-id.validation';
 import { paginationAndSortingValidation } from '../../../core/validators/pagination-and-sorting.validation';
 import { PostSortFieldEnum } from '../enum/post-sort-field.enum';
-import { jwtAuthGuardMiddleware } from '../../../core/middleware/jwt-auth-guard.middleware';
 import { postIdParamValidation } from '../validators/postId-param.validation';
 import { commentValidation } from '../../comments/validators/comment.validation';
 import { CommentSortFieldEnum } from '../../comments/enum/comment-sort-field.enum';
 import { container } from '../../../composition-root';
 import { PostsController } from './posts.controller';
+import { AuthGuardMiddleware } from '../../../core/middleware/jwt-auth-guard.middleware';
+
+const authGuardMiddleware: AuthGuardMiddleware =
+  container.get(AuthGuardMiddleware);
 
 export const postsController: PostsController = container.get(PostsController);
 
@@ -33,7 +36,7 @@ postsRouter.post(
 
 postsRouter.post(
   '/:postId/comments',
-  jwtAuthGuardMiddleware,
+  authGuardMiddleware.jwtAuth.bind(authGuardMiddleware),
   postIdParamValidation,
   commentValidation,
   inputValidationErrorsMiddleware,

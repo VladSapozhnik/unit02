@@ -9,8 +9,10 @@ import {
 } from 'mongodb';
 import { CreateSessionDto } from '../dto/create-session.dto';
 import { UpdateSessionDTO } from '../dto/update-session.dto';
+import { injectable } from 'inversify';
 
-export const securityDevicesRepository = {
+@injectable()
+export class SecurityDevicesRepository {
   async addDeviceSession(data: CreateSessionDto): Promise<string | null> {
     const result: InsertOneResult<WithId<SecurityDevicesType>> =
       await securityDevicesCollection.insertOne({
@@ -19,7 +21,7 @@ export const securityDevicesRepository = {
       });
 
     return result.insertedId.toString() ?? null;
-  },
+  }
 
   async updateDeviceSession(
     userId: string,
@@ -36,7 +38,7 @@ export const securityDevicesRepository = {
       );
 
     return result.matchedCount === 1;
-  },
+  }
 
   async findDeviceSessionByUserIdAndDeviceId(
     userId: string,
@@ -46,7 +48,7 @@ export const securityDevicesRepository = {
       userId: new ObjectId(userId),
       deviceId,
     });
-  },
+  }
 
   async findDeviceSessionByDeviceId(
     deviceId: string,
@@ -54,7 +56,8 @@ export const securityDevicesRepository = {
     return securityDevicesCollection.findOne({
       deviceId,
     });
-  },
+  }
+
   async removeDeviceSession(
     userId: string,
     deviceId: string,
@@ -65,7 +68,7 @@ export const securityDevicesRepository = {
     });
 
     return result.deletedCount === 1;
-  },
+  }
 
   async removeOtherDeviceSession(
     userId: string,
@@ -77,5 +80,75 @@ export const securityDevicesRepository = {
     });
 
     return result.deletedCount > 0;
-  },
-};
+  }
+}
+
+// export const securityDevicesRepository = {
+//   async addDeviceSession(data: CreateSessionDto): Promise<string | null> {
+//     const result: InsertOneResult<WithId<SecurityDevicesType>> =
+//       await securityDevicesCollection.insertOne({
+//         ...data,
+//         userId: new ObjectId(data.userId),
+//       });
+//
+//     return result.insertedId.toString() ?? null;
+//   },
+//
+//   async updateDeviceSession(
+//     userId: string,
+//     deviceId: string,
+//     data: UpdateSessionDTO,
+//   ): Promise<boolean> {
+//     const result: UpdateResult<WithId<SecurityDevicesType>> =
+//       await securityDevicesCollection.updateOne(
+//         {
+//           userId: new ObjectId(userId),
+//           deviceId,
+//         },
+//         { $set: data },
+//       );
+//
+//     return result.matchedCount === 1;
+//   },
+//
+//   async findDeviceSessionByUserIdAndDeviceId(
+//     userId: string,
+//     deviceId: string,
+//   ): Promise<WithId<SecurityDevicesType> | null> {
+//     return securityDevicesCollection.findOne({
+//       userId: new ObjectId(userId),
+//       deviceId,
+//     });
+//   },
+//
+//   async findDeviceSessionByDeviceId(
+//     deviceId: string,
+//   ): Promise<WithId<SecurityDevicesType> | null> {
+//     return securityDevicesCollection.findOne({
+//       deviceId,
+//     });
+//   },
+//   async removeDeviceSession(
+//     userId: string,
+//     deviceId: string,
+//   ): Promise<boolean> {
+//     const result: DeleteResult = await securityDevicesCollection.deleteOne({
+//       userId: new ObjectId(userId),
+//       deviceId,
+//     });
+//
+//     return result.deletedCount === 1;
+//   },
+//
+//   async removeOtherDeviceSession(
+//     userId: string,
+//     deviceId: string,
+//   ): Promise<boolean> {
+//     const result: DeleteResult = await securityDevicesCollection.deleteMany({
+//       userId: new ObjectId(userId),
+//       deviceId: { $ne: deviceId },
+//     });
+//
+//     return result.deletedCount > 0;
+//   },
+// };

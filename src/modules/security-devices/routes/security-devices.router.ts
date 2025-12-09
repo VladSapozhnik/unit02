@@ -1,19 +1,28 @@
 import { Router } from 'express';
-import { getUserDevicesHandler } from './handlers/get-user-devices.handler';
-import { removeDeviceSessionHandler } from './handlers/remove-device-session.handler';
-import { removeOtherSessionsHandler } from './handlers/remove-other-sessions.handler';
 import { deviceIdParamValidation } from '../validators/deviceId-param.validation';
 import { inputValidationErrorsMiddleware } from '../../../core/middleware/input-validation-errors.middleware';
+import { SecurityDevicesController } from './security-devices.controller';
+import { container } from '../../../composition-root';
+
+const securityDevicesController: SecurityDevicesController = container.get(
+  SecurityDevicesController,
+);
 
 export const securityDevicesRouter: Router = Router();
 
-securityDevicesRouter.get('/', getUserDevicesHandler);
+securityDevicesRouter.get(
+  '/',
+  securityDevicesController.getUserDevices.bind(securityDevicesController),
+);
 
-securityDevicesRouter.delete('/', removeOtherSessionsHandler);
+securityDevicesRouter.delete(
+  '/',
+  securityDevicesController.removeOtherSessions.bind(securityDevicesController),
+);
 
 securityDevicesRouter.delete(
   '/:deviceId',
   deviceIdParamValidation,
   inputValidationErrorsMiddleware,
-  removeDeviceSessionHandler,
+  securityDevicesController.removeDeviceSession.bind(securityDevicesController),
 );

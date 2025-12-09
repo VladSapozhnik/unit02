@@ -1,12 +1,19 @@
 import { UnauthorizedError } from '../../../core/errors/unauthorized.error';
 import { JwtPayload } from 'jsonwebtoken';
 import { jwtAdapter } from '../../../core/adapters/jwt.adapter';
-import { securityDevicesQueryRepository } from '../repositories/security-devices.query.repository';
 import { SecurityDevicesOutputType } from '../types/security-devices-output.type';
 import { securityDevicesMapper } from '../mappers/security-devices.mapper';
 import { SecurityDevicesType } from '../types/security-devices.type';
+import { inject, injectable } from 'inversify';
+import { SecurityDevicesQueryRepository } from '../repositories/security-devices.query.repository';
 
-export const securityDevicesQueryService = {
+@injectable()
+export class SecurityDevicesQueryService {
+  constructor(
+    @inject(SecurityDevicesQueryRepository)
+    private readonly securityDevicesQueryRepository: SecurityDevicesQueryRepository,
+  ) {}
+
   async getSessionByUser(
     refreshToken: string,
   ): Promise<SecurityDevicesOutputType[]> {
@@ -23,7 +30,7 @@ export const securityDevicesQueryService = {
     }
 
     const sessions: SecurityDevicesType[] | null =
-      await securityDevicesQueryRepository.findDeviceSessionByUserId(
+      await this.securityDevicesQueryRepository.findDeviceSessionByUserId(
         payload.userId,
       );
 
@@ -32,5 +39,5 @@ export const securityDevicesQueryService = {
     }
 
     return sessions.map(securityDevicesMapper);
-  },
-};
+  }
+}

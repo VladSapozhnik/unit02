@@ -7,12 +7,12 @@ import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { ForbiddenRequestError } from '../../../core/errors/forbidden-request.error';
 import { UpdateCommentDto } from '../dto/update-comment.dto';
 import { PostType } from '../../posts/types/post.type';
-import { usersRepository } from '../../users/repositories/users.repository';
 import { UnauthorizedError } from '../../../core/errors/unauthorized.error';
 import { BadRequestError } from '../../../core/errors/bad-request.error';
 import { injectable, inject } from 'inversify';
 import { CommentsRepository } from '../repositories/comments.repository';
 import { PostsRepository } from '../../posts/repositories/posts.repository';
+import { UsersRepository } from '../../users/repositories/users.repository';
 
 @injectable()
 export class CommentsService {
@@ -20,6 +20,7 @@ export class CommentsService {
     @inject(CommentsRepository)
     private readonly commentsRepository: CommentsRepository,
     @inject(PostsRepository) private readonly postsRepository: PostsRepository,
+    @inject(UsersRepository) private readonly usersRepository: UsersRepository,
   ) {}
 
   async createComment(
@@ -28,7 +29,7 @@ export class CommentsService {
     body: CreateCommentDto,
   ): Promise<string> {
     const existUser: WithId<UserType> | null =
-      await usersRepository.getUserById(userId);
+      await this.usersRepository.getUserById(userId);
 
     if (!existUser) {
       throw new UnauthorizedError('Unauthorized');

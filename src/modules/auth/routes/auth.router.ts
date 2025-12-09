@@ -1,60 +1,66 @@
 import { Router } from 'express';
-import { loginHandler } from './handlers/login.handler';
 import { authValidation } from '../validators/auth.validation';
 import { inputValidationErrorsMiddleware } from '../../../core/middleware/input-validation-errors.middleware';
-import { jwtAuthGuardMiddleware } from '../../../core/middleware/jwt-auth-guard.middleware';
-import { getProfileHandler } from './handlers/get-profile.handler';
-import { registerUserHandler } from './handlers/register-user.handler';
-import { confirmEmailHandler } from './handlers/confirm-email.handler';
 import { confirmEmailValidation } from '../validators/confirm-email.validation';
-import { resendEmailHandler } from './handlers/resend-email.handler';
 import { resendEmailValidation } from '../validators/resend-email.validation';
 import { registerValidation } from '../validators/register.validation';
-import { logoutHandler } from './handlers/logout.handler';
-import { refreshTokenHandler } from './handlers/refresh-token.handler';
-import { rateLimitMiddleware } from '../../../core/middleware/rate-limit.middleware';
+import { AuthController } from './auth.controller';
+import { container } from '../../../composition-root';
+import { AuthGuardMiddleware } from '../../../core/middleware/jwt-auth-guard.middleware';
+import { RateLimitMiddleware } from '../../../core/middleware/rate-limit.middleware';
+
+const authGuardMiddleware: AuthGuardMiddleware =
+  container.get(AuthGuardMiddleware);
+
+const rateLimitMiddleware: RateLimitMiddleware =
+  container.get(RateLimitMiddleware);
 
 export const authRouter: Router = Router();
+
+const authController: AuthController = container.get(AuthController);
 
 authRouter.post(
   '/login',
   authValidation,
   inputValidationErrorsMiddleware,
-  rateLimitMiddleware,
-  loginHandler,
+  rateLimitMiddleware.check.bind(rateLimitMiddleware),
+  authController.login.bind(authController),
 );
 
-authRouter.post('/logout', logoutHandler);
+authRouter.post('/logout', authController.logout.bind(authController));
 
-authRouter.post('/refresh-token', refreshTokenHandler);
+authRouter.post(
+  '/refresh-token',
+  authController.refreshToken.bind(authController),
+);
 
 authRouter.post(
   '/registration',
   registerValidation,
   inputValidationErrorsMiddleware,
-  rateLimitMiddleware,
-  registerUserHandler,
+  rateLimitMiddleware.check.bind(rateLimitMiddleware),
+  authController.registerUser.bind(authController),
 );
 
 authRouter.post(
   '/registration-confirmation',
   confirmEmailValidation,
   inputValidationErrorsMiddleware,
-  rateLimitMiddleware,
-  confirmEmailHandler,
+  rateLimitMiddleware.check.bind(rateLimitMiddleware),
+  authController.confirmEmail.bind(authController),
 );
 
 authRouter.post(
   '/registration-email-resending',
   resendEmailValidation,
   inputValidationErrorsMiddleware,
-  rateLimitMiddleware,
-  resendEmailHandler,
+  rateLimitMiddleware.check.bind(rateLimitMiddleware),
+  authController.resendEmail.bind(authController),
 );
 
 authRouter.get(
   '/me',
-  jwtAuthGuardMiddleware,
+  authGuardMiddleware.jwtAuth.bind(authGuardMiddleware),
   inputValidationErrorsMiddleware,
-  getProfileHandler,
+  authController.getProfile.bind(authController),
 );
