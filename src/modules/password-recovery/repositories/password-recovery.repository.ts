@@ -1,7 +1,7 @@
 import { injectable } from 'inversify';
 import { PasswordRecoveryType } from '../types/password-recovery.type';
 import { passwordRecoveryCollection } from '../../../core/db/mango.db';
-import { InsertOneResult, WithId } from 'mongodb';
+import { InsertOneResult, ObjectId, UpdateResult, WithId } from 'mongodb';
 
 @injectable()
 export class PasswordRecoveryRepository {
@@ -20,5 +20,15 @@ export class PasswordRecoveryRepository {
     return passwordRecoveryCollection.findOne({
       recoveryCode,
     });
+  }
+
+  async markAsUsedById(id: string): Promise<boolean> {
+    const result: UpdateResult<PasswordRecoveryType> =
+      await passwordRecoveryCollection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { isUsed: true } },
+      );
+
+    return result.modifiedCount === 1;
   }
 }

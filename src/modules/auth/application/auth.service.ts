@@ -420,13 +420,13 @@ export class AuthService {
           randomUUID,
           emailExamples.passwordRecovery,
         );
+
+        await this.passwordRecoveryRepository.addPasswordRecoveryCode(
+          recoveryData,
+        );
       } catch (e) {
         console.log(e);
       }
-
-      await this.passwordRecoveryRepository.addPasswordRecoveryCode(
-        recoveryData,
-      );
     }
   }
 
@@ -439,7 +439,7 @@ export class AuthService {
       isPasswordRecovery.expirationDate < new Date() ||
       isPasswordRecovery.isUsed
     ) {
-      throw new BadRequestError('Code is invalid', 'passwordRecovery');
+      throw new BadRequestError('Code is invalid', 'recoveryCode');
     }
 
     const hash: string = await hashAdapter.hashPassword(newPassword);
@@ -450,8 +450,12 @@ export class AuthService {
     );
 
     if (!isUpdate) {
-      throw new BadRequestError('Code is invalid', 'passwordRecovery');
+      throw new BadRequestError('Code is invalid', 'recoveryCode');
     }
+
+    await this.passwordRecoveryRepository.markAsUsedById(
+      isPasswordRecovery._id.toString(),
+    );
   }
 }
 
