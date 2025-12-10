@@ -1,5 +1,4 @@
 import { Request, Response } from 'express';
-import { CommentType } from '../../comments/types/comment.type';
 import { HTTP_STATUS } from '../../../core/enums/http-status.enum';
 import {
   RequestWithBody,
@@ -29,6 +28,7 @@ import { CommentsService } from '../../comments/application/comments.service';
 import { CommentsQueryRepository } from '../../comments/repositories/comments.query.repository';
 import { PostOutputType } from '../types/post-output.type';
 import { PostDBType } from '../types/post.type';
+import { CommentOutputType } from '../../comments/types/comment-output.type';
 
 @injectable()
 export class PostsController {
@@ -53,7 +53,7 @@ export class PostsController {
       req.body,
     );
 
-    const findComment: CommentType | null =
+    const findComment: CommentOutputType | null =
       await this.commentsQueryRepository.getCommentById(id);
 
     res.status(HTTP_STATUS.CREATED_201).send(findComment);

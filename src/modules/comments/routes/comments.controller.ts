@@ -1,7 +1,7 @@
 import { RequestWithParam } from '../../../core/types/request.type';
 import { IdCommentType } from '../types/id-comment.type';
 import { Response } from 'express';
-import { CommentType } from '../types/comment.type';
+import { CommentDBType } from '../types/comment.type';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import {
   RequestUserIdParam,
@@ -13,6 +13,7 @@ import { UpdateCommentDto } from '../dto/update-comment.dto';
 import { injectable, inject } from 'inversify';
 import { CommentsService } from '../application/comments.service';
 import { CommentsQueryRepository } from '../repositories/comments.query.repository';
+import { CommentOutputType } from '../types/comment-output.type';
 
 @injectable()
 export class CommentsController {
@@ -24,9 +25,9 @@ export class CommentsController {
 
   async getCommentsById(
     req: RequestWithParam<IdCommentType>,
-    res: Response<CommentType>,
+    res: Response<CommentOutputType>,
   ) {
-    const comment: CommentType | null =
+    const comment: CommentOutputType | null =
       await this.commentsQueryRepository.getCommentById(req.params.id);
 
     if (!comment) {

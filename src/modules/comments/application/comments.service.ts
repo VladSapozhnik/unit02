@@ -2,7 +2,7 @@ import { UserType } from '../../users/type/user.type';
 import { CreateCommentDto } from '../dto/create-comment.dto';
 import { ObjectId, WithId } from 'mongodb';
 import { createdAtHelper } from '../../../core/helpers/created-at.helper';
-import { CommentType } from '../types/comment.type';
+import { CommentDBType } from '../types/comment.type';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { ForbiddenRequestError } from '../../../core/errors/forbidden-request.error';
 import { UpdateCommentDto } from '../dto/update-comment.dto';
@@ -42,15 +42,16 @@ export class CommentsService {
       throw new NotFoundError('Not Found Post', 'post');
     }
 
-    const payload: CommentType = {
-      content: body.content,
-      postId: new ObjectId(postId),
-      commentatorInfo: {
+    const payload: CommentDBType = new CommentDBType(
+      new ObjectId(),
+      new ObjectId(postId),
+      body.content,
+      {
         userId: new ObjectId(existUser._id),
         userLogin: existUser.login,
       },
-      createdAt: createdAtHelper(),
-    };
+      createdAtHelper(),
+    );
 
     const commentId: string =
       await this.commentsRepository.createComment(payload);
@@ -67,7 +68,7 @@ export class CommentsService {
     id: string,
     body: UpdateCommentDto,
   ): Promise<boolean> {
-    const findComment: CommentType | null =
+    const findComment: CommentDBType | null =
       await this.commentsRepository.getCommentById(id);
 
     if (!findComment) {
@@ -94,7 +95,7 @@ export class CommentsService {
   }
 
   async removeComment(userId: string, id: string): Promise<boolean> {
-    const findComment: CommentType | null =
+    const findComment: CommentDBType | null =
       await this.commentsRepository.getCommentById(id);
 
     if (!findComment) {

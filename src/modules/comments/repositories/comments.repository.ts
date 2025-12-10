@@ -1,29 +1,22 @@
 import { commentsCollection } from '../../../core/db/mango.db';
-import { CommentType } from '../types/comment.type';
-import {
-  DeleteResult,
-  InsertOneResult,
-  ObjectId,
-  UpdateResult,
-  WithId,
-} from 'mongodb';
+import { CommentDBType } from '../types/comment.type';
+import { DeleteResult, InsertOneResult, ObjectId, UpdateResult } from 'mongodb';
 import { UpdateCommentDto } from '../dto/update-comment.dto';
 import { injectable } from 'inversify';
 
 @injectable()
 export class CommentsRepository {
-  async createComment(dto: CommentType): Promise<string> {
-    const result: InsertOneResult<WithId<CommentType>> =
+  async createComment(dto: CommentDBType): Promise<string> {
+    const result: InsertOneResult<CommentDBType> =
       await commentsCollection.insertOne(dto);
 
     return result?.insertedId.toString() ?? null;
   }
 
-  async getCommentById(
-    id: string | ObjectId,
-  ): Promise<WithId<CommentType> | null> {
-    const comment: WithId<CommentType> | null =
-      await commentsCollection.findOne({ _id: new ObjectId(id) });
+  async getCommentById(id: string | ObjectId): Promise<CommentDBType | null> {
+    const comment: CommentDBType | null = await commentsCollection.findOne({
+      _id: new ObjectId(id),
+    });
 
     if (!comment) {
       return null;
@@ -32,7 +25,7 @@ export class CommentsRepository {
     return comment;
   }
   async updateComment(id: string, dto: UpdateCommentDto): Promise<boolean> {
-    const result: UpdateResult<WithId<CommentType>> =
+    const result: UpdateResult<CommentDBType> =
       await commentsCollection.updateOne(
         { _id: new ObjectId(id) },
         { $set: dto },

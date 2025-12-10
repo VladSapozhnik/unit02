@@ -1,12 +1,24 @@
-import { ObjectId } from 'mongodb';
-
-export type CommentType = {
+export class CommentOutputType {
   /**
    * type exist comment
    */
-  id?: string | ObjectId;
-  postId?: string | ObjectId;
+  id: string;
+  postId: string;
   content: string;
-  commentatorInfo: { userId: string | ObjectId; userLogin: string };
+  commentatorInfo: { userId: string; userLogin: string };
   createdAt: string;
-};
+
+  constructor(
+    id: string,
+    postId: string,
+    content: string,
+    commentatorInfo: { userId: string; userLogin: string },
+    createdAt: string,
+  ) {
+    this.id = id;
+    this.postId = postId;
+    this.content = content;
+    this.commentatorInfo = commentatorInfo;
+    this.createdAt = createdAt;
+  }
+}

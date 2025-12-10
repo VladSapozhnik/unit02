@@ -1,11 +1,14 @@
 import { WithId } from 'mongodb';
-import { CommentType } from '../types/comment.type';
+import { CommentDBType } from '../types/comment.type';
+import { CommentOutputType } from '../types/comment-output.type';
 
-export const commentMapper = (comment: WithId<CommentType>): CommentType => {
+export const commentMapper = (
+  comment: WithId<CommentDBType>,
+): CommentOutputType => {
   return {
     id: String(comment._id),
     content: comment.content,
-    // postId: String(comment.postId),
+    postId: String(comment.postId),
     commentatorInfo: {
       userId: String(comment.commentatorInfo.userId),
       userLogin: comment.commentatorInfo.userLogin,
