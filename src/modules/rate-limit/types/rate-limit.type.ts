@@ -4,7 +4,7 @@
 //   date: Date;
 // };
 
-export class RateLimitType {
+export class RateLimitDBType {
   ip: string;
   url: string;
   date: Date;

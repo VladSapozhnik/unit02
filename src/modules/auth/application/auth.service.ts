@@ -17,13 +17,13 @@ import { AccessAndRefreshTokensType } from '../type/access-and-refresh-tokens.ty
 import { JwtPayload } from 'jsonwebtoken';
 import { randomUUID } from 'node:crypto';
 import { CreateSessionDto } from '../../security-devices/dto/create-session.dto';
-import { SecurityDevicesType } from '../../security-devices/types/security-devices.type';
+import { SecurityDevicesDBType } from '../../security-devices/types/security-devices.type';
 import { UpdateSessionDTO } from '../../security-devices/dto/update-session.dto';
 import { inject, injectable } from 'inversify';
 import { UsersRepository } from '../../users/repositories/users.repository';
 import { SecurityDevicesRepository } from '../../security-devices/repositories/security-devices.repository';
 import { PasswordRecoveryRepository } from '../../password-recovery/repositories/password-recovery.repository';
-import { PasswordRecoveryType } from '../../password-recovery/types/password-recovery.type';
+import { PasswordRecoveryDBType } from '../../password-recovery/types/password-recovery.type';
 import { BadRequestError } from '../../../core/errors/bad-request.error';
 
 @injectable()
@@ -278,7 +278,7 @@ export class AuthService {
     const userId: string = oldPayload.userId as string;
     const deviceId: string = oldPayload.deviceId as string;
 
-    const isActiveSession: SecurityDevicesType | null =
+    const isActiveSession: SecurityDevicesDBType | null =
       await this.securityDevicesRepository.findDeviceSessionByUserIdAndDeviceId(
         oldPayload.userId,
         oldPayload.deviceId,
@@ -373,7 +373,7 @@ export class AuthService {
     const userId: string = payload.userId;
     const deviceId: string = payload.deviceId;
 
-    const isActiveSession: SecurityDevicesType | null =
+    const isActiveSession: SecurityDevicesDBType | null =
       await this.securityDevicesRepository.findDeviceSessionByUserIdAndDeviceId(
         payload.userId,
         payload.deviceId,
@@ -405,7 +405,7 @@ export class AuthService {
       await this.usersRepository.findUserByEmail(email);
 
     if (existUser) {
-      const recoveryData: PasswordRecoveryType = {
+      const recoveryData: PasswordRecoveryDBType = {
         _id: new ObjectId(),
         userId: existUser._id,
         recoveryCode: randomUUID,
@@ -432,7 +432,7 @@ export class AuthService {
   }
 
   async newPassword(newPassword: string, code: string) {
-    const isPasswordRecovery: WithId<PasswordRecoveryType> | null =
+    const isPasswordRecovery: WithId<PasswordRecoveryDBType> | null =
       await this.passwordRecoveryRepository.getPasswordRecoveryByCode(code);
 
     if (

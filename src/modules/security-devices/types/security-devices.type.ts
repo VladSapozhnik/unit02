@@ -10,7 +10,7 @@ import { ObjectId } from 'mongodb';
 //   expiresAt: Date;
 // };
 
-export class SecurityDevicesType {
+export class SecurityDevicesDBType {
   _id: ObjectId;
   userId: ObjectId;
   deviceId: string;

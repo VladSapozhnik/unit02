@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { RateLimitRepository } from '../../modules/rate-limit/repositories/rate-limit.repository';
-import { RateLimitType } from '../../modules/rate-limit/types/rate-limit.type';
+import { RateLimitDBType } from '../../modules/rate-limit/types/rate-limit.type';
 import { TooManyRequestsError } from '../errors/too-many-requests.error';
 import { settings } from '../settings/settings';
 import { inject, injectable } from 'inversify';
@@ -25,7 +25,11 @@ export class RateLimitMiddleware {
       );
     }
 
-    const attemptDate: RateLimitType = new RateLimitType(ip, url, new Date());
+    const attemptDate: RateLimitDBType = new RateLimitDBType(
+      ip,
+      url,
+      new Date(),
+    );
 
     await this.rateLimitRepository.addAttempt(attemptDate);
 

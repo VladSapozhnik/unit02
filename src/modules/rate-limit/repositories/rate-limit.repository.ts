@@ -1,4 +1,4 @@
-import { RateLimitType } from '../types/rate-limit.type';
+import { RateLimitDBType } from '../types/rate-limit.type';
 import { rateLimitCollection } from '../../../core/db/mango.db';
 import { InsertOneResult } from 'mongodb';
 import { subSeconds } from 'date-fns/subSeconds';
@@ -6,8 +6,8 @@ import { injectable } from 'inversify';
 
 @injectable()
 export class RateLimitRepository {
-  async addAttempt(data: RateLimitType): Promise<string> {
-    const result: InsertOneResult<RateLimitType> =
+  async addAttempt(data: RateLimitDBType): Promise<string> {
+    const result: InsertOneResult<RateLimitDBType> =
       await rateLimitCollection.insertOne(data);
 
     return result.insertedId.toString() ?? null;

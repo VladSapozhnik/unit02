@@ -1,6 +1,6 @@
 import { ObjectId } from 'mongodb';
 
-export class PasswordRecoveryType {
+export class PasswordRecoveryDBType {
   _id: ObjectId;
   userId: ObjectId;
   recoveryCode: string;
