@@ -9,9 +9,9 @@ import { postsRouter } from './modules/posts/routes/posts.router';
 import { HTTP_STATUS } from './core/enums/http-status.enum';
 import { RouterPathConst } from './core/constants/router-path.const';
 import {
-  blacklistCollection,
   blogsCollection,
   commentsCollection,
+  passwordRecoveryCollection,
   postsCollection,
   rateLimitCollection,
   securityDevicesCollection,
@@ -61,7 +61,7 @@ export const setupApp = (app: Express) => {
       postsCollection.deleteMany(),
       usersCollection.deleteMany(),
       commentsCollection.deleteMany(),
-      blacklistCollection.deleteMany(),
+      passwordRecoveryCollection.deleteMany(),
       securityDevicesCollection.deleteMany(),
       rateLimitCollection.deleteMany(),
     ]);

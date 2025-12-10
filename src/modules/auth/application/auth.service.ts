@@ -22,6 +22,9 @@ import { UpdateSessionDTO } from '../../security-devices/dto/update-session.dto'
 import { inject, injectable } from 'inversify';
 import { UsersRepository } from '../../users/repositories/users.repository';
 import { SecurityDevicesRepository } from '../../security-devices/repositories/security-devices.repository';
+import { PasswordRecoveryRepository } from '../../password-recovery/repositories/password-recovery.repository';
+import { PasswordRecoveryType } from '../../password-recovery/types/password-recovery.type';
+import { BadRequestError } from '../../../core/errors/bad-request.error';
 
 @injectable()
 export class AuthService {
@@ -29,6 +32,8 @@ export class AuthService {
     @inject(UsersRepository) private usersRepository: UsersRepository,
     @inject(SecurityDevicesRepository)
     private securityDevicesRepository: SecurityDevicesRepository,
+    @inject(PasswordRecoveryRepository)
+    private readonly passwordRecoveryRepository: PasswordRecoveryRepository,
   ) {}
 
   async registration(
@@ -390,6 +395,62 @@ export class AuthService {
 
     if (!isRemovedSession) {
       throw new UnauthorizedError('Unauthorized', 'logout');
+    }
+  }
+
+  async passwordRecovery(email: string) {
+    const randomUUID = generateId();
+
+    const existUser: WithId<UserType> | null =
+      await this.usersRepository.findUserByEmail(email);
+
+    if (existUser) {
+      const recoveryData: PasswordRecoveryType = {
+        userId: existUser._id,
+        recoveryCode: randomUUID,
+        expirationDate: add(new Date(), {
+          minutes: 30,
+        }),
+        isUsed: false,
+      };
+
+      try {
+        await emailAdapter.sendEmail(
+          email,
+          randomUUID,
+          emailExamples.passwordRecovery,
+        );
+      } catch (e) {
+        console.log(e);
+      }
+
+      await this.passwordRecoveryRepository.addPasswordRecoveryCode(
+        recoveryData,
+      );
+    }
+  }
+
+  async newPassword(newPassword: string, code: string) {
+    const isPasswordRecovery: WithId<PasswordRecoveryType> | null =
+      await this.passwordRecoveryRepository.getPasswordRecoveryByCode(code);
+
+    if (
+      !isPasswordRecovery ||
+      isPasswordRecovery.expirationDate < new Date() ||
+      isPasswordRecovery.isUsed
+    ) {
+      throw new BadRequestError('Code is invalid', 'passwordRecovery');
+    }
+
+    const hash: string = await hashAdapter.hashPassword(newPassword);
+
+    const isUpdate: boolean = await this.usersRepository.updateUserPasswordById(
+      isPasswordRecovery.userId.toString(),
+      hash,
+    );
+
+    if (!isUpdate) {
+      throw new BadRequestError('Code is invalid', 'passwordRecovery');
     }
   }
 }

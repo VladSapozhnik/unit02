@@ -1,5 +1,5 @@
 import { usersCollection } from '../../../core/db/mango.db';
-import { UserType, UserWithPasswordType } from '../type/user.type';
+import { UserDbType, UserType, UserWithPasswordType } from '../type/user.type';
 import {
   DeleteResult,
   InsertOneResult,
@@ -47,6 +47,20 @@ export class UsersRepository {
     return usersCollection.findOne({
       $or: [{ login: loginOrEmail }, { email: loginOrEmail }],
     });
+  }
+
+  async findUserByEmail(email: string) {
+    return usersCollection.findOne({ email });
+  }
+
+  async updateUserPasswordById(id: string, newPasswordHash: string) {
+    const result: UpdateResult<WithId<UserDbType>> =
+      await usersCollection.updateOne(
+        { _id: new ObjectId(id) },
+        { $set: { password: newPasswordHash } },
+      );
+
+    return result.matchedCount === 1;
   }
 
   async updateConfirmation(id: string): Promise<boolean> {

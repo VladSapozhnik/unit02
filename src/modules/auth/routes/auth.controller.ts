@@ -14,6 +14,8 @@ import { AccessAndRefreshTokensType } from '../type/access-and-refresh-tokens.ty
 import { ResendEmailDto } from '../dto/resend-email.dto';
 import { AuthService } from '../application/auth.service';
 import { UsersQueryRepository } from '../../users/repositories/users.query.repository';
+import { PasswordRecoveryDto } from '../dto/password-recovery.dto';
+import { NewPasswordDto } from '../dto/new-password.dto';
 
 @injectable()
 export class AuthController {
@@ -122,6 +124,24 @@ export class AuthController {
       res.sendStatus(400).json(extensions);
       return;
     }
+
+    res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
+  }
+
+  async passwordRecovery(
+    req: RequestWithBody<PasswordRecoveryDto>,
+    res: Response,
+  ) {
+    await this.authService.passwordRecovery(req.body.email);
+
+    res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
+  }
+
+  async newPassword(req: RequestWithBody<NewPasswordDto>, res: Response) {
+    await this.authService.newPassword(
+      req.body.newPassword,
+      req.body.recoveryCode,
+    );
 
     res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   }

@@ -8,6 +8,8 @@ import { AuthController } from './auth.controller';
 import { container } from '../../../composition-root';
 import { AuthGuardMiddleware } from '../../../core/middleware/jwt-auth-guard.middleware';
 import { RateLimitMiddleware } from '../../../core/middleware/rate-limit.middleware';
+import { passwordRecoveryValidation } from '../validators/password-recovery.validation';
+import { newPasswordValidation } from '../validators/new-password.validation';
 
 const authGuardMiddleware: AuthGuardMiddleware =
   container.get(AuthGuardMiddleware);
@@ -53,8 +55,8 @@ authRouter.post(
 authRouter.post(
   '/registration-email-resending',
   resendEmailValidation,
-  inputValidationErrorsMiddleware,
   rateLimitMiddleware.check.bind(rateLimitMiddleware),
+  inputValidationErrorsMiddleware,
   authController.resendEmail.bind(authController),
 );
 
@@ -63,4 +65,20 @@ authRouter.get(
   authGuardMiddleware.jwtAuth.bind(authGuardMiddleware),
   inputValidationErrorsMiddleware,
   authController.getProfile.bind(authController),
+);
+
+authRouter.post(
+  '/password-recovery',
+  passwordRecoveryValidation,
+  inputValidationErrorsMiddleware,
+  rateLimitMiddleware.check.bind(rateLimitMiddleware),
+  authController.passwordRecovery.bind(authController),
+);
+
+authRouter.post(
+  'new-password',
+  newPasswordValidation,
+  inputValidationErrorsMiddleware,
+  rateLimitMiddleware.check.bind(rateLimitMiddleware),
+  authController.newPassword.bind(authController),
 );

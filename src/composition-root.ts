@@ -26,6 +26,7 @@ import { SecurityDevicesQueryService } from './modules/security-devices/applicat
 import { AuthGuardMiddleware } from './core/middleware/jwt-auth-guard.middleware';
 import { RateLimitRepository } from './modules/rate-limit/repositories/rate-limit.repository';
 import { RateLimitMiddleware } from './core/middleware/rate-limit.middleware';
+import { PasswordRecoveryRepository } from './modules/password-recovery/repositories/password-recovery.repository';
 
 // const blogsRepository = new BlogsRepository();
 // const blogsQueryRepository = new BlogsQueryRepository();
@@ -73,6 +74,9 @@ container.bind(SecurityDevicesRepository).to(SecurityDevicesRepository);
 container
   .bind(SecurityDevicesQueryRepository)
   .to(SecurityDevicesQueryRepository);
+
+//passwordRecovery
+container.bind(PasswordRecoveryRepository).to(PasswordRecoveryRepository);
 
 //rateLimit
 container.bind(RateLimitRepository).to(RateLimitRepository);
