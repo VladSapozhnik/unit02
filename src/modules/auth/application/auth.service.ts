@@ -406,6 +406,7 @@ export class AuthService {
 
     if (existUser) {
       const recoveryData: PasswordRecoveryType = {
+        _id: new ObjectId(),
         userId: existUser._id,
         recoveryCode: randomUUID,
         expirationDate: add(new Date(), {
