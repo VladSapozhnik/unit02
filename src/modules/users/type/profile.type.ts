@@ -1,12 +1,3 @@
-// export type ProfileType = {
-//   /**
-//    * profile response exist user
-//    */
-//   email: string;
-//   login: string;
-//   userId: string;
-// };
-
 export class ProfileType {
   /**
    * profile response exist user

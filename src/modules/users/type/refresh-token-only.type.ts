@@ -1,7 +1,3 @@
-// export type RefreshTokenOnlyType = {
-//   currentRefreshToken: string;
-// };
-
 export class RefreshTokenOnlyType {
   currentRefreshToken: string;
 
