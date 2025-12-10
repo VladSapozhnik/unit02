@@ -1,9 +1,23 @@
-export type UpdatePostDto = {
+import { ObjectId } from 'mongodb';
+
+export class UpdatePostDto {
   /**
    * body for updating a successfully found video
    */
   title: string;
   shortDescription: string;
   content: string;
-  blogId: string;
-};
+  blogId: ObjectId;
+
+  constructor(
+    title: string,
+    shortDescription: string,
+    content: string,
+    blogId: ObjectId,
+  ) {
+    this.title = title;
+    this.shortDescription = shortDescription;
+    this.content = content;
+    this.blogId = blogId;
+  }
+}

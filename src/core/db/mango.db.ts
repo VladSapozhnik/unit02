@@ -1,7 +1,7 @@
 import { Collection, Db, MongoClient } from 'mongodb';
 import { settings } from '../settings/settings';
 import { BlogType } from '../../modules/blogs/types/blog.type';
-import { PostType } from '../../modules/posts/types/post.type';
+import { PostDBType } from '../../modules/posts/types/post.type';
 import { UserDbType } from '../../modules/users/type/user.type';
 import { CommentType } from '../../modules/comments/types/comment.type';
 import { SecurityDevicesType } from '../../modules/security-devices/types/security-devices.type';
@@ -18,7 +18,7 @@ const RATE_LIMIT = 'rate_limit';
 
 export let client: MongoClient;
 export let blogsCollection: Collection<BlogType>;
-export let postsCollection: Collection<PostType>;
+export let postsCollection: Collection<PostDBType>;
 export let usersCollection: Collection<UserDbType>;
 export let commentsCollection: Collection<CommentType>;
 export let securityDevicesCollection: Collection<SecurityDevicesType>;
@@ -31,7 +31,7 @@ export async function runDB(db_url: string): Promise<void> {
   const db: Db = client.db(settings.DB_NAME);
 
   blogsCollection = db.collection<BlogType>(BLOG_COLLECTION_NAME);
-  postsCollection = db.collection<PostType>(POST_COLLECTION_NAME);
+  postsCollection = db.collection<PostDBType>(POST_COLLECTION_NAME);
   usersCollection = db.collection<UserDbType>(USER_COLLECTION_NAME);
   commentsCollection = db.collection<CommentType>(COMMENT_COLLECTION_NAME);
   passwordRecoveryCollection = db.collection<PasswordRecoveryType>(

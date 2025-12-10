@@ -13,7 +13,7 @@ import { PaginationAndSortingType } from '../../../core/types/pagination-and-sor
 import { UserSortFieldEnum } from '../enum/user-sort-field.enum';
 import { setDefaultSortAndPaginationIfNotExistHelper } from '../../../core/helpers/set-default-sort-and-pagination.helper';
 import { inject, injectable } from 'inversify';
-import { IdUserParamDto } from '../dto/id-user-param.dto';
+import { type IdUserParamDto } from '../dto/id-user-param.dto';
 import { UsersService } from '../application/users.service';
 import { UsersQueryRepository } from '../repositories/users.query.repository';
 
@@ -54,7 +54,9 @@ export class UsersController {
   }
 
   async removeUser(req: RequestWithParam<IdUserParamDto>, res: Response) {
-    await this.usersService.removeUser(req.params.id);
+    const id: string = req.params.id;
+
+    await this.usersService.removeUser(id);
 
     res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   }

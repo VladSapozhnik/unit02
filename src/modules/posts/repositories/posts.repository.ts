@@ -1,30 +1,24 @@
-import { PostType } from '../types/post.type';
+import { PostDBType } from '../types/post.type';
 import { UpdatePostDto } from '../dto/update-post.dto';
-import {
-  DeleteResult,
-  InsertOneResult,
-  ObjectId,
-  UpdateResult,
-  WithId,
-} from 'mongodb';
+import { DeleteResult, InsertOneResult, ObjectId, UpdateResult } from 'mongodb';
 import { postsCollection } from '../../../core/db/mango.db';
 import { injectable } from 'inversify';
 
 @injectable()
 export class PostsRepository {
-  async createPost(body: PostType): Promise<string> {
-    const result: InsertOneResult<WithId<PostType>> =
+  async createPost(body: PostDBType): Promise<string> {
+    const result: InsertOneResult<PostDBType> =
       await postsCollection.insertOne(body);
 
-    return result?.insertedId.toString() ?? null;
+    return result.insertedId.toString() ?? null;
   }
 
-  async findPostById(postId: string): Promise<WithId<PostType> | null> {
+  async findPostById(postId: string): Promise<PostDBType | null> {
     return postsCollection.findOne({ _id: new ObjectId(postId) });
   }
 
   async updatePost(id: string, body: UpdatePostDto): Promise<boolean> {
-    const result: UpdateResult<PostType> = await postsCollection.updateOne(
+    const result: UpdateResult<PostDBType> = await postsCollection.updateOne(
       { _id: new ObjectId(id) },
       { $set: { ...body } },
     );

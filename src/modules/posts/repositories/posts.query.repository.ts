@@ -1,4 +1,4 @@
-import { PostType } from '../types/post.type';
+import { PostDBType } from '../types/post.type';
 import { ObjectId, WithId } from 'mongodb';
 import { postsCollection } from '../../../core/db/mango.db';
 import { PostQueryInput } from '../routes/input/post-query.input';
@@ -8,6 +8,7 @@ import { PaginatedMetaType } from '../../../core/types/paginated-meta.type';
 import { buildPaginationHelper } from '../../../core/helpers/build-pagination.helper';
 import { paginatedListMapper } from '../../../core/mappers/paginated-list.mapper';
 import { injectable } from 'inversify';
+import { PostOutputType } from '../types/post-output.type';
 
 @injectable()
 export class PostsQueryRepository {
@@ -20,7 +21,7 @@ export class PostsQueryRepository {
 
     const skip: number = getSkipOffset(queryDto.pageNumber, queryDto.pageSize);
 
-    const posts: WithId<PostType>[] = await postsCollection
+    const posts: WithId<PostDBType>[] = await postsCollection
       .find(filter)
       .sort({ [queryDto.sortBy]: queryDto.sortDirection })
       .limit(queryDto.pageSize)
@@ -35,11 +36,15 @@ export class PostsQueryRepository {
       queryDto.pageSize,
     );
 
-    return paginatedListMapper<PostType>(posts, pagination, postMapper);
+    return paginatedListMapper<PostDBType, PostOutputType>(
+      posts,
+      pagination,
+      postMapper,
+    );
   }
 
-  async getPostById(id: ObjectId | string): Promise<PostType | null> {
-    const post: WithId<PostType> | null = await postsCollection.findOne({
+  async getPostById(id: ObjectId | string): Promise<PostOutputType | null> {
+    const post: WithId<PostDBType> | null = await postsCollection.findOne({
       _id: new ObjectId(id),
     });
 

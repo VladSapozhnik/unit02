@@ -225,14 +225,14 @@ export class AuthService {
     const lastActiveDate = new Date(payload.iat * 1000);
     const expiresAt = new Date(payload.exp * 1000);
 
-    const sessionDeviceData: CreateSessionDto = {
-      userId: payload.userId,
+    const sessionDeviceData: CreateSessionDto = new CreateSessionDto(
+      payload.userId,
       deviceId,
       ip,
       title,
       lastActiveDate,
       expiresAt,
-    };
+    );
 
     await this.securityDevicesRepository.addDeviceSession(sessionDeviceData);
 
@@ -325,12 +325,12 @@ export class AuthService {
     const lastActiveDate = new Date(newPayload.iat * 1000);
     const expiresAt = new Date(newPayload.exp * 1000);
 
-    const updatedSessionDate: UpdateSessionDTO = {
+    const updatedSessionDate: UpdateSessionDTO = new UpdateSessionDTO(
       ip,
       title,
       lastActiveDate,
       expiresAt,
-    };
+    );
 
     const isUpdatedSessions: boolean =
       await this.securityDevicesRepository.updateDeviceSession(

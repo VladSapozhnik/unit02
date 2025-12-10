@@ -1,13 +1,14 @@
 import { ObjectId, WithId } from 'mongodb';
-import { PostType } from '../types/post.type';
+import { PostDBType } from '../types/post.type';
+import { PostOutputType } from '../types/post-output.type';
 
-export const postMapper = (post: WithId<PostType>): PostType => {
+export const postMapper = (post: WithId<PostDBType>): PostOutputType => {
   return {
     id: new ObjectId(post._id).toString(),
     title: post.title,
     shortDescription: post.shortDescription,
     content: post.content,
-    blogId: post.blogId,
+    blogId: post.blogId.toString(),
     blogName: post.blogName,
     createdAt: post.createdAt,
   };

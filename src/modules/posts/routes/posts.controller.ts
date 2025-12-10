@@ -7,7 +7,6 @@ import {
   RequestWithParamAndBody,
 } from '../../../core/types/request.type';
 import { CreatePostDto, CreatePostForBlogDto } from '../dto/create-post.dto';
-import { PostType } from '../types/post.type';
 import { BlogIdQueryDto } from '../dto/blogId-query.dto';
 import { PostQueryInput } from './input/post-query.input';
 import { matchedData } from 'express-validator';
@@ -17,7 +16,6 @@ import { setDefaultSortAndPaginationIfNotExistHelper } from '../../../core/helpe
 import { errorsHandler } from '../../../core/errors/errors.handler';
 import { CommentQueryInput } from '../../comments/routes/input/comment-query.input';
 import { CommentSortFieldEnum } from '../../comments/enum/comment-sort-field.enum';
-import { WithId } from 'mongodb';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { IdPostParamDto } from '../dto/id-post-param.dto';
 import { BlogType } from '../../blogs/types/blog.type';
@@ -29,6 +27,8 @@ import { BlogsQueryRepository } from '../../blogs/repositories/blogs.query.repos
 import { PostsRepository } from '../repositories/posts.repository';
 import { CommentsService } from '../../comments/application/comments.service';
 import { CommentsQueryRepository } from '../../comments/repositories/comments.query.repository';
+import { PostOutputType } from '../types/post-output.type';
+import { PostDBType } from '../types/post.type';
 
 @injectable()
 export class PostsController {
@@ -62,7 +62,7 @@ export class PostsController {
   async createPost(req: RequestWithBody<CreatePostDto>, res: Response) {
     const id: string = await this.postsService.createPost(req.body);
 
-    const post: PostType | null =
+    const post: PostOutputType | null =
       await this.postsQueryRepository.getPostById(id);
 
     res.status(HTTP_STATUS.CREATED_201).send(post);
@@ -79,7 +79,7 @@ export class PostsController {
       blogId,
     });
 
-    const post: PostType | null =
+    const post: PostOutputType | null =
       await this.postsQueryRepository.getPostById(id);
 
     res.status(HTTP_STATUS.CREATED_201).send(post);
@@ -112,8 +112,9 @@ export class PostsController {
     const defaultQuery: PaginationAndSortingType<CommentSortFieldEnum> =
       setDefaultSortAndPaginationIfNotExistHelper(sanitizedQuery);
 
-    const isPost: WithId<PostType> | null =
-      await this.postsRepository.findPostById(req.params.postId);
+    const isPost: PostDBType | null = await this.postsRepository.findPostById(
+      req.params.postId,
+    );
 
     if (!isPost) {
       throw new NotFoundError(
@@ -131,7 +132,7 @@ export class PostsController {
   }
 
   async getPostById(req: RequestWithParam<IdPostParamDto>, res: Response) {
-    const existPost: PostType | null =
+    const existPost: PostOutputType | null =
       await this.postsQueryRepository.getPostById(req.params.id);
 
     if (!existPost) {

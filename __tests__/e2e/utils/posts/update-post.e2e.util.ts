@@ -8,19 +8,20 @@ import { HTTP_STATUS } from '../../../../src/core/enums/http-status.enum';
 import { RouterPathConst } from '../../../../src/core/constants/router-path.const';
 import { CreatePostDto } from '../../../../src/modules/posts/dto/create-post.dto';
 import { UpdatePostDto } from '../../../../src/modules/posts/dto/update-post.dto';
+import { ObjectId } from 'mongodb';
 
-export const exampleUpdatePost: CreatePostDto = {
+export const exampleUpdatePost: UpdatePostDto = {
   title: 'new string',
   shortDescription: 'new string',
   content: 'new string',
-  blogId: '1',
+  blogId: new ObjectId(),
 };
 
 export const exampleNonUpdatePost: UpdatePostDto = {
   title: '',
   shortDescription: '',
   content: '',
-  blogId: '',
+  blogId: new ObjectId(),
 };
 
 export const updatePostE2eUtil = async (

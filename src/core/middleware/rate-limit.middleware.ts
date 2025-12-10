@@ -25,44 +25,10 @@ export class RateLimitMiddleware {
       );
     }
 
-    const attemptDate: RateLimitType = {
-      ip,
-      url,
-      date: new Date(),
-    };
+    const attemptDate: RateLimitType = new RateLimitType(ip, url, new Date());
 
     await this.rateLimitRepository.addAttempt(attemptDate);
 
     next();
   }
 }
-
-// export const rateLimitMiddleware = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction,
-// ) => {
-//   const url: string = req.originalUrl;
-//   const ip: string = req.ip ?? 'unknown';
-//
-//   const attemptsCount: number = await rateLimitRepository.getAttemptsCount(
-//     ip,
-//     url,
-//   );
-//
-//   if (attemptsCount >= 5 && settings.IS_TESTING !== 'testing') {
-//     throw new TooManyRequestsError(
-//       'Too many requests. Please try again after 10 seconds.',
-//     );
-//   }
-//
-//   const attemptDate: RateLimitType = {
-//     ip,
-//     url,
-//     date: new Date(),
-//   };
-//
-//   await rateLimitRepository.addAttempt(attemptDate);
-//
-//   next();
-// };

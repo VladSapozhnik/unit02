@@ -11,30 +11,28 @@
 //   createdAt: string;
 // };
 
-import { ObjectId } from 'mongodb';
-
-export class PostDBType {
+export class PostOutputType {
   /**
    * response successfully created dto
    */
-  _id: ObjectId;
+  id: string;
   title: string;
   shortDescription: string;
   content: string;
-  blogId: ObjectId;
+  blogId: string;
   blogName: string;
   createdAt: string;
 
   constructor(
-    _id: ObjectId,
+    id: string,
     title: string,
     shortDescription: string,
     content: string,
-    blogId: ObjectId,
+    blogId: string,
     blogName: string,
     createdAt: string,
   ) {
-    this._id = _id;
+    this.id = id;
     this.title = title;
     this.shortDescription = shortDescription;
     this.content = content;

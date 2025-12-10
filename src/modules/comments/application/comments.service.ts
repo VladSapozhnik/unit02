@@ -6,7 +6,7 @@ import { CommentType } from '../types/comment.type';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { ForbiddenRequestError } from '../../../core/errors/forbidden-request.error';
 import { UpdateCommentDto } from '../dto/update-comment.dto';
-import { PostType } from '../../posts/types/post.type';
+import { PostDBType } from '../../posts/types/post.type';
 import { UnauthorizedError } from '../../../core/errors/unauthorized.error';
 import { BadRequestError } from '../../../core/errors/bad-request.error';
 import { injectable, inject } from 'inversify';
@@ -35,7 +35,7 @@ export class CommentsService {
       throw new UnauthorizedError('Unauthorized');
     }
 
-    const existPost: WithId<PostType> | null =
+    const existPost: PostDBType | null =
       await this.postsRepository.findPostById(postId);
 
     if (!existPost) {
