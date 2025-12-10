@@ -6,6 +6,6 @@ export const passwordRecoveryValidation: ValidationChain[] = [
     .withMessage('Email is required')
     .isString()
     .withMessage('Email must be a string')
-    .matches(/^[\w-\.\+]+@([\w-]+\.)+[\w-]{2,4}$/)
+    .matches(/^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/)
     .withMessage('Email address must be valid'),
 ];

@@ -76,7 +76,7 @@ authRouter.post(
 );
 
 authRouter.post(
-  'new-password',
+  '/new-password',
   newPasswordValidation,
   inputValidationErrorsMiddleware,
   rateLimitMiddleware.check.bind(rateLimitMiddleware),
