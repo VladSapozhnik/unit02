@@ -16,5 +16,5 @@ export const settings = {
   USER_GMAIL_PASSWORD: process.env.USER_GMAIL_PASSWORD || 'example_password',
   BASE_URL: process.env.BASE_URL || `http://localhost:${PORT}`,
   NODE_ENV: process.env.NODE_ENV || 'development',
-  IS_TESTING: process.env.IS_TESTING || 'testing',
+  IS_TESTING: process.env.IS_TESTING || 'no-testing',
 };
