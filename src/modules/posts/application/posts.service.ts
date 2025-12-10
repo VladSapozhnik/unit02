@@ -1,6 +1,6 @@
 import { PostDBType } from '../types/post.type';
 import { CreatePostDto } from '../dto/create-post.dto';
-import { BlogType } from '../../blogs/types/blog.type';
+import { BlogDBType } from '../../blogs/types/blog.type';
 import { UpdatePostDto } from '../dto/update-post.dto';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { createdAtHelper } from '../../../core/helpers/created-at.helper';
@@ -17,7 +17,7 @@ export class PostsService {
     @inject(BlogsRepository) private readonly blogsRepository: BlogsRepository,
   ) {}
   async createPost(body: CreatePostDto): Promise<string> {
-    const existBlog: BlogType | null = await this.blogsRepository.getBlogById(
+    const existBlog: BlogDBType | null = await this.blogsRepository.getBlogById(
       body.blogId,
     );
 
@@ -43,7 +43,7 @@ export class PostsService {
   }
 
   async createPostForBlog(body: CreatePostDto): Promise<string> {
-    const existBlog: BlogType | null = await this.blogsRepository.getBlogById(
+    const existBlog: BlogDBType | null = await this.blogsRepository.getBlogById(
       body.blogId,
     );
 
@@ -69,7 +69,7 @@ export class PostsService {
   }
 
   async updatePost(id: string, body: UpdatePostDto) {
-    const existBlog: BlogType | null = await this.blogsRepository.getBlogById(
+    const existBlog: BlogDBType | null = await this.blogsRepository.getBlogById(
       body.blogId,
     );
 

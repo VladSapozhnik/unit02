@@ -11,7 +11,7 @@ import { ObjectId } from 'mongodb';
 // };
 
 export class SecurityDevicesType {
-  _id?: ObjectId;
+  _id: ObjectId;
   userId: ObjectId;
   deviceId: string;
   ip: string;
@@ -19,6 +19,7 @@ export class SecurityDevicesType {
   lastActiveDate: Date;
   expiresAt: Date;
   constructor(
+    _id: ObjectId,
     userId: ObjectId,
     deviceId: string,
     ip: string,
@@ -26,6 +27,7 @@ export class SecurityDevicesType {
     lastActiveDate: Date,
     expiresAt: Date,
   ) {
+    this._id = _id;
     this.userId = userId;
     this.deviceId = deviceId;
     this.ip = ip;

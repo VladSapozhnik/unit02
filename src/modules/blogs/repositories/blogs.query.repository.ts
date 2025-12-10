@@ -1,6 +1,6 @@
-import { BlogType } from '../types/blog.type';
+import { BlogDBType } from '../types/blog.type';
 import { blogsCollection } from '../../../core/db/mango.db';
-import { ObjectId, WithId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { BlogQueryInput } from '../routes/input/blog-query.input';
 import { getSkipOffset } from '../../../core/helpers/get-skip-offset';
 import { blogMapper } from '../mappers/blog.mapper';
@@ -9,6 +9,7 @@ import { PaginatedMetaType } from '../../../core/types/paginated-meta.type';
 import { buildPaginationHelper } from '../../../core/helpers/build-pagination.helper';
 import { paginatedListMapper } from '../../../core/mappers/paginated-list.mapper';
 import { injectable } from 'inversify';
+import { BlogOutputType } from '../types/blog-output.type';
 
 @injectable()
 export class BlogsQueryRepository {
@@ -17,7 +18,7 @@ export class BlogsQueryRepository {
 
     const filter: any = buildBlogsFilter(queryDto);
 
-    const items: WithId<BlogType>[] = await blogsCollection
+    const items: BlogDBType[] = await blogsCollection
       .find(filter)
       .sort({ [queryDto.sortBy]: queryDto.sortDirection })
       .skip(skip)
@@ -35,8 +36,8 @@ export class BlogsQueryRepository {
     return paginatedListMapper(items, pagination, blogMapper);
   }
 
-  async getBlogById(id: ObjectId | string): Promise<BlogType | null> {
-    const findBlog: WithId<BlogType> | null = await blogsCollection.findOne({
+  async getBlogById(id: ObjectId | string): Promise<BlogOutputType | null> {
+    const findBlog: BlogDBType | null = await blogsCollection.findOne({
       _id: new ObjectId(id),
     });
 
@@ -47,40 +48,3 @@ export class BlogsQueryRepository {
     return blogMapper(findBlog);
   }
 }
-
-// export const blogsQueryRepository = {
-//   async getBlogs(queryDto: BlogQueryInput) {
-//     const skip: number = getSkipOffset(queryDto.pageNumber, queryDto.pageSize);
-//
-//     const filter: any = buildBlogsFilter(queryDto);
-//
-//     const items: WithId<BlogType>[] = await blogsCollection
-//       .find(filter)
-//       .sort({ [queryDto.sortBy]: queryDto.sortDirection })
-//       .skip(skip)
-//       .limit(queryDto.pageSize)
-//       .toArray();
-//
-//     const totalCount: number = await blogsCollection.countDocuments(filter);
-//
-//     const pagination: PaginatedMetaType = buildPaginationHelper(
-//       totalCount,
-//       queryDto.pageNumber,
-//       queryDto.pageSize,
-//     );
-//
-//     return paginatedListMapper(items, pagination, blogMapper);
-//   },
-//
-//   async getBlogById(id: ObjectId | string): Promise<BlogType | null> {
-//     const findBlog: WithId<BlogType> | null = await blogsCollection.findOne({
-//       _id: new ObjectId(id),
-//     });
-//
-//     if (!findBlog) {
-//       return null;
-//     }
-//
-//     return blogMapper(findBlog);
-//   },
-// };

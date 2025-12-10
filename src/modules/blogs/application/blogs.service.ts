@@ -1,4 +1,4 @@
-import { BlogType } from '../types/blog.type';
+import { BlogDBType } from '../types/blog.type';
 import { CreateBlogDto } from '../dto/create-blog.dto';
 import { UpdateBlogDto } from '../dto/update-blog.dto';
 import { createdAtHelper } from '../../../core/helpers/created-at.helper';
@@ -6,6 +6,7 @@ import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { BadRequestError } from '../../../core/errors/bad-request.error';
 import { BlogsRepository } from '../repositories/blogs.repository';
 import { inject, injectable } from 'inversify';
+import { ObjectId } from 'mongodb';
 
 @injectable()
 export class BlogsService {
@@ -15,11 +16,14 @@ export class BlogsService {
   ) {}
 
   async createBlog(body: CreateBlogDto): Promise<string> {
-    const newBlog: BlogType = {
-      ...body,
-      createdAt: createdAtHelper(),
-      isMembership: false,
-    };
+    const newBlog: BlogDBType = new BlogDBType(
+      new ObjectId(),
+      body.name,
+      body.description,
+      body.websiteUrl,
+      createdAtHelper(),
+      false,
+    );
 
     const blogId: string = await this.blogsRepository.createBlog(newBlog);
 

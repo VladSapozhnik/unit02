@@ -1,7 +1,8 @@
-import { BlogType } from '../types/blog.type';
+import { BlogDBType } from '../types/blog.type';
 import { ObjectId, WithId } from 'mongodb';
+import { BlogOutputType } from '../types/blog-output.type';
 
-export const blogMapper = (blog: WithId<BlogType>): BlogType => {
+export const blogMapper = (blog: WithId<BlogDBType>): BlogOutputType => {
   return {
     id: new ObjectId(blog._id).toString(),
     name: blog.name,

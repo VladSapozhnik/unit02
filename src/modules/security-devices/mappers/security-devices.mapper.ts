@@ -1,6 +1,9 @@
 import { SecurityDevicesType } from '../types/security-devices.type';
+import { SecurityDevicesOutputType } from '../types/security-devices-output.type';
 
-export const securityDevicesMapper = (data: SecurityDevicesType) => {
+export const securityDevicesMapper = (
+  data: SecurityDevicesType,
+): SecurityDevicesOutputType => {
   return {
     ip: data.ip,
     title: data.title,

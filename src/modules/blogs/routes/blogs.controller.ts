@@ -6,7 +6,6 @@ import {
 } from '../../../core/types/request.type';
 import { CreateBlogDto } from '../dto/create-blog.dto';
 import { Request, Response } from 'express';
-import { BlogType } from '../types/blog.type';
 import { BlogsQueryRepository } from '../repositories/blogs.query.repository';
 import { HTTP_STATUS } from '../../../core/enums/http-status.enum';
 import { BlogQueryInput } from './input/blog-query.input';
@@ -18,6 +17,7 @@ import { IdBlogParamDto } from '../dto/id-blog-param.dto';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { UpdateBlogDto } from '../dto/update-blog.dto';
 import { inject, injectable } from 'inversify';
+import { BlogOutputType } from '../types/blog-output.type';
 
 @injectable()
 export class BlogsController {
@@ -30,7 +30,7 @@ export class BlogsController {
   async createBlog(req: RequestWithBody<CreateBlogDto>, res: Response) {
     const id: string = await this.blogsService.createBlog(req.body);
 
-    const findCreatedBlog: BlogType | null =
+    const findCreatedBlog: BlogOutputType | null =
       await this.blogsQueryRepository.getBlogById(id);
 
     res.status(HTTP_STATUS.CREATED_201).send(findCreatedBlog);
@@ -51,7 +51,7 @@ export class BlogsController {
   }
 
   async getBlogById(req: RequestWithParam<IdBlogParamDto>, res: Response) {
-    const existBlog: BlogType | null =
+    const existBlog: BlogOutputType | null =
       await this.blogsQueryRepository.getBlogById(req.params.id);
 
     if (!existBlog) {

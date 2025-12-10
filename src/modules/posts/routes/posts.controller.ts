@@ -17,7 +17,6 @@ import { CommentQueryInput } from '../../comments/routes/input/comment-query.inp
 import { CommentSortFieldEnum } from '../../comments/enum/comment-sort-field.enum';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { IdPostParamDto } from '../dto/id-post-param.dto';
-import { BlogType } from '../../blogs/types/blog.type';
 import { UpdatePostDto } from '../dto/update-post.dto';
 import { inject, injectable } from 'inversify';
 import { PostsService } from '../application/posts.service';
@@ -29,6 +28,7 @@ import { CommentsQueryRepository } from '../../comments/repositories/comments.qu
 import { PostOutputType } from '../types/post-output.type';
 import { PostDBType } from '../types/post.type';
 import { CommentOutputType } from '../../comments/types/comment-output.type';
+import { BlogOutputType } from '../../blogs/types/blog-output.type';
 
 @injectable()
 export class PostsController {
@@ -152,7 +152,7 @@ export class PostsController {
     const defaultQuery: PaginationAndSortingType<PostSortFieldEnum> =
       setDefaultSortAndPaginationIfNotExistHelper(sanitizedQuery);
 
-    const existBlog: BlogType | null =
+    const existBlog: BlogOutputType | null =
       await this.blogsQueryRepository.getBlogById(blogId);
 
     if (!existBlog) {

@@ -1,12 +1,6 @@
 import { SecurityDevicesType } from '../types/security-devices.type';
 import { securityDevicesCollection } from '../../../core/db/mango.db';
-import {
-  DeleteResult,
-  InsertOneResult,
-  ObjectId,
-  UpdateResult,
-  WithId,
-} from 'mongodb';
+import { DeleteResult, InsertOneResult, ObjectId, UpdateResult } from 'mongodb';
 import { CreateSessionDto } from '../dto/create-session.dto';
 import { UpdateSessionDTO } from '../dto/update-session.dto';
 import { injectable } from 'inversify';
@@ -14,8 +8,9 @@ import { injectable } from 'inversify';
 @injectable()
 export class SecurityDevicesRepository {
   async addDeviceSession(data: CreateSessionDto): Promise<string | null> {
-    const result: InsertOneResult<WithId<SecurityDevicesType>> =
+    const result: InsertOneResult<SecurityDevicesType> =
       await securityDevicesCollection.insertOne({
+        _id: new ObjectId(),
         ...data,
         userId: new ObjectId(data.userId),
       });
@@ -28,7 +23,7 @@ export class SecurityDevicesRepository {
     deviceId: string,
     data: UpdateSessionDTO,
   ): Promise<boolean> {
-    const result: UpdateResult<WithId<SecurityDevicesType>> =
+    const result: UpdateResult<SecurityDevicesType> =
       await securityDevicesCollection.updateOne(
         {
           userId: new ObjectId(userId),
@@ -43,7 +38,7 @@ export class SecurityDevicesRepository {
   async findDeviceSessionByUserIdAndDeviceId(
     userId: string,
     deviceId: string,
-  ): Promise<WithId<SecurityDevicesType> | null> {
+  ): Promise<SecurityDevicesType | null> {
     return securityDevicesCollection.findOne({
       userId: new ObjectId(userId),
       deviceId,
@@ -52,7 +47,7 @@ export class SecurityDevicesRepository {
 
   async findDeviceSessionByDeviceId(
     deviceId: string,
-  ): Promise<WithId<SecurityDevicesType> | null> {
+  ): Promise<SecurityDevicesType | null> {
     return securityDevicesCollection.findOne({
       deviceId,
     });
