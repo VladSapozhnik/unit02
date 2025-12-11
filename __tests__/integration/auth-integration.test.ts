@@ -121,9 +121,10 @@ describe('auth-integration test', () => {
 
     const usersRepository = new UsersRepository();
 
-    const confirmedEmailUseCase = authService.confirmEmail;
-    const createdUserUseCase = usersRepository.createUser;
-    const findUserByCodeUseCase = usersRepository.findUserByCode;
+    const confirmedEmailUseCase = authService.confirmEmail.bind(authService);
+    const createdUserUseCase = usersRepository.createUser.bind(usersRepository);
+    const findUserByCodeUseCase =
+      usersRepository.findUserByCode.bind(usersRepository);
     const code: string = '123123123';
 
     it('should not confirm email if user does not exist', async () => {
@@ -235,7 +236,7 @@ describe('auth-integration test', () => {
       new PasswordRecoveryRepository(),
     );
 
-    const resendEmailUseCase = authService.resendEmail;
+    const resendEmailUseCase = authService.resendEmail.bind(authService);
 
     it('should send email with correct email data', async () => {
       const newUser: CreateUserDto = testSeeder.createUserDto();
@@ -245,8 +246,6 @@ describe('auth-integration test', () => {
       const resendEmail: Result = await resendEmailUseCase(newUser.email);
 
       expect(resendEmail.status).toEqual(ResultStatus.Success);
-      // expect(emailAdapter.sendEmail).toHaveBeenCalled();
-      // expect(emailAdapter.sendEmail).toHaveBeenCalledTimes(1);
     });
 
     it('should not send email when the email does not exist', async () => {
@@ -266,50 +265,6 @@ describe('auth-integration test', () => {
       ]);
     });
   });
-
-  // describe('refresh token in cookie', () => {
-  //   const usersRepository = new UsersRepository();
-  //
-  //   const authService = new AuthService(
-  //     new UsersRepository(),
-  //     new SecurityDevicesRepository(),
-  //     new PasswordRecoveryRepository(),
-  //   );
-  //
-  //   const findUserByCodeUseCase = usersRepository.findUserByCode;
-  //   const refreshTokenUseCase = authService.refreshToken.bind(authService);
-  //
-  //   const code: string = '123123123';
-  //
-  //   it('should access and refresh tokens and status 200', async () => {
-  //     const createUser: CreateUserDto = testSeeder.createUserDto();
-  //
-  //     const newUserDto = {
-  //       ...createUser,
-  //       code,
-  //     };
-  //
-  //     await testSeeder.insertUser(newUserDto);
-  //
-  //     const user = await findUserByCodeUseCase(code);
-  //
-  //     const deviceId = '321321321';
-  //
-  //     const refreshToken: string = await jwtAdapter.createRefreshToken(
-  //       user!._id.toString(),
-  //       deviceId,
-  //     );
-  //
-  //     const result: Result<AccessAndRefreshTokensType | null> =
-  //       await refreshTokenUseCase(refreshToken, 'testIp', 'testTitle');
-  //
-  //     expect(result.status).toEqual(ResultStatus.Success);
-  //     expect(result.data).toEqual({
-  //       accessToken: expect.any(String),
-  //       refreshToken: expect.any(String),
-  //     });
-  //   });
-  // });
 
   describe('Password Recovery', () => {
     jest.spyOn(emailAdapter, 'sendEmail').mockResolvedValue(true);
