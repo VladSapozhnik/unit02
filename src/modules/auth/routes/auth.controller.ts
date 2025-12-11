@@ -138,10 +138,16 @@ export class AuthController {
   }
 
   async newPassword(req: RequestWithBody<NewPasswordDto>, res: Response) {
-    await this.authService.newPassword(
+    const isNewPassword: Result = await this.authService.newPassword(
       req.body.newPassword,
       req.body.recoveryCode,
     );
+
+    if (isNewPassword.status === ResultStatus.BadRequest) {
+      return res
+        .sendStatus(HTTP_STATUS.BAD_REQUEST_400)
+        .json(isNewPassword.extensions);
+    }
 
     res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   }

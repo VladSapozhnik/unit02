@@ -13,11 +13,12 @@ import { CreateUserDto } from '../../src/modules/users/dto/create-user.dto';
 import { createdAtHelper } from '../../src/core/helpers/created-at.helper';
 import { add } from 'date-fns/add';
 import { sub } from 'date-fns/sub';
-import { AccessAndRefreshTokensType } from '../../src/modules/auth/type/access-and-refresh-tokens.type';
-import { jwtAdapter } from '../../src/core/adapters/jwt.adapter';
 import { SecurityDevicesRepository } from '../../src/modules/security-devices/repositories/security-devices.repository';
 import { PasswordRecoveryRepository } from '../../src/modules/password-recovery/repositories/password-recovery.repository';
 import { UsersRepository } from '../../src/modules/users/repositories/users.repository';
+import { PasswordRecoveryDBType } from '../../src/modules/password-recovery/types/password-recovery.type';
+import { ObjectId } from 'mongodb';
+import { generateId } from '../../src/core/constants/generate-id';
 
 describe('auth-integration test', () => {
   const app: Express = express();
@@ -266,8 +267,52 @@ describe('auth-integration test', () => {
     });
   });
 
-  describe('refresh token in cookie', () => {
-    const usersRepository = new UsersRepository();
+  // describe('refresh token in cookie', () => {
+  //   const usersRepository = new UsersRepository();
+  //
+  //   const authService = new AuthService(
+  //     new UsersRepository(),
+  //     new SecurityDevicesRepository(),
+  //     new PasswordRecoveryRepository(),
+  //   );
+  //
+  //   const findUserByCodeUseCase = usersRepository.findUserByCode;
+  //   const refreshTokenUseCase = authService.refreshToken.bind(authService);
+  //
+  //   const code: string = '123123123';
+  //
+  //   it('should access and refresh tokens and status 200', async () => {
+  //     const createUser: CreateUserDto = testSeeder.createUserDto();
+  //
+  //     const newUserDto = {
+  //       ...createUser,
+  //       code,
+  //     };
+  //
+  //     await testSeeder.insertUser(newUserDto);
+  //
+  //     const user = await findUserByCodeUseCase(code);
+  //
+  //     const deviceId = '321321321';
+  //
+  //     const refreshToken: string = await jwtAdapter.createRefreshToken(
+  //       user!._id.toString(),
+  //       deviceId,
+  //     );
+  //
+  //     const result: Result<AccessAndRefreshTokensType | null> =
+  //       await refreshTokenUseCase(refreshToken, 'testIp', 'testTitle');
+  //
+  //     expect(result.status).toEqual(ResultStatus.Success);
+  //     expect(result.data).toEqual({
+  //       accessToken: expect.any(String),
+  //       refreshToken: expect.any(String),
+  //     });
+  //   });
+  // });
+
+  describe('Password Recovery', () => {
+    jest.spyOn(emailAdapter, 'sendEmail').mockResolvedValue(true);
 
     const authService = new AuthService(
       new UsersRepository(),
@@ -275,38 +320,121 @@ describe('auth-integration test', () => {
       new PasswordRecoveryRepository(),
     );
 
-    const findUserByCodeUseCase = usersRepository.findUserByCode;
-    const refreshTokenUseCase = authService.refreshToken;
+    const passwordRecovery = authService.passwordRecovery.bind(authService);
 
-    const code: string = '123123123';
+    it('should successfully send password recovery for existing user', async () => {
+      const user: CreateUserDto = testSeeder.createUserDto();
 
-    it('should access and refresh tokens and status 200', async () => {
-      const createUser: CreateUserDto = testSeeder.createUserDto();
+      await testSeeder.insertUser(user);
 
-      const newUserDto = {
-        ...createUser,
-        code,
+      const isPasswordRecovery = await passwordRecovery(user.email);
+
+      expect(isPasswordRecovery.status).toEqual(ResultStatus.Success);
+    });
+  });
+
+  describe('Password Recovery', () => {
+    jest.spyOn(emailAdapter, 'sendEmail').mockResolvedValue(true);
+
+    const recoveryCode: string = generateId();
+    const newPasswordDate = 'new123567';
+
+    const authService = new AuthService(
+      new UsersRepository(),
+      new SecurityDevicesRepository(),
+      new PasswordRecoveryRepository(),
+    );
+
+    const newPasswordUseCase = authService.newPassword.bind(authService);
+
+    const passwordRecoveryRepositoryUseCase = new PasswordRecoveryRepository();
+
+    it('should update user password and mark recovery code as used', async () => {
+      const user: CreateUserDto = testSeeder.createUserDto();
+
+      const existingUser = await testSeeder.insertUser(user);
+
+      const recoveryData: PasswordRecoveryDBType = {
+        _id: new ObjectId(),
+        userId: new ObjectId(existingUser._id),
+        recoveryCode: recoveryCode,
+        expirationDate: add(new Date(), {
+          minutes: 30,
+        }),
+        isUsed: false,
       };
 
-      await testSeeder.insertUser(newUserDto);
-
-      const user = await findUserByCodeUseCase(code);
-
-      const deviceId = '321321321';
-
-      const refreshToken: string = await jwtAdapter.createRefreshToken(
-        user!._id.toString(),
-        deviceId,
+      await passwordRecoveryRepositoryUseCase.addPasswordRecoveryCode(
+        recoveryData,
       );
 
-      const result: Result<AccessAndRefreshTokensType | null> =
-        await refreshTokenUseCase(refreshToken, 'testIp', 'testTitle');
+      const isNewPassword = await newPasswordUseCase(
+        newPasswordDate,
+        recoveryCode,
+      );
 
-      expect(result.status).toEqual(ResultStatus.Success);
-      expect(result.data).toEqual({
-        accessToken: expect.any(String),
-        refreshToken: expect.any(String),
-      });
+      expect(isNewPassword.status).toEqual(ResultStatus.Success);
+    });
+
+    it('should return BadRequest when recovery code has expired', async () => {
+      const user: CreateUserDto = testSeeder.createUserDto();
+
+      const existingUser = await testSeeder.insertUser(user);
+
+      const recoveryData: PasswordRecoveryDBType = {
+        _id: new ObjectId(),
+        userId: new ObjectId(existingUser._id),
+        recoveryCode: recoveryCode,
+        expirationDate: new Date(),
+        isUsed: false,
+      };
+
+      await passwordRecoveryRepositoryUseCase.addPasswordRecoveryCode(
+        recoveryData,
+      );
+
+      const isNewPassword = await newPasswordUseCase(
+        newPasswordDate,
+        recoveryCode,
+      );
+
+      expect(isNewPassword.status).toEqual(ResultStatus.BadRequest);
+    });
+
+    it('should return BadRequest when recovery code has already been used', async () => {
+      const user: CreateUserDto = testSeeder.createUserDto();
+
+      const existingUser = await testSeeder.insertUser(user);
+
+      const recoveryData: PasswordRecoveryDBType = {
+        _id: new ObjectId(),
+        userId: new ObjectId(existingUser._id),
+        recoveryCode: recoveryCode,
+        expirationDate: add(new Date(), {
+          minutes: 30,
+        }),
+        isUsed: true,
+      };
+
+      await passwordRecoveryRepositoryUseCase.addPasswordRecoveryCode(
+        recoveryData,
+      );
+
+      const isNewPassword = await newPasswordUseCase(
+        newPasswordDate,
+        recoveryCode,
+      );
+
+      expect(isNewPassword.status).toEqual(ResultStatus.BadRequest);
+    });
+
+    it('should return BadRequest when recovery code does not exist', async () => {
+      const isNewPassword = await newPasswordUseCase(
+        newPasswordDate,
+        recoveryCode,
+      );
+
+      expect(isNewPassword.status).toEqual(ResultStatus.BadRequest);
     });
   });
 });

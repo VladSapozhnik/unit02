@@ -1,9 +1,13 @@
 import { hashAdapter } from '../../src/core/adapters/hash.adapter';
 import { UsersRepository } from '../../src/modules/users/repositories/users.repository';
-import { UserWithPasswordType } from '../../src/modules/users/type/user.type';
+import {
+  UserDbType,
+  UserWithPasswordType,
+} from '../../src/modules/users/type/user.type';
 import { createdAtHelper } from '../../src/core/helpers/created-at.helper';
 import { add } from 'date-fns/add';
 import { randomUUID } from 'node:crypto';
+import { ObjectId } from 'mongodb';
 
 export type RegisterUserPayloadType = {
   login: string;
@@ -35,7 +39,8 @@ export const testSeeder = {
 
     const hash: string = await hashAdapter.hashPassword(password);
 
-    const user: UserWithPasswordType = {
+    const user: UserDbType = {
+      _id: new ObjectId(),
       login,
       email,
       password: hash,
@@ -52,6 +57,8 @@ export const testSeeder = {
       },
     };
 
-    return await usersRepository.createUser(user);
+    await usersRepository.createUser(user);
+
+    return user;
   },
 };
