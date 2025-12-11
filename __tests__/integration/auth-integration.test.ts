@@ -1,5 +1,5 @@
 import { emailAdapter } from '../../src/core/adapters/email.adapter';
-import { authService } from '../../src/modules/auth/application/auth.service';
+import { AuthService } from '../../src/modules/auth/application/auth.service';
 import { Result } from '../../src/core/types/result.type';
 import { UserWithPasswordType } from '../../src/modules/users/type/user.type';
 import { ResultStatus } from '../../src/core/enums/result-status.enum';
@@ -13,9 +13,11 @@ import { CreateUserDto } from '../../src/modules/users/dto/create-user.dto';
 import { createdAtHelper } from '../../src/core/helpers/created-at.helper';
 import { add } from 'date-fns/add';
 import { sub } from 'date-fns/sub';
-import { usersRepository } from '../../src/modules/users/repositories/users.repository';
 import { AccessAndRefreshTokensType } from '../../src/modules/auth/type/access-and-refresh-tokens.type';
 import { jwtAdapter } from '../../src/core/adapters/jwt.adapter';
+import { SecurityDevicesRepository } from '../../src/modules/security-devices/repositories/security-devices.repository';
+import { PasswordRecoveryRepository } from '../../src/modules/password-recovery/repositories/password-recovery.repository';
+import { UsersRepository } from '../../src/modules/users/repositories/users.repository';
 
 describe('auth-integration test', () => {
   const app: Express = express();
@@ -44,7 +46,13 @@ describe('auth-integration test', () => {
   describe('registration test', () => {
     jest.spyOn(emailAdapter, 'sendEmail').mockResolvedValue(true);
 
-    const registrationUserUseCase = authService.registration;
+    const authService = new AuthService(
+      new UsersRepository(),
+      new SecurityDevicesRepository(),
+      new PasswordRecoveryRepository(),
+    );
+
+    const registrationUserUseCase = authService.registration.bind(authService);
 
     it('should register user with correct user data', async () => {
       const emailSend = {
@@ -104,6 +112,14 @@ describe('auth-integration test', () => {
   });
 
   describe('confirm email by code', () => {
+    const authService = new AuthService(
+      new UsersRepository(),
+      new SecurityDevicesRepository(),
+      new PasswordRecoveryRepository(),
+    );
+
+    const usersRepository = new UsersRepository();
+
     const confirmedEmailUseCase = authService.confirmEmail;
     const createdUserUseCase = usersRepository.createUser;
     const findUserByCodeUseCase = usersRepository.findUserByCode;
@@ -212,6 +228,12 @@ describe('auth-integration test', () => {
   describe('resend email test', () => {
     jest.spyOn(emailAdapter, 'sendEmail').mockResolvedValue(true);
 
+    const authService = new AuthService(
+      new UsersRepository(),
+      new SecurityDevicesRepository(),
+      new PasswordRecoveryRepository(),
+    );
+
     const resendEmailUseCase = authService.resendEmail;
 
     it('should send email with correct email data', async () => {
@@ -245,6 +267,14 @@ describe('auth-integration test', () => {
   });
 
   describe('refresh token in cookie', () => {
+    const usersRepository = new UsersRepository();
+
+    const authService = new AuthService(
+      new UsersRepository(),
+      new SecurityDevicesRepository(),
+      new PasswordRecoveryRepository(),
+    );
+
     const findUserByCodeUseCase = usersRepository.findUserByCode;
     const refreshTokenUseCase = authService.refreshToken;
 

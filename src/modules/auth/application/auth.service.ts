@@ -29,9 +29,9 @@ import { BadRequestError } from '../../../core/errors/bad-request.error';
 @injectable()
 export class AuthService {
   constructor(
-    @inject(UsersRepository) private usersRepository: UsersRepository,
+    @inject(UsersRepository) private readonly usersRepository: UsersRepository,
     @inject(SecurityDevicesRepository)
-    private securityDevicesRepository: SecurityDevicesRepository,
+    private readonly securityDevicesRepository: SecurityDevicesRepository,
     @inject(PasswordRecoveryRepository)
     private readonly passwordRecoveryRepository: PasswordRecoveryRepository,
   ) {}

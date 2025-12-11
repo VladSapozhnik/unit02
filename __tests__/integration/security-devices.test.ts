@@ -1,4 +1,4 @@
-import { authService } from '../../src/modules/auth/application/auth.service';
+import { AuthService } from '../../src/modules/auth/application/auth.service';
 import { Result } from '../../src/core/types/result.type';
 import { ResultStatus } from '../../src/core/enums/result-status.enum';
 import { MongoMemoryServer } from 'mongodb-memory-server';
@@ -10,9 +10,13 @@ import { testSeeder } from './test.seeder';
 import { CreateUserDto } from '../../src/modules/users/dto/create-user.dto';
 import { jwtAdapter } from '../../src/core/adapters/jwt.adapter';
 import { LoginDto } from '../../src/modules/auth/dto/login.dto';
-import { securityDevicesService } from '../../src/modules/security-devices/application/security-devices.service';
+import { SecurityDevicesService } from '../../src/modules/security-devices/application/security-devices.service';
 import { JwtPayload } from 'jsonwebtoken';
-import { securityDevicesQueryService } from '../../src/modules/security-devices/application/security-devices.query.service';
+import { SecurityDevicesQueryService } from '../../src/modules/security-devices/application/security-devices.query.service';
+import { UsersRepository } from '../../src/modules/users/repositories/users.repository';
+import { SecurityDevicesRepository } from '../../src/modules/security-devices/repositories/security-devices.repository';
+import { PasswordRecoveryRepository } from '../../src/modules/password-recovery/repositories/password-recovery.repository';
+import { SecurityDevicesQueryRepository } from '../../src/modules/security-devices/repositories/security-devices.query.repository';
 
 describe('security devices integration test', () => {
   const app: Express = express();
@@ -39,10 +43,27 @@ describe('security devices integration test', () => {
   });
 
   describe('remove sessions by deviceId', () => {
-    const loginUseCase = authService.login;
+    const authService = new AuthService(
+      new UsersRepository(),
+      new SecurityDevicesRepository(),
+      new PasswordRecoveryRepository(),
+    );
+
+    const securityDevicesService = new SecurityDevicesService(
+      new SecurityDevicesRepository(),
+    );
+
+    const securityDevicesQueryService = new SecurityDevicesQueryService(
+      new SecurityDevicesQueryRepository(),
+    );
+
+    const loginUseCase = authService.login.bind(authService);
     const refreshTokenVerifyUseCase = jwtAdapter.verifyRefreshToken;
-    const getSessions = securityDevicesQueryService.getSessionByUser;
-    const removeSessionUseCase = securityDevicesService.removeDeviceSession;
+    const getSessions = securityDevicesQueryService.getSessionByUser.bind(
+      securityDevicesQueryService,
+    );
+    const removeSessionUseCase =
+      securityDevicesService.removeDeviceSession.bind(securityDevicesService);
     const user: CreateUserDto = testSeeder.createUserDto();
 
     const ipDeviceTwo = '127.0.0.666';
