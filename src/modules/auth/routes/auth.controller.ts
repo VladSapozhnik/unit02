@@ -145,7 +145,7 @@ export class AuthController {
 
     if (isNewPassword.status === ResultStatus.BadRequest) {
       return res
-        .sendStatus(HTTP_STATUS.BAD_REQUEST_400)
+        .status(HTTP_STATUS.BAD_REQUEST_400)
         .json(isNewPassword.extensions);
     }
 
