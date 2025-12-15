@@ -1,6 +1,6 @@
 import { usersCollection } from '../../../core/db/mango.db';
-import { ObjectId, WithId } from 'mongodb';
-import { UserType } from '../type/user.type';
+import { ObjectId } from 'mongodb';
+import { UserDbType } from '../type/user.type';
 import { UserQueryInput } from '../routes/input/user-query.input';
 import { getSkipOffset } from '../../../core/helpers/get-skip-offset';
 import { userMapper } from '../mappers/user.mapper';
@@ -19,7 +19,7 @@ export class UsersQueryRepository {
     const skip: number = getSkipOffset(queryDto.pageNumber, queryDto.pageSize);
     const filter: any = buildUserFilter(queryDto);
 
-    const users: WithId<UserType>[] = await usersCollection
+    const users: UserDbType[] = await usersCollection
       .find(filter)
       .sort({ [queryDto.sortBy]: queryDto.sortDirection, _id: 1 })
       .skip(skip)
@@ -34,7 +34,7 @@ export class UsersQueryRepository {
       queryDto.pageSize,
     );
 
-    return paginatedListMapper<UserType, UserOutputType>(
+    return paginatedListMapper<UserDbType, UserOutputType>(
       users,
       pagination,
       userMapper,
@@ -42,7 +42,7 @@ export class UsersQueryRepository {
   }
 
   async getUserById(id: ObjectId | string): Promise<UserOutputType | null> {
-    const user: WithId<UserType> | null = await usersCollection.findOne({
+    const user: UserDbType | null = await usersCollection.findOne({
       _id: new ObjectId(id),
     });
 
@@ -54,7 +54,7 @@ export class UsersQueryRepository {
   }
 
   async getProfile(id: string): Promise<ProfileType | null> {
-    const user: WithId<UserType> | null = await usersCollection.findOne({
+    const user: UserDbType | null = await usersCollection.findOne({
       _id: new ObjectId(id),
     });
 
@@ -65,53 +65,3 @@ export class UsersQueryRepository {
     return profileMapper(user);
   }
 }
-
-// export const usersQueryRepository = {
-//   async getAllUsers(queryDto: UserQueryInput) {
-//     const skip: number = getSkipOffset(queryDto.pageNumber, queryDto.pageSize);
-//     const filter: any = buildUserFilter(queryDto);
-//
-//     const users: WithId<UserType>[] = await usersCollection
-//       .find(filter)
-//       .sort({ [queryDto.sortBy]: queryDto.sortDirection, _id: 1 })
-//       .skip(skip)
-//       .limit(queryDto.pageSize)
-//       .toArray();
-//
-//     const totalCount: number = await usersCollection.countDocuments(filter);
-//
-//     const pagination: PaginatedMetaType = buildPaginationHelper(
-//       totalCount,
-//       queryDto.pageNumber,
-//       queryDto.pageSize,
-//     );
-//
-//     return paginatedListMapper<UserType, UserOutputType>(
-//       users,
-//       pagination,
-//       userMapper,
-//     );
-//   },
-//   async getUserById(id: ObjectId | string): Promise<UserOutputType | null> {
-//     const user: WithId<UserType> | null = await usersCollection.findOne({
-//       _id: new ObjectId(id),
-//     });
-//
-//     if (!user) {
-//       return null;
-//     }
-//
-//     return userMapper(user);
-//   },
-//   async getProfile(id: string): Promise<ProfileType | null> {
-//     const user: WithId<UserType> | null = await usersCollection.findOne({
-//       _id: new ObjectId(id),
-//     });
-//
-//     if (!user) {
-//       return null;
-//     }
-//
-//     return profileMapper(user);
-//   },
-// };

@@ -1,7 +1,6 @@
 import { Request, Response, NextFunction } from 'express';
 import { HTTP_STATUS } from '../enums/http-status.enum';
-import { WithId } from 'mongodb';
-import { UserType } from '../../modules/users/type/user.type';
+import { UserDbType } from '../../modules/users/type/user.type';
 import { jwtAdapter } from '../adapters/jwt.adapter';
 import { inject, injectable } from 'inversify';
 import { UsersRepository } from '../../modules/users/repositories/users.repository';
@@ -35,7 +34,7 @@ export class AuthGuardMiddleware {
         return;
       }
 
-      const isUser: WithId<UserType> | null =
+      const isUser: UserDbType | null =
         await this.usersRepository.getUserById(userId);
 
       if (!isUser || !isUser._id) {
@@ -50,45 +49,3 @@ export class AuthGuardMiddleware {
     }
   }
 }
-
-// export const jwtAuthGuardMiddleware = async (
-//   req: Request,
-//   res: Response,
-//   next: NextFunction,
-// ) => {
-//   try {
-//     const auth: string | undefined = req.headers['authorization'];
-//
-//     if (!auth) {
-//       res.sendStatus(HTTP_STATUS.UNAUTHORIZED_401);
-//       return;
-//     }
-//
-//     const [authType, token] = auth.split(' ');
-//
-//     if (authType !== 'Bearer' || !token) {
-//       res.sendStatus(HTTP_STATUS.UNAUTHORIZED_401);
-//       return;
-//     }
-//
-//     const userId: string | null = await jwtAdapter.verifyAccessToken(token);
-//
-//     if (!userId) {
-//       res.sendStatus(HTTP_STATUS.UNAUTHORIZED_401);
-//       return;
-//     }
-//
-//     const isUser: WithId<UserType> | null =
-//       await usersRepository.getUserById(userId);
-//
-//     if (!isUser || !isUser._id) {
-//       res.sendStatus(HTTP_STATUS.UNAUTHORIZED_401);
-//       return;
-//     }
-//
-//     req.userId = isUser._id.toString() as string;
-//     next();
-//   } catch (e) {
-//     next(e);
-//   }
-// };

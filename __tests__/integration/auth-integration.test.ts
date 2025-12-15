@@ -1,12 +1,12 @@
 import { emailAdapter } from '../../src/core/adapters/email.adapter';
 import { AuthService } from '../../src/modules/auth/application/auth.service';
 import { Result } from '../../src/core/types/result.type';
-import { UserWithPasswordType } from '../../src/modules/users/type/user.type';
 import { ResultStatus } from '../../src/core/enums/result-status.enum';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { runDB, stopDB } from '../../src/core/db/mango.db';
 import { clearDbE2eUtil } from '../e2e/utils/clear-db.e2e.util';
-import express, { type Express } from 'express';
+import express from 'express';
+import { type Express } from 'express';
 import { setupApp } from '../../src/setup-app';
 import { testSeeder } from './test.seeder';
 import { CreateUserDto } from '../../src/modules/users/dto/create-user.dto';
@@ -19,6 +19,7 @@ import { UsersRepository } from '../../src/modules/users/repositories/users.repo
 import { PasswordRecoveryDBType } from '../../src/modules/password-recovery/types/password-recovery.type';
 import { ObjectId } from 'mongodb';
 import { generateId } from '../../src/core/constants/generate-id';
+import { UserDbType } from '../../src/modules/users/type/user.type';
 
 describe('auth-integration test', () => {
   const app: Express = express();
@@ -62,7 +63,7 @@ describe('auth-integration test', () => {
         email: 'example@example.com',
       };
 
-      const result: Result<UserWithPasswordType | null> =
+      const result: Result<UserDbType | null> =
         await registrationUserUseCase(emailSend);
 
       expect(result.status).toEqual(ResultStatus.Success);
@@ -82,7 +83,7 @@ describe('auth-integration test', () => {
 
       await testSeeder.insertUser(user);
 
-      const resultDuplicateLogin: Result<UserWithPasswordType | null> =
+      const resultDuplicateLogin: Result<UserDbType | null> =
         await registrationUserUseCase(emailSendDuplicateLogin);
 
       expect(resultDuplicateLogin.status).toEqual(ResultStatus.BadRequest);
@@ -102,7 +103,7 @@ describe('auth-integration test', () => {
 
       await testSeeder.insertUser(user);
 
-      const resultDuplicateLogin: Result<UserWithPasswordType | null> =
+      const resultDuplicateLogin: Result<UserDbType | null> =
         await registrationUserUseCase(emailSendDuplicateLogin);
 
       expect(resultDuplicateLogin.status).toEqual(ResultStatus.BadRequest);
@@ -139,7 +140,8 @@ describe('auth-integration test', () => {
     it('should not confirm email with expired code', async () => {
       const createUser: CreateUserDto = testSeeder.createUserDto();
 
-      const newUser: UserWithPasswordType = {
+      const newUser: UserDbType = {
+        _id: new ObjectId(),
         ...createUser,
         password: 'user123hash',
         createdAt: createdAtHelper(),
@@ -170,7 +172,8 @@ describe('auth-integration test', () => {
     it('should not confirm email which is confirmed', async () => {
       const createUser: CreateUserDto = testSeeder.createUserDto();
 
-      const newUser: UserWithPasswordType = {
+      const newUser: UserDbType = {
+        _id: new ObjectId(),
         ...createUser,
         password: 'user123hash',
         createdAt: createdAtHelper(),
@@ -201,7 +204,8 @@ describe('auth-integration test', () => {
     it('should confirm user for correct code', async () => {
       const createUser: CreateUserDto = testSeeder.createUserDto();
 
-      const newUser: UserWithPasswordType = {
+      const newUser: UserDbType = {
+        _id: new ObjectId(),
         ...createUser,
         password: 'user123hash',
         createdAt: createdAtHelper(),

@@ -1,10 +1,7 @@
-import { WithId } from 'mongodb';
 import { CommentDBType } from '../types/comment.type';
 import { CommentOutputType } from '../types/comment-output.type';
 
-export const commentMapper = (
-  comment: WithId<CommentDBType>,
-): CommentOutputType => {
+export const commentMapper = (comment: CommentDBType): CommentOutputType => {
   return {
     id: String(comment._id),
     content: comment.content,

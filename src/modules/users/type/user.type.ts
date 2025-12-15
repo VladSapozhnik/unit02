@@ -1,36 +1,44 @@
 import { ObjectId } from 'mongodb';
 
-export type UserType = {
-  /**
-   * Represents a user object exposed to the client
-   */
-  id?: string;
-  login: string;
-  email: string;
-  createdAt: string;
-  emailConfirmation: {
-    confirmationCode: string;
-    expirationDate: Date;
-    isConfirmed: boolean;
-  };
-};
+export class EmailConfirmation {
+  confirmationCode: string;
+  expirationDate: Date;
+  isConfirmed: boolean;
 
-export type UserWithPasswordType = UserType & {
-  password: string;
-};
+  constructor(
+    confirmationCode: string,
+    expirationDate: Date,
+    isConfirmed: boolean,
+  ) {
+    this.confirmationCode = confirmationCode;
+    this.expirationDate = expirationDate;
+    this.isConfirmed = isConfirmed;
+  }
+}
 
-export type UserDbType = {
+export class UserDbType {
   /**
    * Represents a user in the database
    */
-  _id?: ObjectId;
+  _id: ObjectId;
   login: string;
   email: string;
   password: string;
   createdAt: string;
-  emailConfirmation: {
-    confirmationCode: string;
-    expirationDate: Date;
-    isConfirmed: boolean;
-  };
-};
+  emailConfirmation: EmailConfirmation;
+  constructor(
+    _id: ObjectId,
+    login: string,
+    email: string,
+    password: string,
+    createdAt: string,
+    emailConfirmation: EmailConfirmation,
+  ) {
+    this._id = _id;
+    this.login = login;
+    this.email = email;
+    this.password = password;
+    this.createdAt = createdAt;
+    this.emailConfirmation = emailConfirmation;
+  }
+}

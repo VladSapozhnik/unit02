@@ -1,5 +1,5 @@
 import { PostDBType } from '../types/post.type';
-import { ObjectId, WithId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { postsCollection } from '../../../core/db/mango.db';
 import { PostQueryInput } from '../routes/input/post-query.input';
 import { getSkipOffset } from '../../../core/helpers/get-skip-offset';
@@ -21,7 +21,7 @@ export class PostsQueryRepository {
 
     const skip: number = getSkipOffset(queryDto.pageNumber, queryDto.pageSize);
 
-    const posts: WithId<PostDBType>[] = await postsCollection
+    const posts: PostDBType[] = await postsCollection
       .find(filter)
       .sort({ [queryDto.sortBy]: queryDto.sortDirection })
       .limit(queryDto.pageSize)
@@ -44,7 +44,7 @@ export class PostsQueryRepository {
   }
 
   async getPostById(id: ObjectId | string): Promise<PostOutputType | null> {
-    const post: WithId<PostDBType> | null = await postsCollection.findOne({
+    const post: PostDBType | null = await postsCollection.findOne({
       _id: new ObjectId(id),
     });
 
@@ -55,44 +55,3 @@ export class PostsQueryRepository {
     return postMapper(post);
   }
 }
-
-// export const postsQueryRepository = {
-//   async getPosts(queryDto: PostQueryInput, blogId?: string) {
-//     const filter: any = {};
-//
-//     if (blogId) {
-//       filter.blogId = blogId;
-//     }
-//
-//     const skip: number = getSkipOffset(queryDto.pageNumber, queryDto.pageSize);
-//
-//     const posts: WithId<PostType>[] = await postsCollection
-//       .find(filter)
-//       .sort({ [queryDto.sortBy]: queryDto.sortDirection })
-//       .limit(queryDto.pageSize)
-//       .skip(skip)
-//       .toArray();
-//
-//     const totalCount: number = await postsCollection.countDocuments(filter);
-//
-//     const pagination: PaginatedMetaType = buildPaginationHelper(
-//       totalCount,
-//       queryDto.pageNumber,
-//       queryDto.pageSize,
-//     );
-//
-//     return paginatedListMapper<PostType>(posts, pagination, postMapper);
-//   },
-//
-//   async getPostById(id: ObjectId | string): Promise<PostType | null> {
-//     const post: WithId<PostType> | null = await postsCollection.findOne({
-//       _id: new ObjectId(id),
-//     });
-//
-//     if (!post) {
-//       return null;
-//     }
-//
-//     return postMapper(post);
-//   },
-// };

@@ -3,7 +3,7 @@ import { HTTP_STATUS } from '../../../../src/core/enums/http-status.enum';
 import request from 'supertest';
 import { RouterPathConst } from '../../../../src/core/constants/router-path.const';
 import { Response } from 'supertest';
-import { UserType } from '../../../../src/modules/users/type/user.type';
+import { UserDbType } from '../../../../src/modules/users/type/user.type';
 import {
   ADMIN_PASSWORD,
   ADMIN_USERNAME,
@@ -45,14 +45,14 @@ const paginationAndSearchOutputDefault = {
 export const getUsersE2eUtil = async (
   app: Express,
   statusCode: HTTP_STATUS,
-  user: UserType | null = null,
+  user: UserDbType | null = null,
   isSearchInPagination: boolean = false,
 ): Promise<Response> => {
   let username: string = ADMIN_USERNAME;
   let password: string = ADMIN_PASSWORD;
   let paginationInput: UserQueryInput = paginationInputDefault;
   let paginationOutput = paginationOutputDefault;
-  let items: UserType[] = user ? [user] : [];
+  let items: UserDbType[] = user ? [user] : [];
 
   if (isSearchInPagination && HTTP_STATUS.OK_200) {
     paginationInput = paginationAndSearchInputDefault;

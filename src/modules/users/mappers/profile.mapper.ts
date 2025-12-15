@@ -1,8 +1,7 @@
-import { UserType } from '../type/user.type';
-import { WithId } from 'mongodb';
+import { UserDbType } from '../type/user.type';
 import { ProfileType } from '../type/profile.type';
 
-export const profileMapper = (user: WithId<UserType>): ProfileType => {
+export const profileMapper = (user: UserDbType): ProfileType => {
   return {
     email: user.email,
     login: user.login,

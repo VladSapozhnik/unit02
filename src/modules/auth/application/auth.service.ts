@@ -1,9 +1,9 @@
 import { LoginDto } from '../dto/login.dto';
-import { UserType, UserWithPasswordType } from '../../users/type/user.type';
+import { EmailConfirmation, UserDbType } from '../../users/type/user.type';
 import { hashAdapter } from '../../../core/adapters/hash.adapter';
 import { CreateUserDto } from '../../users/dto/create-user.dto';
 import { createdAtHelper } from '../../../core/helpers/created-at.helper';
-import { ObjectId, WithId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { generateId } from '../../../core/constants/generate-id';
 import { add } from 'date-fns/add';
 import { ResendEmailType } from '../type/resend-email.type';
@@ -24,7 +24,6 @@ import { UsersRepository } from '../../users/repositories/users.repository';
 import { SecurityDevicesRepository } from '../../security-devices/repositories/security-devices.repository';
 import { PasswordRecoveryRepository } from '../../password-recovery/repositories/password-recovery.repository';
 import { PasswordRecoveryDBType } from '../../password-recovery/types/password-recovery.type';
-import { BadRequestError } from '../../../core/errors/bad-request.error';
 
 @injectable()
 export class AuthService {
@@ -36,28 +35,28 @@ export class AuthService {
     private readonly passwordRecoveryRepository: PasswordRecoveryRepository,
   ) {}
 
-  async registration(
-    dto: CreateUserDto,
-  ): Promise<Result<UserWithPasswordType | null>> {
+  async registration(dto: CreateUserDto): Promise<Result<UserDbType | null>> {
     const hash: string = await hashAdapter.hashPassword(dto.password);
 
     const randomUUID = generateId();
 
-    const newUser: UserWithPasswordType = {
-      ...dto,
-      password: hash,
-      createdAt: createdAtHelper(),
-      emailConfirmation: {
-        confirmationCode: randomUUID,
-        expirationDate: add(new Date(), {
+    const newUser: UserDbType = new UserDbType(
+      new ObjectId(),
+      dto.login,
+      dto.email,
+      hash,
+      createdAtHelper(),
+      new EmailConfirmation(
+        randomUUID,
+        add(new Date(), {
           hours: 1,
           minutes: 30,
         }),
-        isConfirmed: false,
-      },
-    };
+        false,
+      ),
+    );
 
-    const isUser: WithId<UserType> | null =
+    const isUser: UserDbType | null =
       await this.usersRepository.getUserByLoginOrEmail(dto.login, dto.email);
 
     if (isUser) {
@@ -98,7 +97,7 @@ export class AuthService {
   }
 
   async confirmEmail(code: string): Promise<Result> {
-    const user: WithId<UserType> | null =
+    const user: UserDbType | null =
       await this.usersRepository.findUserByCode(code);
 
     if (!user) {
@@ -140,8 +139,10 @@ export class AuthService {
       'emailConfirmation.expirationDate': newExpiration,
     };
 
-    const isUpdated: WithId<UserWithPasswordType> | null =
-      await this.usersRepository.resendEmail(email, updateData);
+    const isUpdated: UserDbType | null = await this.usersRepository.resendEmail(
+      email,
+      updateData,
+    );
 
     if (!isUpdated) {
       return {
@@ -179,7 +180,7 @@ export class AuthService {
     ip: string,
     title: string,
   ): Promise<AccessAndRefreshTokensType> {
-    const user: WithId<UserWithPasswordType> | null =
+    const user: UserDbType | null =
       await this.usersRepository.findByLoginOrEmail(dto.loginOrEmail);
 
     const deviceId: string = randomUUID();
@@ -401,7 +402,7 @@ export class AuthService {
   async passwordRecovery(email: string): Promise<Result> {
     const randomUUID = generateId();
 
-    const existUser: WithId<UserType> | null =
+    const existUser: UserDbType | null =
       await this.usersRepository.findUserByEmail(email);
 
     if (existUser) {
@@ -438,7 +439,7 @@ export class AuthService {
   }
 
   async newPassword(newPassword: string, code: string): Promise<Result> {
-    const isPasswordRecovery: WithId<PasswordRecoveryDBType> | null =
+    const isPasswordRecovery: PasswordRecoveryDBType | null =
       await this.passwordRecoveryRepository.getPasswordRecoveryByCode(code);
 
     if (

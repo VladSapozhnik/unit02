@@ -4,6 +4,7 @@ import { RateLimitDBType } from '../../modules/rate-limit/types/rate-limit.type'
 import { TooManyRequestsError } from '../errors/too-many-requests.error';
 import { settings } from '../settings/settings';
 import { inject, injectable } from 'inversify';
+import { ObjectId } from 'mongodb';
 
 @injectable()
 export class RateLimitMiddleware {
@@ -26,6 +27,7 @@ export class RateLimitMiddleware {
     }
 
     const attemptDate: RateLimitDBType = new RateLimitDBType(
+      new ObjectId(),
       ip,
       url,
       new Date(),

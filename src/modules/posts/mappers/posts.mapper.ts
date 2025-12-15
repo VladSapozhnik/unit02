@@ -1,8 +1,8 @@
-import { ObjectId, WithId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 import { PostDBType } from '../types/post.type';
 import { PostOutputType } from '../types/post-output.type';
 
-export const postMapper = (post: WithId<PostDBType>): PostOutputType => {
+export const postMapper = (post: PostDBType): PostOutputType => {
   return {
     id: new ObjectId(post._id).toString(),
     title: post.title,
