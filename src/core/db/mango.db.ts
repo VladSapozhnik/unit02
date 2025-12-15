@@ -47,37 +47,11 @@ export const RateLimitModel = model<RateLimitDBType>(
   RATE_LIMIT,
   rateLimitSchema,
 );
-// export let client: MongoClient;
-// export let blogsCollection: Collection<BlogDBType>;
-// export let postsCollection: Collection<PostDBType>;
-// export let usersCollection: Collection<UserDbType>;
-// export let commentsCollection: Collection<CommentDBType>;
-// export let securityDevicesCollection: Collection<SecurityDevicesDBType>;
-// export let rateLimitCollection: Collection<RateLimitDBType>;
-// export let passwordRecoveryCollection: Collection<PasswordRecoveryDBType>;
 
 export async function runDB(db_url: string): Promise<void> {
-  // client = new MongoClient(db_url);
-
-  // const db = client.db(settings.DB_NAME);
-
-  // blogsCollection = db.collection<BlogDBType>(BLOG_COLLECTION_NAME);
-  // postsCollection = db.collection<PostDBType>(POST_COLLECTION_NAME);
-  // usersCollection = db.collection<UserDbType>(USER_COLLECTION_NAME);
-  // commentsCollection = db.collection<CommentDBType>(COMMENT_COLLECTION_NAME);
-  // passwordRecoveryCollection = db.collection<PasswordRecoveryDBType>(
-  //   PASSWORD_RECOVERY_COLLECTION_NAME,
-  // );
-  // securityDevicesCollection = db.collection<SecurityDevicesDBType>(
-  //   SECURITY_DEVICES_COLLECTION_NAME,
-  // );
-  // rateLimitCollection = db.collection<RateLimitDBType>(RATE_LIMIT);
   try {
     await mongoose.connect(db_url, { dbName });
     console.log('✅ Connected to the database');
-
-    // await client.connect();
-    // await db.command({ ping: 1 });
   } catch (e) {
     console.error('❌ Database connection error:', e);
     await mongoose.disconnect();

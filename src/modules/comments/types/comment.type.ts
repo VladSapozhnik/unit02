@@ -1,16 +1,5 @@
 import { Types } from 'mongoose';
 
-// export type CommentType = {
-//   /**
-//    * type exist comment
-//    */
-//   id?: string | ObjectId;
-//   postId?: string | ObjectId;
-//   content: string;
-//   commentatorInfo: { userId: string | ObjectId; userLogin: string };
-//   createdAt: string;
-// };
-
 export class CommentDBType {
   /**
    * type exist comment
