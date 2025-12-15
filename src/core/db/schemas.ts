@@ -70,6 +70,8 @@ export const securityDevicesSchema = new Schema<SecurityDevicesDBType>({
   expiresAt: { type: Date, required: true },
 });
 
+securityDevicesSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+
 const emailConfirmation = new Schema<EmailConfirmation>(
   {
     confirmationCode: { type: String, required: true },

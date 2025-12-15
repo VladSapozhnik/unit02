@@ -17,7 +17,7 @@ import { SecurityDevicesRepository } from '../../src/modules/security-devices/re
 import { PasswordRecoveryRepository } from '../../src/modules/password-recovery/repositories/password-recovery.repository';
 import { UsersRepository } from '../../src/modules/users/repositories/users.repository';
 import { PasswordRecoveryDBType } from '../../src/modules/password-recovery/types/password-recovery.type';
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 import { generateId } from '../../src/core/constants/generate-id';
 import { UserDbType } from '../../src/modules/users/type/user.type';
 
@@ -141,7 +141,7 @@ describe('auth-integration test', () => {
       const createUser: CreateUserDto = testSeeder.createUserDto();
 
       const newUser: UserDbType = {
-        _id: new ObjectId(),
+        _id: new Types.ObjectId(),
         ...createUser,
         password: 'user123hash',
         createdAt: createdAtHelper(),
@@ -173,7 +173,7 @@ describe('auth-integration test', () => {
       const createUser: CreateUserDto = testSeeder.createUserDto();
 
       const newUser: UserDbType = {
-        _id: new ObjectId(),
+        _id: new Types.ObjectId(),
         ...createUser,
         password: 'user123hash',
         createdAt: createdAtHelper(),
@@ -205,7 +205,7 @@ describe('auth-integration test', () => {
       const createUser: CreateUserDto = testSeeder.createUserDto();
 
       const newUser: UserDbType = {
-        _id: new ObjectId(),
+        _id: new Types.ObjectId(),
         ...createUser,
         password: 'user123hash',
         createdAt: createdAtHelper(),
@@ -314,8 +314,8 @@ describe('auth-integration test', () => {
       const existingUser = await testSeeder.insertUser(user);
 
       const recoveryData: PasswordRecoveryDBType = {
-        _id: new ObjectId(),
-        userId: new ObjectId(existingUser._id),
+        _id: new Types.ObjectId(),
+        userId: new Types.ObjectId(existingUser._id),
         recoveryCode: recoveryCode,
         expirationDate: add(new Date(), {
           minutes: 30,
@@ -341,8 +341,8 @@ describe('auth-integration test', () => {
       const existingUser = await testSeeder.insertUser(user);
 
       const recoveryData: PasswordRecoveryDBType = {
-        _id: new ObjectId(),
-        userId: new ObjectId(existingUser._id),
+        _id: new Types.ObjectId(),
+        userId: new Types.ObjectId(existingUser._id),
         recoveryCode: recoveryCode,
         expirationDate: new Date(),
         isUsed: false,
@@ -366,8 +366,8 @@ describe('auth-integration test', () => {
       const existingUser = await testSeeder.insertUser(user);
 
       const recoveryData: PasswordRecoveryDBType = {
-        _id: new ObjectId(),
-        userId: new ObjectId(existingUser._id),
+        _id: new Types.ObjectId(),
+        userId: new Types.ObjectId(existingUser._id),
         recoveryCode: recoveryCode,
         expirationDate: add(new Date(), {
           minutes: 30,

@@ -78,7 +78,6 @@ export async function runDB(db_url: string): Promise<void> {
 
     // await client.connect();
     // await db.command({ ping: 1 });
-    securityDevicesSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
   } catch (e) {
     console.error('❌ Database connection error:', e);
     await mongoose.disconnect();
