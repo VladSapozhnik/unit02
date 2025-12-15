@@ -11,26 +11,26 @@
 //   createdAt: string;
 // };
 
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 
 export class PostDBType {
   /**
    * response successfully created dto
    */
-  _id: ObjectId;
+  _id: Types.ObjectId;
   title: string;
   shortDescription: string;
   content: string;
-  blogId: ObjectId;
+  blogId: Types.ObjectId;
   blogName: string;
   createdAt: string;
 
   constructor(
-    _id: ObjectId,
+    _id: Types.ObjectId,
     title: string,
     shortDescription: string,
     content: string,
-    blogId: ObjectId,
+    blogId: Types.ObjectId,
     blogName: string,
     createdAt: string,
   ) {

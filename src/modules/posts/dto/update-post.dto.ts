@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 
 export class UpdatePostDto {
   /**
@@ -7,13 +7,13 @@ export class UpdatePostDto {
   title: string;
   shortDescription: string;
   content: string;
-  blogId: ObjectId;
+  blogId: Types.ObjectId;
 
   constructor(
     title: string,
     shortDescription: string,
     content: string,
-    blogId: ObjectId,
+    blogId: Types.ObjectId,
   ) {
     this.title = title;
     this.shortDescription = shortDescription;

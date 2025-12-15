@@ -3,7 +3,7 @@ import { EmailConfirmation, UserDbType } from '../../users/type/user.type';
 import { hashAdapter } from '../../../core/adapters/hash.adapter';
 import { CreateUserDto } from '../../users/dto/create-user.dto';
 import { createdAtHelper } from '../../../core/helpers/created-at.helper';
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 import { generateId } from '../../../core/constants/generate-id';
 import { add } from 'date-fns/add';
 import { ResendEmailType } from '../type/resend-email.type';
@@ -41,7 +41,7 @@ export class AuthService {
     const randomUUID = generateId();
 
     const newUser: UserDbType = new UserDbType(
-      new ObjectId(),
+      new Types.ObjectId(),
       dto.login,
       dto.email,
       hash,
@@ -216,7 +216,7 @@ export class AuthService {
     if (
       !payload.exp ||
       !payload.userId ||
-      !ObjectId.isValid(payload.userId) ||
+      !Types.ObjectId.isValid(payload.userId) ||
       !payload.deviceId ||
       !payload.iat
     ) {
@@ -407,8 +407,8 @@ export class AuthService {
 
     if (existUser) {
       const recoveryData: PasswordRecoveryDBType = {
-        _id: new ObjectId(),
-        userId: existUser._id,
+        _id: new Types.ObjectId(),
+        userId: new Types.ObjectId(existUser._id),
         recoveryCode: randomUUID,
         expirationDate: add(new Date(), {
           minutes: 30,

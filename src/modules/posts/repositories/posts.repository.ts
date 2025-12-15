@@ -1,25 +1,24 @@
 import { PostDBType } from '../types/post.type';
 import { UpdatePostDto } from '../dto/update-post.dto';
-import { DeleteResult, InsertOneResult, ObjectId, UpdateResult } from 'mongodb';
-import { postsCollection } from '../../../core/db/mango.db';
+import { Types, DeleteResult, UpdateResult } from 'mongoose';
+import { PostsModel } from '../../../core/db/mango.db';
 import { injectable } from 'inversify';
 
 @injectable()
 export class PostsRepository {
   async createPost(body: PostDBType): Promise<string> {
-    const result: InsertOneResult<PostDBType> =
-      await postsCollection.insertOne(body);
+    const result: PostDBType = await PostsModel.create(body);
 
-    return result.insertedId.toString() ?? null;
+    return result._id.toString();
   }
 
   async findPostById(postId: string): Promise<PostDBType | null> {
-    return postsCollection.findOne({ _id: new ObjectId(postId) });
+    return PostsModel.findOne({ _id: new Types.ObjectId(postId) });
   }
 
   async updatePost(id: string, body: UpdatePostDto): Promise<boolean> {
-    const result: UpdateResult<PostDBType> = await postsCollection.updateOne(
-      { _id: new ObjectId(id) },
+    const result: UpdateResult = await PostsModel.updateOne(
+      { _id: new Types.ObjectId(id) },
       { $set: { ...body } },
     );
 
@@ -27,8 +26,8 @@ export class PostsRepository {
   }
 
   async removePost(id: string): Promise<boolean> {
-    const result: DeleteResult = await postsCollection.deleteOne({
-      _id: new ObjectId(id),
+    const result: DeleteResult = await PostsModel.deleteOne({
+      _id: new Types.ObjectId(id),
     });
 
     return result.deletedCount === 1;

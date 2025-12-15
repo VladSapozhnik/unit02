@@ -125,7 +125,7 @@ export class PostsController {
 
     const findPost = await this.commentsQueryRepository.getCommentsByPostId(
       defaultQuery,
-      isPost._id,
+      isPost._id.toString(),
     );
 
     res.send(findPost);

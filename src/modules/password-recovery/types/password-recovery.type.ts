@@ -1,15 +1,15 @@
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 
 export class PasswordRecoveryDBType {
-  _id: ObjectId;
-  userId: ObjectId;
+  _id: Types.ObjectId;
+  userId: Types.ObjectId;
   recoveryCode: string;
   expirationDate: Date;
   isUsed: boolean;
   // createdAt: Date;
   constructor(
-    _id: ObjectId,
-    userId: ObjectId,
+    _id: Types.ObjectId,
+    userId: Types.ObjectId,
     recoveryCode: string,
     expirationDate: Date,
     isUsed: boolean,

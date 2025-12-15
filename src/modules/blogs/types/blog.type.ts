@@ -1,22 +1,10 @@
-import { ObjectId } from 'mongodb';
-
-// export type BlogDBType = {
-//   /**
-//    * response successfully dto
-//    */
-//   _id: ObjectId;
-//   name: string;
-//   description: string;
-//   websiteUrl: string;
-//   createdAt: string;
-//   isMembership: boolean;
-// };
+import { Types } from 'mongoose';
 
 export class BlogDBType {
   /**
    * response successfully dto
    */
-  _id: ObjectId;
+  _id: Types.ObjectId;
   name: string;
   description: string;
   websiteUrl: string;
@@ -24,7 +12,7 @@ export class BlogDBType {
   isMembership: boolean;
 
   constructor(
-    _id: ObjectId,
+    _id: Types.ObjectId,
     name: string,
     description: string,
     websiteUrl: string,

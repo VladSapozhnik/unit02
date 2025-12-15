@@ -1,10 +1,10 @@
 import { BlogDBType } from '../types/blog.type';
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 import { BlogOutputType } from '../types/blog-output.type';
 
 export const blogMapper = (blog: BlogDBType): BlogOutputType => {
   return {
-    id: new ObjectId(blog._id).toString(),
+    id: new Types.ObjectId(blog._id).toString(),
     name: blog.name,
     description: blog.description,
     websiteUrl: blog.websiteUrl,

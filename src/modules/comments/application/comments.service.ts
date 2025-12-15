@@ -1,6 +1,6 @@
 import { UserDbType } from '../../users/type/user.type';
 import { CreateCommentDto } from '../dto/create-comment.dto';
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 import { createdAtHelper } from '../../../core/helpers/created-at.helper';
 import { CommentDBType } from '../types/comment.type';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
@@ -43,11 +43,11 @@ export class CommentsService {
     }
 
     const payload: CommentDBType = new CommentDBType(
-      new ObjectId(),
-      new ObjectId(postId),
+      new Types.ObjectId(),
+      new Types.ObjectId(postId),
       body.content,
       {
-        userId: new ObjectId(existUser._id),
+        userId: new Types.ObjectId(existUser._id),
         userLogin: existUser.login,
       },
       createdAtHelper(),

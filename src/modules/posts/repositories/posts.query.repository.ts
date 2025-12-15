@@ -1,6 +1,6 @@
 import { PostDBType } from '../types/post.type';
-import { ObjectId } from 'mongodb';
-import { postsCollection } from '../../../core/db/mango.db';
+import { Types } from 'mongoose';
+import { PostsModel } from '../../../core/db/mango.db';
 import { PostQueryInput } from '../routes/input/post-query.input';
 import { getSkipOffset } from '../../../core/helpers/get-skip-offset';
 import { postMapper } from '../mappers/posts.mapper';
@@ -21,14 +21,13 @@ export class PostsQueryRepository {
 
     const skip: number = getSkipOffset(queryDto.pageNumber, queryDto.pageSize);
 
-    const posts: PostDBType[] = await postsCollection
-      .find(filter)
+    const posts: PostDBType[] = await PostsModel.find(filter)
       .sort({ [queryDto.sortBy]: queryDto.sortDirection })
       .limit(queryDto.pageSize)
       .skip(skip)
-      .toArray();
+      .lean();
 
-    const totalCount: number = await postsCollection.countDocuments(filter);
+    const totalCount: number = await PostsModel.countDocuments(filter);
 
     const pagination: PaginatedMetaType = buildPaginationHelper(
       totalCount,
@@ -43,9 +42,9 @@ export class PostsQueryRepository {
     );
   }
 
-  async getPostById(id: ObjectId | string): Promise<PostOutputType | null> {
-    const post: PostDBType | null = await postsCollection.findOne({
-      _id: new ObjectId(id),
+  async getPostById(id: string): Promise<PostOutputType | null> {
+    const post: PostDBType | null = await PostsModel.findOne({
+      _id: new Types.ObjectId(id),
     });
 
     if (!post) {

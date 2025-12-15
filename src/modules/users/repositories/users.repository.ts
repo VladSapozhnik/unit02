@@ -1,22 +1,21 @@
-import { usersCollection } from '../../../core/db/mango.db';
+import { UsersModel } from '../../../core/db/mango.db';
 import { UserDbType } from '../type/user.type';
-import { DeleteResult, InsertOneResult, ObjectId, UpdateResult } from 'mongodb';
+import { Types, DeleteResult, UpdateResult } from 'mongoose';
 import { ResendEmailType } from '../../auth/type/resend-email.type';
 import { injectable } from 'inversify';
 
 @injectable()
 export class UsersRepository {
   async createUser(dto: UserDbType): Promise<string> {
-    const result: InsertOneResult<UserDbType> =
-      await usersCollection.insertOne(dto);
+    const result: UserDbType = await UsersModel.create(dto);
 
-    return result.insertedId?.toString() ?? null;
+    return result._id.toString();
   }
 
-  async getUserById(id: ObjectId | string): Promise<UserDbType | null> {
-    const user: UserDbType | null = await usersCollection.findOne({
-      _id: new ObjectId(id),
-    });
+  async getUserById(id: string): Promise<UserDbType | null> {
+    const user: UserDbType | null = await UsersModel.findOne({
+      _id: new Types.ObjectId(id),
+    }).lean();
 
     if (!user) {
       return null;
@@ -26,28 +25,31 @@ export class UsersRepository {
   }
 
   async findUserByCode(code: string): Promise<UserDbType | null> {
-    return await usersCollection.findOne({
+    return UsersModel.findOne({
       'emailConfirmation.confirmationCode': code,
-    });
+    }).lean();
   }
 
   async getUserByLoginOrEmail(login: string, email: string) {
-    return usersCollection.findOne({ $or: [{ login }, { email }] });
+    return UsersModel.findOne({ $or: [{ login }, { email }] }).lean();
   }
 
   async findByLoginOrEmail(loginOrEmail: string): Promise<UserDbType | null> {
-    return usersCollection.findOne({
+    return UsersModel.findOne({
       $or: [{ login: loginOrEmail }, { email: loginOrEmail }],
-    });
+    }).lean();
   }
 
-  async findUserByEmail(email: string) {
-    return usersCollection.findOne({ email });
+  async findUserByEmail(email: string): Promise<UserDbType | null> {
+    return UsersModel.findOne({ email }).lean();
   }
 
-  async updateUserPasswordById(id: string, newPasswordHash: string) {
-    const result: UpdateResult<UserDbType> = await usersCollection.updateOne(
-      { _id: new ObjectId(id) },
+  async updateUserPasswordById(
+    id: string,
+    newPasswordHash: string,
+  ): Promise<boolean> {
+    const result: UpdateResult = await UsersModel.updateOne(
+      { _id: new Types.ObjectId(id) },
       { $set: { password: newPasswordHash } },
     );
 
@@ -55,8 +57,8 @@ export class UsersRepository {
   }
 
   async updateConfirmation(id: string): Promise<boolean> {
-    const result: UpdateResult<UserDbType> = await usersCollection.updateOne(
-      { _id: new ObjectId(id) },
+    const result: UpdateResult = await UsersModel.updateOne(
+      { _id: new Types.ObjectId(id) },
       { $set: { 'emailConfirmation.isConfirmed': true } },
     );
 
@@ -67,7 +69,7 @@ export class UsersRepository {
     email: string,
     updateData: ResendEmailType,
   ): Promise<UserDbType | null> {
-    return usersCollection.findOneAndUpdate(
+    return UsersModel.findOneAndUpdate(
       {
         email,
         'emailConfirmation.isConfirmed': false,
@@ -76,12 +78,12 @@ export class UsersRepository {
         $set: updateData,
       },
       { returnDocument: 'after' },
-    );
+    ).lean();
   }
 
   async removeUser(id: string): Promise<boolean> {
-    const result: DeleteResult = await usersCollection.deleteOne({
-      _id: new ObjectId(id),
+    const result: DeleteResult = await UsersModel.deleteOne({
+      _id: new Types.ObjectId(id),
     });
 
     return result.deletedCount === 1;

@@ -6,7 +6,7 @@ import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { BadRequestError } from '../../../core/errors/bad-request.error';
 import { BlogsRepository } from '../repositories/blogs.repository';
 import { inject, injectable } from 'inversify';
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 
 @injectable()
 export class BlogsService {
@@ -17,7 +17,7 @@ export class BlogsService {
 
   async createBlog(body: CreateBlogDto): Promise<string> {
     const newBlog: BlogDBType = new BlogDBType(
-      new ObjectId(),
+      new Types.ObjectId(),
       body.name,
       body.description,
       body.websiteUrl,

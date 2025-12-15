@@ -4,7 +4,7 @@ import { UserDbType } from '../../src/modules/users/type/user.type';
 import { createdAtHelper } from '../../src/core/helpers/created-at.helper';
 import { add } from 'date-fns/add';
 import { randomUUID } from 'node:crypto';
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 
 export type RegisterUserPayloadType = {
   login: string;
@@ -37,7 +37,7 @@ export const testSeeder = {
     const hash: string = await hashAdapter.hashPassword(password);
 
     const user: UserDbType = {
-      _id: new ObjectId(),
+      _id: new Types.ObjectId(),
       login,
       email,
       password: hash,

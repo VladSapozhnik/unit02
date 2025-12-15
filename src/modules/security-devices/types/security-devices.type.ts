@@ -1,16 +1,16 @@
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 
 export class SecurityDevicesDBType {
-  _id: ObjectId;
-  userId: ObjectId;
+  _id: Types.ObjectId;
+  userId: Types.ObjectId;
   deviceId: string;
   ip: string;
   title: string;
   lastActiveDate: Date;
   expiresAt: Date;
   constructor(
-    _id: ObjectId,
-    userId: ObjectId,
+    _id: Types.ObjectId,
+    userId: Types.ObjectId,
     deviceId: string,
     ip: string,
     title: string,

@@ -1,11 +1,14 @@
 import mongoose from 'mongoose';
 import { CommentDBType } from '../../modules/comments/types/comment.type';
 import { BlogDBType } from '../../modules/blogs/types/blog.type';
-import { ObjectId } from 'mongodb';
 import { PasswordRecoveryDBType } from '../../modules/password-recovery/types/password-recovery.type';
 import { PostDBType } from '../../modules/posts/types/post.type';
 import { RateLimitDBType } from '../../modules/rate-limit/types/rate-limit.type';
 import { SecurityDevicesDBType } from '../../modules/security-devices/types/security-devices.type';
+import {
+  EmailConfirmation,
+  UserDbType,
+} from '../../modules/users/type/user.type';
 const { Schema } = mongoose;
 
 export const blogsSchema = new Schema<BlogDBType>({
@@ -65,4 +68,22 @@ export const securityDevicesSchema = new Schema<SecurityDevicesDBType>({
   title: { type: String, required: true },
   lastActiveDate: { type: Date, required: true },
   expiresAt: { type: Date, required: true },
+});
+
+const emailConfirmation = new Schema<EmailConfirmation>(
+  {
+    confirmationCode: { type: String, required: true },
+    expirationDate: { type: Date, required: true },
+    isConfirmed: { type: Boolean, default: false },
+  },
+  { _id: false },
+);
+
+export const usersSchema = new Schema<UserDbType>({
+  _id: { type: Schema.Types.ObjectId, required: true },
+  login: { type: String, required: true },
+  email: { type: String, required: true },
+  password: { type: String, required: true },
+  createdAt: { type: String, required: true },
+  emailConfirmation: emailConfirmation,
 });

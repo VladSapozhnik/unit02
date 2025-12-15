@@ -1,6 +1,6 @@
 import { SecurityDevicesDBType } from '../types/security-devices.type';
-import { securityDevicesCollection } from '../../../core/db/mango.db';
-import { ObjectId } from 'mongodb';
+import { SecurityDevicesModel } from '../../../core/db/mango.db';
+import { Types } from 'mongoose';
 import { injectable } from 'inversify';
 
 @injectable()
@@ -8,10 +8,8 @@ export class SecurityDevicesQueryRepository {
   async findDeviceSessionByUserId(
     userId: string,
   ): Promise<SecurityDevicesDBType[]> {
-    return securityDevicesCollection
-      .find({
-        userId: new ObjectId(userId),
-      })
-      .toArray();
+    return SecurityDevicesModel.find({
+      userId: new Types.ObjectId(userId),
+    }).lean();
   }
 }

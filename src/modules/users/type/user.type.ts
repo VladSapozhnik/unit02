@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 
 export class EmailConfirmation {
   confirmationCode: string;
@@ -20,14 +20,14 @@ export class UserDbType {
   /**
    * Represents a user in the database
    */
-  _id: ObjectId;
+  _id: Types.ObjectId;
   login: string;
   email: string;
   password: string;
   createdAt: string;
   emailConfirmation: EmailConfirmation;
   constructor(
-    _id: ObjectId,
+    _id: Types.ObjectId,
     login: string,
     email: string,
     password: string,

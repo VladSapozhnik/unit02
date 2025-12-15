@@ -1,5 +1,4 @@
-import { ObjectId } from 'mongodb';
-import { commentsCollection } from '../../../core/db/mango.db';
+import { CommentsModel } from '../../../core/db/mango.db';
 import { CommentDBType } from '../types/comment.type';
 import { commentMapper } from '../mappers/comment.mapper';
 import { getSkipOffset } from '../../../core/helpers/get-skip-offset';
@@ -8,16 +7,17 @@ import { buildPaginationHelper } from '../../../core/helpers/build-pagination.he
 import { PaginatedMetaType } from '../../../core/types/paginated-meta.type';
 import { paginatedListMapper } from '../../../core/mappers/paginated-list.mapper';
 import { injectable } from 'inversify';
+import { Types } from 'mongoose';
 import { CommentOutputType } from '../types/comment-output.type';
 
 @injectable()
 export class CommentsQueryRepository {
   async getCommentById(
-    id: string | ObjectId,
+    id: string | Types.ObjectId,
   ): Promise<CommentOutputType | null> {
-    const comment: CommentDBType | null = await commentsCollection.findOne({
-      _id: new ObjectId(id),
-    });
+    const comment: CommentDBType | null = await CommentsModel.findOne({
+      _id: new Types.ObjectId(id),
+    }).lean();
 
     if (!comment) {
       return null;
@@ -26,18 +26,19 @@ export class CommentsQueryRepository {
     return commentMapper(comment);
   }
 
-  async getCommentsByPostId(queryDto: CommentQueryInput, postId: ObjectId) {
+  async getCommentsByPostId(queryDto: CommentQueryInput, postId: string) {
     const skip: number = getSkipOffset(queryDto.pageNumber, queryDto.pageSize);
 
-    const comments: CommentDBType[] = await commentsCollection
-      .find({ postId: new ObjectId(postId) })
+    const comments: CommentDBType[] = await CommentsModel.find({
+      postId: new Types.ObjectId(postId),
+    })
       .sort({ [queryDto.sortBy]: queryDto.sortDirection })
       .skip(skip)
       .limit(queryDto.pageSize)
-      .toArray();
+      .lean();
 
-    const totalCount: number = await commentsCollection.countDocuments({
-      postId: new ObjectId(postId),
+    const totalCount: number = await CommentsModel.countDocuments({
+      postId: new Types.ObjectId(postId),
     });
 
     const pagination: PaginatedMetaType = buildPaginationHelper(

@@ -1,5 +1,5 @@
-import { usersCollection } from '../../../core/db/mango.db';
-import { ObjectId } from 'mongodb';
+import { UsersModel } from '../../../core/db/mango.db';
+import { Types } from 'mongoose';
 import { UserDbType } from '../type/user.type';
 import { UserQueryInput } from '../routes/input/user-query.input';
 import { getSkipOffset } from '../../../core/helpers/get-skip-offset';
@@ -19,14 +19,13 @@ export class UsersQueryRepository {
     const skip: number = getSkipOffset(queryDto.pageNumber, queryDto.pageSize);
     const filter: any = buildUserFilter(queryDto);
 
-    const users: UserDbType[] = await usersCollection
-      .find(filter)
+    const users: UserDbType[] = await UsersModel.find(filter)
       .sort({ [queryDto.sortBy]: queryDto.sortDirection, _id: 1 })
       .skip(skip)
       .limit(queryDto.pageSize)
-      .toArray();
+      .lean();
 
-    const totalCount: number = await usersCollection.countDocuments(filter);
+    const totalCount: number = await UsersModel.countDocuments(filter);
 
     const pagination: PaginatedMetaType = buildPaginationHelper(
       totalCount,
@@ -41,9 +40,9 @@ export class UsersQueryRepository {
     );
   }
 
-  async getUserById(id: ObjectId | string): Promise<UserOutputType | null> {
-    const user: UserDbType | null = await usersCollection.findOne({
-      _id: new ObjectId(id),
+  async getUserById(id: string): Promise<UserOutputType | null> {
+    const user: UserDbType | null = await UsersModel.findOne({
+      _id: new Types.ObjectId(id),
     });
 
     if (!user) {
@@ -54,8 +53,8 @@ export class UsersQueryRepository {
   }
 
   async getProfile(id: string): Promise<ProfileType | null> {
-    const user: UserDbType | null = await usersCollection.findOne({
-      _id: new ObjectId(id),
+    const user: UserDbType | null = await UsersModel.findOne({
+      _id: new Types.ObjectId(id),
     });
 
     if (!user) {

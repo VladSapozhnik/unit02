@@ -1,4 +1,4 @@
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 
 // export type CommentType = {
 //   /**
@@ -15,17 +15,17 @@ export class CommentDBType {
   /**
    * type exist comment
    */
-  _id: ObjectId;
-  postId: ObjectId;
+  _id: Types.ObjectId;
+  postId: Types.ObjectId;
   content: string;
-  commentatorInfo: { userId: ObjectId; userLogin: string };
+  commentatorInfo: { userId: Types.ObjectId; userLogin: string };
   createdAt: string;
 
   constructor(
-    _id: ObjectId,
-    postId: ObjectId,
+    _id: Types.ObjectId,
+    postId: Types.ObjectId,
     content: string,
-    commentatorInfo: { userId: ObjectId; userLogin: string },
+    commentatorInfo: { userId: Types.ObjectId; userLogin: string },
     createdAt: string,
   ) {
     this._id = _id;

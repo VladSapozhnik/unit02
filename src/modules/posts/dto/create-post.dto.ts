@@ -1,17 +1,3 @@
-// export type CreatePostDto = {
-//   /**
-//    * body create dto
-//    */
-//   title: string;
-//   shortDescription: string;
-//   content: string;
-//   blogId: string;
-// };
-//
-// export type CreatePostForBlogDto = Omit<CreatePostDto, 'blogId'>;
-
-import { ObjectId } from 'mongodb';
-
 export class BasePostInput {
   title: string;
   shortDescription: string;
@@ -27,13 +13,13 @@ export class BasePostInput {
 export class CreatePostForBlogDto extends BasePostInput {}
 
 export class CreatePostDto extends BasePostInput {
-  blogId: string | ObjectId;
+  blogId: string;
 
   constructor(
     title: string,
     shortDescription: string,
     content: string,
-    blogId: string | ObjectId,
+    blogId: string,
   ) {
     super(title, shortDescription, content);
     this.blogId = blogId;

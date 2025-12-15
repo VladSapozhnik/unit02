@@ -2,9 +2,9 @@ import { Request, Response, NextFunction } from 'express';
 import { RateLimitRepository } from '../../modules/rate-limit/repositories/rate-limit.repository';
 import { RateLimitDBType } from '../../modules/rate-limit/types/rate-limit.type';
 import { TooManyRequestsError } from '../errors/too-many-requests.error';
+import { Types } from 'mongoose';
 import { settings } from '../settings/settings';
 import { inject, injectable } from 'inversify';
-import { ObjectId } from 'mongodb';
 
 @injectable()
 export class RateLimitMiddleware {
@@ -27,7 +27,7 @@ export class RateLimitMiddleware {
     }
 
     const attemptDate: RateLimitDBType = new RateLimitDBType(
-      new ObjectId(),
+      new Types.ObjectId(),
       ip,
       url,
       new Date(),

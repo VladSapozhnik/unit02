@@ -8,7 +8,7 @@ import { BadRequestError } from '../../../core/errors/bad-request.error';
 import { PostsRepository } from '../repositories/posts.repository';
 import { BlogsRepository } from '../../blogs/repositories/blogs.repository';
 import { inject, injectable } from 'inversify';
-import { ObjectId } from 'mongodb';
+import { Types } from 'mongoose';
 
 @injectable()
 export class PostsService {
@@ -18,7 +18,7 @@ export class PostsService {
   ) {}
   async createPost(body: CreatePostDto): Promise<string> {
     const existBlog: BlogDBType | null = await this.blogsRepository.getBlogById(
-      body.blogId,
+      body.blogId.toString(),
     );
 
     if (!existBlog) {
@@ -26,9 +26,9 @@ export class PostsService {
     }
 
     const postBody: PostDBType = {
-      _id: new ObjectId(),
+      _id: new Types.ObjectId(),
       ...body,
-      blogId: new ObjectId(body.blogId),
+      blogId: new Types.ObjectId(body.blogId),
       blogName: existBlog.name,
       createdAt: createdAtHelper(),
     };
@@ -44,7 +44,7 @@ export class PostsService {
 
   async createPostForBlog(body: CreatePostDto): Promise<string> {
     const existBlog: BlogDBType | null = await this.blogsRepository.getBlogById(
-      body.blogId,
+      body.blogId.toString(),
     );
 
     if (!existBlog) {
@@ -52,9 +52,9 @@ export class PostsService {
     }
 
     const postBody: PostDBType = {
-      _id: new ObjectId(),
+      _id: new Types.ObjectId(),
       ...body,
-      blogId: new ObjectId(body.blogId),
+      blogId: new Types.ObjectId(body.blogId),
       blogName: existBlog.name,
       createdAt: createdAtHelper(),
     };
@@ -70,7 +70,7 @@ export class PostsService {
 
   async updatePost(id: string, body: UpdatePostDto) {
     const existBlog: BlogDBType | null = await this.blogsRepository.getBlogById(
-      body.blogId,
+      body.blogId.toString(),
     );
 
     if (!existBlog) {
