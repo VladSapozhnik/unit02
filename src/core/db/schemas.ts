@@ -35,6 +35,7 @@ export const commentsSchema = new Schema<CommentDBType>({
   postId: { type: Schema.Types.ObjectId, required: true },
   content: { type: String, required: true },
   commentatorInfo: commentsInfoSchema,
+  createdAt: { type: Date, required: true },
 });
 
 export const passwordRecoverySchema = new Schema<PasswordRecoveryDBType>({
