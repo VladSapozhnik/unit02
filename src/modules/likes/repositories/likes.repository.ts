@@ -3,6 +3,7 @@ import { LikesModel } from '../../../core/db/mango.db';
 import { LikeStatusEnum } from '../enums/like-status.enum';
 import { DeleteResult, Types, UpdateResult } from 'mongoose';
 import { LikesDbType } from '../types/likes.type';
+import { LikesAndDislikesType } from '../types/likes-and-dislikes.type';
 
 @injectable()
 export class LikesRepository {
@@ -25,16 +26,24 @@ export class LikesRepository {
     return result.modifiedCount === 1;
   }
 
-  async removeCommentLikeStatus(
-    userId: string,
+  async getLikesAndDislikesComment(
     commentId: string,
-  ): Promise<boolean> {
-    const result: DeleteResult = await LikesModel.deleteOne({
-      userId,
-      commentId,
-    });
+  ): Promise<LikesAndDislikesType> {
+    const [likesCount, dislikesCount] = await Promise.all([
+      LikesModel.countDocuments({
+        commentId,
+        status: LikeStatusEnum.Like,
+      }),
+      LikesModel.countDocuments({
+        commentId,
+        status: LikeStatusEnum.Dislike,
+      }),
+    ]);
 
-    return result.deletedCount === 1;
+    return {
+      likesCount,
+      dislikesCount,
+    };
   }
 
   async findLike(

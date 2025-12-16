@@ -28,10 +28,10 @@ export class CommentsQueryService {
       throw new NotFoundError(`Comment with id ${id} not found`, 'comment');
     }
 
-    const [likesCount, dislikeCount] = await Promise.all([
-      this.likesRepository.countLikesComment(comment._id.toString()),
-      this.likesRepository.countDislikeComment(comment._id.toString()),
-    ]);
+    const { likesCount, dislikesCount } =
+      await this.likesRepository.getLikesAndDislikesComment(
+        comment._id.toString(),
+      );
 
     let myStatus: LikeStatusEnum = LikeStatusEnum.None;
 
@@ -45,7 +45,7 @@ export class CommentsQueryService {
 
     const likesInfo: LikesInfoOutputType = new LikesInfoOutputType(
       likesCount,
-      dislikeCount,
+      dislikesCount,
       myStatus,
     );
 
@@ -62,10 +62,10 @@ export class CommentsQueryService {
 
     const commentsOutput: CommentOutputType[] = await Promise.all(
       comments.map(async (comment: CommentDBType) => {
-        const [likeCount, dislikeCount] = await Promise.all([
-          this.likesRepository.countLikesComment(comment._id.toString()),
-          this.likesRepository.countDislikeComment(comment._id.toString()),
-        ]);
+        const { likesCount, dislikesCount } =
+          await this.likesRepository.getLikesAndDislikesComment(
+            comment._id.toString(),
+          );
 
         let myStatus: LikeStatusEnum = LikeStatusEnum.None;
 
@@ -78,8 +78,8 @@ export class CommentsQueryService {
         }
 
         const likesInfo: LikesInfoOutputType = new LikesInfoOutputType(
-          likeCount,
-          dislikeCount,
+          likesCount,
+          dislikesCount,
           myStatus,
         );
 
