@@ -48,4 +48,42 @@ export class AuthGuardMiddleware {
       next(e);
     }
   }
+
+  async optionalJwtAuth(req: Request, res: Response, next: NextFunction) {
+    try {
+      const auth: string | undefined = req.headers['authorization'];
+
+      if (!auth) {
+        req.userId = undefined;
+        return next();
+      }
+
+      const [authType, token] = auth.split(' ');
+
+      if (authType !== 'Bearer' || !token) {
+        req.userId = undefined;
+        return next();
+      }
+
+      const userId: string | null = await jwtAdapter.verifyAccessToken(token);
+
+      if (!userId) {
+        req.userId = undefined;
+        return next();
+      }
+
+      const isUser: UserDbType | null =
+        await this.usersRepository.getUserById(userId);
+
+      if (!isUser || !isUser._id) {
+        req.userId = undefined;
+        return next();
+      }
+
+      req.userId = isUser._id.toString() as string;
+      next();
+    } catch (e) {
+      next(e);
+    }
+  }
 }

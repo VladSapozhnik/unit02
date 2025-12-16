@@ -20,10 +20,7 @@ export class CommentsQueryService {
     @inject(LikesRepository) private likesRepository: LikesRepository,
   ) {}
 
-  async getCommentById(
-    id: string,
-    userId: string | null,
-  ): Promise<CommentOutputType> {
+  async getCommentById(id: string, userId: string | undefined) {
     const comment: CommentDBType | null =
       await this.commentsQueryRepository.getCommentById(id);
 
@@ -43,7 +40,6 @@ export class CommentsQueryService {
         userId,
         comment._id.toString(),
       );
-
       myStatus = myLike ? myLike.status : LikeStatusEnum.None;
     }
 
@@ -78,7 +74,6 @@ export class CommentsQueryService {
             userId,
             comment._id.toString(),
           );
-
           myStatus = myLike ? myLike.status : LikeStatusEnum.None;
         }
 

@@ -20,6 +20,7 @@ commentsRouter.get(
   '/:id',
   idParamValidator,
   inputValidationErrorsMiddleware,
+  authGuardMiddleware.optionalJwtAuth.bind(authGuardMiddleware),
   commentsController.getCommentsById.bind(commentsController),
 );
 

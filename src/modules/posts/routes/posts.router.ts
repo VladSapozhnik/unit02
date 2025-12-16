@@ -48,6 +48,7 @@ postsRouter.get(
   postIdParamValidation,
   paginationAndSortingValidation(CommentSortFieldEnum),
   inputValidationErrorsMiddleware,
+  authGuardMiddleware.optionalJwtAuth.bind(authGuardMiddleware),
   postsController.getCommentsForPostId.bind(postsController),
 );
 

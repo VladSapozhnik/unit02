@@ -30,7 +30,7 @@ export class CommentsController {
     req: RequestWithParam<IdCommentType>,
     res: Response<CommentOutputType>,
   ) {
-    const userId = req.userId ?? null;
+    const userId: string | undefined = req.userId;
 
     const comment: CommentOutputType =
       await this.commentsQueryService.getCommentById(req.params.id, userId);
