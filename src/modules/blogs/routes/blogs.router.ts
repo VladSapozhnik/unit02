@@ -4,8 +4,8 @@ import { inputValidationErrorsMiddleware } from '../../../core/middleware/input-
 import { superAdminGuardMiddleware } from '../../../core/middleware/super-admin-guard.middleware';
 import { idParamValidator } from '../../../core/validators/param-id.validation';
 import { paginationAndSortingValidation } from '../../../core/validators/pagination-and-sorting.validation';
-import { BlogSortFieldEnum } from '../enum/blog-sort-field.enum';
-import { PostSortFieldEnum } from '../../posts/enum/post-sort-field.enum';
+import { BlogSortFieldEnum } from '../enums/blog-sort-field.enum';
+import { PostSortFieldEnum } from '../../posts/enums/post-sort-field.enum';
 import { blogQuerySearchValidation } from '../validators/blog-query-search.validation';
 import { postWithoutBlogIdValidation } from '../../posts/validators/post-without-blogId.validation';
 import { blogIdParamValidation } from '../validators/blogId-param.validation';

@@ -1,8 +1,6 @@
 import { RequestWithParam } from '../../../core/types/request.type';
 import { IdCommentType } from '../types/id-comment.type';
-import { Response } from 'express';
-import { CommentDBType } from '../types/comment.type';
-import { NotFoundError } from '../../../core/errors/repository-not-found.error';
+import { Response, Request } from 'express';
 import {
   RequestUserIdParam,
   RequestUserIdWithParamAndBody,
@@ -12,30 +10,30 @@ import { HTTP_STATUS } from '../../../core/enums/http-status.enum';
 import { UpdateCommentDto } from '../dto/update-comment.dto';
 import { injectable, inject } from 'inversify';
 import { CommentsService } from '../application/comments.service';
-import { CommentsQueryRepository } from '../repositories/comments.query.repository';
 import { CommentOutputType } from '../types/comment-output.type';
+import { LikeStatusEnum } from '../../likes/enums/like-status.enum';
+import { LikesService } from '../../likes/application/likes.service';
+import { ResultStatus } from '../../../core/enums/result-status.enum';
+import { Result } from '../../../core/types/result.type';
+import { CommentsQueryService } from '../application/comments.query.service';
 
 @injectable()
 export class CommentsController {
   constructor(
     @inject(CommentsService) private readonly commentsService: CommentsService,
-    @inject(CommentsQueryRepository)
-    private readonly commentsQueryRepository: CommentsQueryRepository,
+    @inject(CommentsQueryService)
+    private readonly commentsQueryService: CommentsQueryService,
+    @inject(LikesService) private readonly likesService: LikesService,
   ) {}
 
   async getCommentsById(
     req: RequestWithParam<IdCommentType>,
     res: Response<CommentOutputType>,
   ) {
-    const comment: CommentOutputType | null =
-      await this.commentsQueryRepository.getCommentById(req.params.id);
+    const userId = req.userId ?? null;
 
-    if (!comment) {
-      throw new NotFoundError(
-        `Comment with id ${req.params.id} not found`,
-        'comment',
-      );
-    }
+    const comment: CommentOutputType =
+      await this.commentsQueryService.getCommentById(req.params.id, userId);
 
     res.json(comment);
   }
@@ -59,6 +57,24 @@ export class CommentsController {
     const userId: string = req.userId as string;
 
     await this.commentsService.removeComment(userId, req.params.commentId);
+
+    res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
+  }
+
+  async updateCommentLikeStatus(req: Request, res: Response) {
+    const userId: string = req.userId as string;
+    const commentId: string = req.params.commentId;
+    const likeStatus = req.body.likeStatus as LikeStatusEnum;
+
+    const result: Result = await this.likesService.updateCommentLikeStatus(
+      userId,
+      commentId,
+      likeStatus,
+    );
+
+    if (result.status === ResultStatus.NotFound) {
+      return res.status(HTTP_STATUS.NOT_FOUND_404).json(result.extensions);
+    }
 
     res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   }

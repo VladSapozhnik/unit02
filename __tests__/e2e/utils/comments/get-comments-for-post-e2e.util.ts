@@ -4,7 +4,7 @@ import request, { Response } from 'supertest';
 import { RouterPathConst } from '../../../../src/core/constants/router-path.const';
 import { SortDirectionEnum } from '../../../../src/core/enums/sort-direction.enum';
 import { CommentQueryInput } from '../../../../src/modules/comments/routes/input/comment-query.input';
-import { CommentSortFieldEnum } from '../../../../src/modules/comments/enum/comment-sort-field.enum';
+import { CommentSortFieldEnum } from '../../../../src/modules/comments/enums/comment-sort-field.enum';
 import { CommentDBType } from '../../../../src/modules/comments/types/comment.type';
 import { ObjectIdValid } from '../../blogs.e2e.spec';
 

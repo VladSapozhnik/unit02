@@ -9,7 +9,7 @@ import {
   ADMIN_USERNAME,
 } from '../../../../src/core/middleware/super-admin-guard.middleware';
 import { SortDirectionEnum } from '../../../../src/core/enums/sort-direction.enum';
-import { UserSortFieldEnum } from '../../../../src/modules/users/enum/user-sort-field.enum';
+import { UserSortFieldEnum } from '../../../../src/modules/users/enums/user-sort-field.enum';
 import { UserQueryInput } from '../../../../src/modules/users/routes/input/user-query.input';
 
 const paginationInputDefault: UserQueryInput = {

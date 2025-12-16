@@ -10,7 +10,7 @@ import { HTTP_STATUS } from '../../../core/enums/http-status.enum';
 import { UserQueryInput } from './input/user-query.input';
 import { matchedData } from 'express-validator';
 import { PaginationAndSortingType } from '../../../core/types/pagination-and-sorting.type';
-import { UserSortFieldEnum } from '../enum/user-sort-field.enum';
+import { UserSortFieldEnum } from '../enums/user-sort-field.enum';
 import { setDefaultSortAndPaginationIfNotExistHelper } from '../../../core/helpers/set-default-sort-and-pagination.helper';
 import { inject, injectable } from 'inversify';
 import { type IdUserParamDto } from '../dto/id-user-param.dto';

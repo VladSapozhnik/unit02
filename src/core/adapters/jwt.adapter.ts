@@ -4,7 +4,7 @@ import { settings } from '../settings/settings';
 export const jwtAdapter = {
   async createAccessToken(userId: string): Promise<string> {
     return jwt.sign({ userId: userId.toString() }, settings.JWT_SECRET_KEY, {
-      expiresIn: '10s',
+      expiresIn: '7m',
     });
   },
   async createRefreshToken(userId: string, deviceId: string): Promise<string> {

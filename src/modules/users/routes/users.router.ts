@@ -4,7 +4,7 @@ import { userValidation } from '../validators/user.validation';
 import { inputValidationErrorsMiddleware } from '../../../core/middleware/input-validation-errors.middleware';
 import { userQuerySearchValidation } from '../validators/user-query-search.validation';
 import { paginationAndSortingValidation } from '../../../core/validators/pagination-and-sorting.validation';
-import { UserSortFieldEnum } from '../enum/user-sort-field.enum';
+import { UserSortFieldEnum } from '../enums/user-sort-field.enum';
 import { idParamValidator } from '../../../core/validators/param-id.validation';
 import { UsersController } from './users.controller';
 import { container } from '../../../composition-root';

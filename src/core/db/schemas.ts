@@ -9,6 +9,8 @@ import {
   EmailConfirmation,
   UserDbType,
 } from '../../modules/users/type/user.type';
+import { LikeStatusEnum } from '../../modules/likes/enums/like-status.enum';
+import { LikesDbType } from '../../modules/likes/types/likes.type';
 const { Schema } = mongoose;
 
 export const blogsSchema = new Schema<BlogDBType>({
@@ -88,4 +90,12 @@ export const usersSchema = new Schema<UserDbType>({
   password: { type: String, required: true },
   createdAt: { type: String, required: true },
   emailConfirmation: emailConfirmation,
+});
+
+export const likesSchema = new Schema<LikesDbType>({
+  _id: { type: Schema.Types.ObjectId, required: true },
+  userId: { type: Schema.Types.ObjectId, required: true },
+  commentId: { type: Schema.Types.ObjectId, required: true },
+  status: { type: String, enum: Object.values(LikeStatusEnum), required: true },
+  createdAt: { type: Date, required: true },
 });

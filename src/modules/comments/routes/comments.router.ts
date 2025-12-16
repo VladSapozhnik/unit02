@@ -6,6 +6,7 @@ import { AuthGuardMiddleware } from '../../../core/middleware/jwt-auth-guard.mid
 import { commentValidation } from '../validators/comment.validation';
 import { container } from '../../../composition-root';
 import { CommentsController } from './comments.controller';
+import { likeStatusValidation } from '../validators/like-status.validation';
 
 const authGuardMiddleware: AuthGuardMiddleware =
   container.get(AuthGuardMiddleware);
@@ -37,4 +38,13 @@ commentsRouter.delete(
   commentIdParamValidation,
   inputValidationErrorsMiddleware,
   commentsController.removeComment.bind(commentsController),
+);
+
+commentsRouter.put(
+  '/:commentId/like-status',
+  authGuardMiddleware.jwtAuth.bind(authGuardMiddleware),
+  commentIdParamValidation,
+  likeStatusValidation,
+  inputValidationErrorsMiddleware,
+  commentsController.updateCommentLikeStatus.bind(commentsController),
 );

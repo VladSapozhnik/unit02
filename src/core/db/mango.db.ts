@@ -10,12 +10,14 @@ import { PasswordRecoveryDBType } from '../../modules/password-recovery/types/pa
 import {
   blogsSchema,
   commentsSchema,
+  likesSchema,
   passwordRecoverySchema,
   postsSchema,
   rateLimitSchema,
   securityDevicesSchema,
   usersSchema,
 } from './schemas';
+import { LikesDbType } from '../../modules/likes/types/likes.type';
 
 const dbName: string = settings.DB_NAME;
 
@@ -26,6 +28,7 @@ const COMMENT_COLLECTION_NAME = 'comments';
 const SECURITY_DEVICES_COLLECTION_NAME = 'device_sessions';
 const PASSWORD_RECOVERY_COLLECTION_NAME = 'password_recovery';
 const RATE_LIMIT = 'rate_limit';
+const LIKE_COLLECTION_NAME = 'likes';
 
 export const BlogsModel = model<BlogDBType>(BLOG_COLLECTION_NAME, blogsSchema);
 export const PostsModel = model<PostDBType>(POST_COLLECTION_NAME, postsSchema);
@@ -47,6 +50,8 @@ export const RateLimitModel = model<RateLimitDBType>(
   RATE_LIMIT,
   rateLimitSchema,
 );
+
+export const LikesModel = model<LikesDbType>(LIKE_COLLECTION_NAME, likesSchema);
 
 export async function runDB(db_url: string): Promise<void> {
   try {

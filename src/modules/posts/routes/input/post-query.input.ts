@@ -1,4 +1,4 @@
 import { PaginationAndSortingType } from '../../../../core/types/pagination-and-sorting.type';
-import { PostSortFieldEnum } from '../../enum/post-sort-field.enum';
+import { PostSortFieldEnum } from '../../enums/post-sort-field.enum';
 
 export type PostQueryInput = PaginationAndSortingType<PostSortFieldEnum>;

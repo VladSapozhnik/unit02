@@ -4,10 +4,10 @@ import { inputValidationErrorsMiddleware } from '../../../core/middleware/input-
 import { superAdminGuardMiddleware } from '../../../core/middleware/super-admin-guard.middleware';
 import { idParamValidator } from '../../../core/validators/param-id.validation';
 import { paginationAndSortingValidation } from '../../../core/validators/pagination-and-sorting.validation';
-import { PostSortFieldEnum } from '../enum/post-sort-field.enum';
+import { PostSortFieldEnum } from '../enums/post-sort-field.enum';
 import { postIdParamValidation } from '../validators/postId-param.validation';
 import { commentValidation } from '../../comments/validators/comment.validation';
-import { CommentSortFieldEnum } from '../../comments/enum/comment-sort-field.enum';
+import { CommentSortFieldEnum } from '../../comments/enums/comment-sort-field.enum';
 import { container } from '../../../composition-root';
 import { PostsController } from './posts.controller';
 import { AuthGuardMiddleware } from '../../../core/middleware/jwt-auth-guard.middleware';

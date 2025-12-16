@@ -17,7 +17,7 @@ import { settings } from '../../src/core/settings/settings';
 import { ObjectIdValid } from './blogs.e2e.spec';
 import { SortDirectionEnum } from '../../src/core/enums/sort-direction.enum';
 import { PostQueryInput } from '../../src/modules/posts/routes/input/post-query.input';
-import { PostSortFieldEnum } from '../../src/modules/posts/enum/post-sort-field.enum';
+import { PostSortFieldEnum } from '../../src/modules/posts/enums/post-sort-field.enum';
 import { createPostForBlogE2eUtil } from './utils/posts/create-post-by-blogId-e2e.util';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 

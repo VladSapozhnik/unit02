@@ -10,11 +10,11 @@ import { BlogIdQueryDto } from '../dto/blogId-query.dto';
 import { PostQueryInput } from './input/post-query.input';
 import { matchedData } from 'express-validator';
 import { PaginationAndSortingType } from '../../../core/types/pagination-and-sorting.type';
-import { PostSortFieldEnum } from '../enum/post-sort-field.enum';
+import { PostSortFieldEnum } from '../enums/post-sort-field.enum';
 import { setDefaultSortAndPaginationIfNotExistHelper } from '../../../core/helpers/set-default-sort-and-pagination.helper';
 import { errorsHandler } from '../../../core/errors/errors.handler';
 import { CommentQueryInput } from '../../comments/routes/input/comment-query.input';
-import { CommentSortFieldEnum } from '../../comments/enum/comment-sort-field.enum';
+import { CommentSortFieldEnum } from '../../comments/enums/comment-sort-field.enum';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { IdPostParamDto } from '../dto/id-post-param.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
@@ -24,11 +24,11 @@ import { PostsQueryRepository } from '../repositories/posts.query.repository';
 import { BlogsQueryRepository } from '../../blogs/repositories/blogs.query.repository';
 import { PostsRepository } from '../repositories/posts.repository';
 import { CommentsService } from '../../comments/application/comments.service';
-import { CommentsQueryRepository } from '../../comments/repositories/comments.query.repository';
 import { PostOutputType } from '../types/post-output.type';
 import { PostDBType } from '../types/post.type';
 import { CommentOutputType } from '../../comments/types/comment-output.type';
 import { BlogOutputType } from '../../blogs/types/blog-output.type';
+import { CommentsQueryService } from '../../comments/application/comments.query.service';
 
 @injectable()
 export class PostsController {
@@ -40,8 +40,8 @@ export class PostsController {
     @inject(BlogsQueryRepository)
     private readonly blogsQueryRepository: BlogsQueryRepository,
     @inject(CommentsService) private readonly commentsService: CommentsService,
-    @inject(CommentsQueryRepository)
-    private readonly commentsQueryRepository: CommentsQueryRepository,
+    @inject(CommentsQueryService)
+    private readonly commentsQueryService: CommentsQueryService,
   ) {}
   async createCommentForPost(req: Request, res: Response) {
     const userId: string = req.userId as string;
@@ -53,8 +53,8 @@ export class PostsController {
       req.body,
     );
 
-    const findComment: CommentOutputType | null =
-      await this.commentsQueryRepository.getCommentById(id);
+    const findComment: CommentOutputType =
+      await this.commentsQueryService.getCommentById(id, userId);
 
     res.status(HTTP_STATUS.CREATED_201).send(findComment);
   }
@@ -104,6 +104,8 @@ export class PostsController {
   }
 
   async getCommentsForPostId(req: Request, res: Response) {
+    const userId: string = req.userId as string;
+
     const sanitizedQuery: CommentQueryInput = matchedData<CommentQueryInput>(
       req,
       { locations: ['query'] },
@@ -123,9 +125,10 @@ export class PostsController {
       );
     }
 
-    const findPost = await this.commentsQueryRepository.getCommentsByPostId(
+    const findPost = await this.commentsQueryService.getCommentsByPostId(
       defaultQuery,
       isPost._id.toString(),
+      userId,
     );
 
     res.send(findPost);

@@ -11,7 +11,7 @@ import { HTTP_STATUS } from '../../../core/enums/http-status.enum';
 import { BlogQueryInput } from './input/blog-query.input';
 import { matchedData } from 'express-validator';
 import { PaginationAndSortingType } from '../../../core/types/pagination-and-sorting.type';
-import { BlogSortFieldEnum } from '../enum/blog-sort-field.enum';
+import { BlogSortFieldEnum } from '../enums/blog-sort-field.enum';
 import { setDefaultSortAndPaginationIfNotExistHelper } from '../../../core/helpers/set-default-sort-and-pagination.helper';
 import { IdBlogParamDto } from '../dto/id-blog-param.dto';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';

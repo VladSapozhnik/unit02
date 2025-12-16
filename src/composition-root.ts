@@ -27,6 +27,9 @@ import { AuthGuardMiddleware } from './core/middleware/jwt-auth-guard.middleware
 import { RateLimitRepository } from './modules/rate-limit/repositories/rate-limit.repository';
 import { RateLimitMiddleware } from './core/middleware/rate-limit.middleware';
 import { PasswordRecoveryRepository } from './modules/password-recovery/repositories/password-recovery.repository';
+import { CommentsQueryService } from './modules/comments/application/comments.query.service';
+import { LikesService } from './modules/likes/application/likes.service';
+import { LikesRepository } from './modules/likes/repositories/likes.repository';
 
 // const blogsRepository = new BlogsRepository();
 // const blogsQueryRepository = new BlogsQueryRepository();
@@ -53,6 +56,7 @@ container.bind(PostsQueryRepository).to(PostsQueryRepository);
 //comments
 container.bind(CommentsController).to(CommentsController);
 container.bind(CommentsService).to(CommentsService);
+container.bind(CommentsQueryService).to(CommentsQueryService);
 container.bind(CommentsRepository).to(CommentsRepository);
 container.bind(CommentsQueryRepository).to(CommentsQueryRepository);
 
@@ -80,6 +84,10 @@ container.bind(PasswordRecoveryRepository).to(PasswordRecoveryRepository);
 
 //rateLimit
 container.bind(RateLimitRepository).to(RateLimitRepository);
+
+//likes
+container.bind(LikesService).to(LikesService);
+container.bind(LikesRepository).to(LikesRepository);
 
 //middleware
 container.bind(AuthGuardMiddleware).to(AuthGuardMiddleware);

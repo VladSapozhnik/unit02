@@ -1,7 +1,13 @@
 import { CommentDBType } from '../types/comment.type';
-import { CommentOutputType } from '../types/comment-output.type';
+import {
+  LikesInfoOutputType,
+  CommentOutputType,
+} from '../types/comment-output.type';
 
-export const commentMapper = (comment: CommentDBType): CommentOutputType => {
+export const commentMapper = (
+  comment: CommentDBType,
+  likesInfo: LikesInfoOutputType,
+): CommentOutputType => {
   return {
     id: String(comment._id),
     content: comment.content,
@@ -11,5 +17,6 @@ export const commentMapper = (comment: CommentDBType): CommentOutputType => {
       userLogin: comment.commentatorInfo.userLogin,
     },
     createdAt: comment.createdAt,
+    likesInfo,
   };
 };
