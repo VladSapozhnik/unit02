@@ -31,15 +31,6 @@ export class LikesService {
       };
     }
 
-    if (likeStatus === LikeStatusEnum.None) {
-      await this.likesRepository.removeCommentLikeStatus(userId, commentId);
-      return {
-        status: ResultStatus.Success,
-        extensions: [],
-        data: null,
-      };
-    }
-
     await this.likesRepository.updateCommentLikeStatus(
       userId,
       commentId,

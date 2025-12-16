@@ -11,7 +11,6 @@ export const commentMapper = (
   return {
     id: String(comment._id),
     content: comment.content,
-    postId: String(comment.postId),
     commentatorInfo: {
       userId: String(comment.commentatorInfo.userId),
       userLogin: comment.commentatorInfo.userLogin,

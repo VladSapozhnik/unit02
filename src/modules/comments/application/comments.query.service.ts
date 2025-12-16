@@ -4,7 +4,6 @@ import { CommentDBType } from '../types/comment.type';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { commentMapper } from '../mappers/comment.mapper';
 import { CommentQueryInput } from '../routes/input/comment-query.input';
-import { paginatedListMapper } from '../../../core/mappers/paginated-list.mapper';
 import {
   CommentOutputType,
   LikesInfoOutputType,
