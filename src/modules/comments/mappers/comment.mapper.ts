@@ -15,7 +15,7 @@ export const commentMapper = (
       userId: String(comment.commentatorInfo.userId),
       userLogin: comment.commentatorInfo.userLogin,
     },
-    createdAt: comment.createdAt,
+    createdAt: comment.createdAt.toISOString(),
     likesInfo,
   };
 };

@@ -8,14 +8,14 @@ export class CommentDBType {
   postId: Types.ObjectId;
   content: string;
   commentatorInfo: { userId: Types.ObjectId; userLogin: string };
-  createdAt: string;
+  createdAt: Date;
 
   constructor(
     _id: Types.ObjectId,
     postId: Types.ObjectId,
     content: string,
     commentatorInfo: { userId: Types.ObjectId; userLogin: string },
-    createdAt: string,
+    createdAt: Date,
   ) {
     this._id = _id;
     this.postId = postId;

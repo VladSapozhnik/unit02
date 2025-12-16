@@ -50,7 +50,7 @@ export class CommentsService {
         userId: new Types.ObjectId(existUser._id),
         userLogin: existUser.login,
       },
-      createdAtHelper(),
+      new Date(),
     );
 
     const commentId: string =
