@@ -1,5 +1,4 @@
 import { CreateUserDto } from '../dto/create-user.dto';
-import { createdAtHelper } from '../../../core/helpers/created-at.helper';
 import { EmailConfirmation, UserDbType } from '../type/user.type';
 import { BadRequestError } from '../../../core/errors/bad-request.error';
 import { hashAdapter } from '../../../core/adapters/hash.adapter';
@@ -29,7 +28,7 @@ export class UsersService {
       dto.login,
       dto.email,
       hash,
-      createdAtHelper(),
+      new Date(),
       new EmailConfirmation('superAdmin', new Date(), true),
     );
 

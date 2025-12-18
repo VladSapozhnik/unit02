@@ -8,7 +8,7 @@ export class BlogDBType {
   name: string;
   description: string;
   websiteUrl: string;
-  createdAt: string;
+  createdAt: Date;
   isMembership: boolean;
 
   constructor(
@@ -16,7 +16,7 @@ export class BlogDBType {
     name: string,
     description: string,
     websiteUrl: string,
-    createdAt: string,
+    createdAt: Date,
     isMembership: boolean,
   ) {
     this._id = _id;
@@ -24,6 +24,7 @@ export class BlogDBType {
     this.description = description;
     this.websiteUrl = websiteUrl;
     this.createdAt = createdAt;
+
     this.isMembership = isMembership;
   }
 }

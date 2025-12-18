@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import { Schema } from 'mongoose';
 import { CommentDBType } from '../../modules/comments/types/comment.type';
 import { BlogDBType } from '../../modules/blogs/types/blog.type';
 import { PasswordRecoveryDBType } from '../../modules/password-recovery/types/password-recovery.type';
@@ -11,14 +11,13 @@ import {
 } from '../../modules/users/type/user.type';
 import { LikeStatusEnum } from '../../modules/likes/enums/like-status.enum';
 import { LikesDbType } from '../../modules/likes/types/likes.type';
-const { Schema } = mongoose;
 
 export const blogsSchema = new Schema<BlogDBType>({
   _id: { type: Schema.Types.ObjectId, required: true },
   name: { type: String, required: true },
   description: { type: String, required: true },
   websiteUrl: { type: String, required: true },
-  createdAt: { type: String, required: true },
+  createdAt: { type: Date, required: true },
   isMembership: { type: Boolean, default: false },
 });
 
@@ -53,7 +52,7 @@ export const postsSchema = new Schema<PostDBType>({
   content: { type: String, required: true },
   blogId: { type: Schema.Types.ObjectId, required: true },
   blogName: { type: String, required: true },
-  createdAt: { type: String, required: true },
+  createdAt: { type: Date, required: true },
 });
 
 export const rateLimitSchema = new Schema<RateLimitDBType>({
@@ -89,7 +88,7 @@ export const usersSchema = new Schema<UserDbType>({
   login: { type: String, required: true },
   email: { type: String, required: true },
   password: { type: String, required: true },
-  createdAt: { type: String, required: true },
+  createdAt: { type: Date, required: true },
   emailConfirmation: emailConfirmation,
 });
 

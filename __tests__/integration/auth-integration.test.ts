@@ -10,7 +10,6 @@ import { type Express } from 'express';
 import { setupApp } from '../../src/setup-app';
 import { testSeeder } from './test.seeder';
 import { CreateUserDto } from '../../src/modules/users/dto/create-user.dto';
-import { createdAtHelper } from '../../src/core/helpers/created-at.helper';
 import { add } from 'date-fns/add';
 import { sub } from 'date-fns/sub';
 import { SecurityDevicesRepository } from '../../src/modules/security-devices/repositories/security-devices.repository';
@@ -144,7 +143,7 @@ describe('auth-integration test', () => {
         _id: new Types.ObjectId(),
         ...createUser,
         password: 'user123hash',
-        createdAt: createdAtHelper(),
+        createdAt: new Date(),
         emailConfirmation: {
           confirmationCode: code,
           expirationDate: sub(new Date(), {
@@ -176,7 +175,7 @@ describe('auth-integration test', () => {
         _id: new Types.ObjectId(),
         ...createUser,
         password: 'user123hash',
-        createdAt: createdAtHelper(),
+        createdAt: new Date(),
         emailConfirmation: {
           confirmationCode: code,
           expirationDate: add(new Date(), {
@@ -208,7 +207,7 @@ describe('auth-integration test', () => {
         _id: new Types.ObjectId(),
         ...createUser,
         password: 'user123hash',
-        createdAt: createdAtHelper(),
+        createdAt: new Date(),
         emailConfirmation: {
           confirmationCode: code,
           expirationDate: add(new Date(), {

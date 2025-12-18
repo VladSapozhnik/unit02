@@ -3,7 +3,6 @@ import { CreatePostDto } from '../dto/create-post.dto';
 import { BlogDBType } from '../../blogs/types/blog.type';
 import { UpdatePostDto } from '../dto/update-post.dto';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
-import { createdAtHelper } from '../../../core/helpers/created-at.helper';
 import { BadRequestError } from '../../../core/errors/bad-request.error';
 import { PostsRepository } from '../repositories/posts.repository';
 import { BlogsRepository } from '../../blogs/repositories/blogs.repository';
@@ -30,7 +29,7 @@ export class PostsService {
       ...body,
       blogId: new Types.ObjectId(body.blogId),
       blogName: existBlog.name,
-      createdAt: createdAtHelper(),
+      createdAt: new Date(),
     };
 
     const postId: string = await this.postsRepository.createPost(postBody);
@@ -56,7 +55,7 @@ export class PostsService {
       ...body,
       blogId: new Types.ObjectId(body.blogId),
       blogName: existBlog.name,
-      createdAt: createdAtHelper(),
+      createdAt: new Date(),
     };
 
     const postId: string = await this.postsRepository.createPost(postBody);

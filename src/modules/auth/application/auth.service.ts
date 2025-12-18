@@ -2,7 +2,6 @@ import { LoginDto } from '../dto/login.dto';
 import { EmailConfirmation, UserDbType } from '../../users/type/user.type';
 import { hashAdapter } from '../../../core/adapters/hash.adapter';
 import { CreateUserDto } from '../../users/dto/create-user.dto';
-import { createdAtHelper } from '../../../core/helpers/created-at.helper';
 import { Types } from 'mongoose';
 import { generateId } from '../../../core/constants/generate-id';
 import { add } from 'date-fns/add';
@@ -45,7 +44,7 @@ export class AuthService {
       dto.login,
       dto.email,
       hash,
-      createdAtHelper(),
+      new Date(),
       new EmailConfirmation(
         randomUUID,
         add(new Date(), {

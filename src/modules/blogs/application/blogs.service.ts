@@ -1,7 +1,6 @@
 import { BlogDBType } from '../types/blog.type';
 import { CreateBlogDto } from '../dto/create-blog.dto';
 import { UpdateBlogDto } from '../dto/update-blog.dto';
-import { createdAtHelper } from '../../../core/helpers/created-at.helper';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { BadRequestError } from '../../../core/errors/bad-request.error';
 import { BlogsRepository } from '../repositories/blogs.repository';
@@ -21,7 +20,7 @@ export class BlogsService {
       body.name,
       body.description,
       body.websiteUrl,
-      createdAtHelper(),
+      new Date(),
       false,
     );
 

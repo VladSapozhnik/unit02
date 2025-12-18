@@ -24,14 +24,14 @@ export class UserDbType {
   login: string;
   email: string;
   password: string;
-  createdAt: string;
+  createdAt: Date;
   emailConfirmation: EmailConfirmation;
   constructor(
     _id: Types.ObjectId,
     login: string,
     email: string,
     password: string,
-    createdAt: string,
+    createdAt: Date,
     emailConfirmation: EmailConfirmation,
   ) {
     this._id = _id;

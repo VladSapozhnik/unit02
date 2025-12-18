@@ -1,7 +1,6 @@
 import { UserDbType } from '../../users/type/user.type';
 import { CreateCommentDto } from '../dto/create-comment.dto';
 import { Types } from 'mongoose';
-import { createdAtHelper } from '../../../core/helpers/created-at.helper';
 import { CommentDBType } from '../types/comment.type';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { ForbiddenRequestError } from '../../../core/errors/forbidden-request.error';
