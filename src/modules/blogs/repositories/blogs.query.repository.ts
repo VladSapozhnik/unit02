@@ -8,7 +8,7 @@ import { buildPaginationHelper } from '../../../core/helpers/build-pagination.he
 import { paginatedListMapper } from '../../../core/mappers/paginated-list.mapper';
 import { injectable } from 'inversify';
 import { BlogOutputType } from '../types/blog-output.type';
-import { BlogDocument, BlogModel } from '../types/blog.entity';
+import { BlogDocument, BlogModel } from '../domain/blog.entity';
 
 @injectable()
 export class BlogsQueryRepository {

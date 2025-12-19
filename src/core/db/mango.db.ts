@@ -1,6 +1,5 @@
 import mongoose, { model } from 'mongoose';
 import { settings } from '../settings/settings';
-import { BlogDBType } from '../../modules/blogs/types/blog.type';
 import { PostDBType } from '../../modules/posts/types/post.type';
 import { UserDbType } from '../../modules/users/type/user.type';
 import { CommentDBType } from '../../modules/comments/types/comment.type';

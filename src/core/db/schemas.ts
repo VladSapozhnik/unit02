@@ -1,6 +1,5 @@
 import { Schema } from 'mongoose';
 import { CommentDBType } from '../../modules/comments/types/comment.type';
-import { BlogDBType } from '../../modules/blogs/types/blog.type';
 import { PasswordRecoveryDBType } from '../../modules/password-recovery/types/password-recovery.type';
 import { PostDBType } from '../../modules/posts/types/post.type';
 import { RateLimitDBType } from '../../modules/rate-limit/types/rate-limit.type';

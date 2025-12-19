@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 import { injectable } from 'inversify';
-import { BlogDocument, BlogModel } from '../types/blog.entity';
+import { BlogDocument, BlogModel } from '../domain/blog.entity';
 
 @injectable()
 export class BlogsRepository {

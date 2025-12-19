@@ -1,6 +1,5 @@
 import { PostDBType } from '../types/post.type';
 import { CreatePostDto } from '../dto/create-post.dto';
-import { BlogDBType } from '../../blogs/types/blog.type';
 import { UpdatePostDto } from '../dto/update-post.dto';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { BadRequestError } from '../../../core/errors/bad-request.error';
@@ -8,6 +7,7 @@ import { PostsRepository } from '../repositories/posts.repository';
 import { BlogsRepository } from '../../blogs/repositories/blogs.repository';
 import { inject, injectable } from 'inversify';
 import { Types } from 'mongoose';
+import { BlogDocument } from '../../blogs/domain/blog.entity';
 
 @injectable()
 export class PostsService {
@@ -16,9 +16,8 @@ export class PostsService {
     @inject(BlogsRepository) private readonly blogsRepository: BlogsRepository,
   ) {}
   async createPost(body: CreatePostDto): Promise<string> {
-    const existBlog: BlogDBType | null = await this.blogsRepository.getBlogById(
-      body.blogId.toString(),
-    );
+    const existBlog: BlogDocument | null =
+      await this.blogsRepository.getBlogById(body.blogId.toString());
 
     if (!existBlog) {
       throw new BadRequestError("Blog doesn't exist", 'blogId For Post');
@@ -42,9 +41,8 @@ export class PostsService {
   }
 
   async createPostForBlog(body: CreatePostDto): Promise<string> {
-    const existBlog: BlogDBType | null = await this.blogsRepository.getBlogById(
-      body.blogId.toString(),
-    );
+    const existBlog: BlogDocument | null =
+      await this.blogsRepository.getBlogById(body.blogId.toString());
 
     if (!existBlog) {
       throw new NotFoundError('Blog not found for post', 'BlogId for Post');
@@ -68,9 +66,8 @@ export class PostsService {
   }
 
   async updatePost(id: string, body: UpdatePostDto) {
-    const existBlog: BlogDBType | null = await this.blogsRepository.getBlogById(
-      body.blogId.toString(),
-    );
+    const existBlog: BlogDocument | null =
+      await this.blogsRepository.getBlogById(body.blogId.toString());
 
     if (!existBlog) {
       throw new NotFoundError('BlogId not found for post', 'BlogId for Post');

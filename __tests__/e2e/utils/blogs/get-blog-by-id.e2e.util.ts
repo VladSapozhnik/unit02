@@ -2,16 +2,16 @@ import { Express } from 'express';
 import { HTTP_STATUS } from '../../../../src/core/enums/http-status.enum';
 import request from 'supertest';
 import { RouterPathConst } from '../../../../src/core/constants/router-path.const';
-import { BlogDBType } from '../../../../src/modules/blogs/types/blog.type';
 import { Response } from 'supertest';
+import { BlogDocument } from '../../../../src/modules/blogs/domain/blog.entity';
 
 export const getBlogByIdE2eUtil = async (
   app: Express,
   statusCode: HTTP_STATUS,
   id: string | number,
-  blog: BlogDBType | {} = {},
+  blog: BlogDocument | {} = {},
 ): Promise<Response> => {
-  let findBlog: BlogDBType | {} = blog;
+  let findBlog: BlogDocument | {} = blog;
 
   if (statusCode === HTTP_STATUS.NOT_FOUND_404) {
     return await request(app)

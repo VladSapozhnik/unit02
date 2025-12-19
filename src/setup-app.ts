@@ -22,7 +22,7 @@ import { authRouter } from './modules/auth/routes/auth.router';
 import { commentsRouter } from './modules/comments/routes/comments.router';
 import cookieParser from 'cookie-parser';
 import { securityDevicesRouter } from './modules/security-devices/routes/security-devices.router';
-import { BlogModel } from './modules/blogs/types/blog.entity';
+import { BlogModel } from './modules/blogs/domain/blog.entity';
 // import crone from 'node-cron';
 // import { blacklistRepository } from './modules/blacklist/repositories/blacklist.repository';
 

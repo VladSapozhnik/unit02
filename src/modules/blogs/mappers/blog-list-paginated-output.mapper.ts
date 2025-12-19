@@ -1,7 +1,7 @@
 import { blogMapper } from './blog.mapper';
 import { PaginatedMetaType } from '../../../core/types/paginated-meta.type';
 import { BlogOutputType } from '../types/blog-output.type';
-import { BlogDocument } from '../types/blog.entity';
+import { BlogDocument } from '../domain/blog.entity';
 
 export const blogListPaginatedOutputMapper = (
   blogs: BlogDocument[],

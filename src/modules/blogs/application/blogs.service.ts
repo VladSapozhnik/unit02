@@ -4,7 +4,7 @@ import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { BadRequestError } from '../../../core/errors/bad-request.error';
 import { BlogsRepository } from '../repositories/blogs.repository';
 import { inject, injectable } from 'inversify';
-import { BlogDocument, BlogModel } from '../types/blog.entity';
+import { BlogDocument, BlogModel } from '../domain/blog.entity';
 
 @injectable()
 export class BlogsService {
