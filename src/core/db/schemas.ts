@@ -12,14 +12,14 @@ import {
 import { LikeStatusEnum } from '../../modules/likes/enums/like-status.enum';
 import { LikesDbType } from '../../modules/likes/types/likes.type';
 
-export const blogsSchema = new Schema<BlogDBType>({
-  _id: { type: Schema.Types.ObjectId, required: true },
-  name: { type: String, required: true },
-  description: { type: String, required: true },
-  websiteUrl: { type: String, required: true },
-  createdAt: { type: Date, required: true },
-  isMembership: { type: Boolean, default: false },
-});
+// export const blogsSchema = new Schema<BlogDBType>({
+//   _id: { type: Schema.Types.ObjectId, required: true },
+//   name: { type: String, required: true },
+//   description: { type: String, required: true },
+//   websiteUrl: { type: String, required: true },
+//   createdAt: { type: Date, required: true },
+//   isMembership: { type: Boolean, default: false },
+// });
 
 const commentsInfoSchema = new Schema(
   {

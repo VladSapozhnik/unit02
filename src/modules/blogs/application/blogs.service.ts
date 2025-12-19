@@ -1,11 +1,10 @@
-import { BlogDBType } from '../types/blog.type';
 import { CreateBlogDto } from '../dto/create-blog.dto';
 import { UpdateBlogDto } from '../dto/update-blog.dto';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { BadRequestError } from '../../../core/errors/bad-request.error';
 import { BlogsRepository } from '../repositories/blogs.repository';
 import { inject, injectable } from 'inversify';
-import { Types } from 'mongoose';
+import { BlogDocument, BlogModel } from '../types/blog.entity';
 
 @injectable()
 export class BlogsService {
@@ -15,14 +14,12 @@ export class BlogsService {
   ) {}
 
   async createBlog(body: CreateBlogDto): Promise<string> {
-    const newBlog: BlogDBType = new BlogDBType(
-      new Types.ObjectId(),
-      body.name,
-      body.description,
-      body.websiteUrl,
-      new Date(),
-      false,
-    );
+    const newBlog = new BlogModel({
+      name: body.name,
+      description: body.description,
+      websiteUrl: body.websiteUrl,
+      isMembership: false,
+    });
 
     const blogId: string = await this.blogsRepository.createBlog(newBlog);
 
@@ -33,23 +30,29 @@ export class BlogsService {
     return blogId;
   }
 
-  async updateBlog(id: string, body: UpdateBlogDto): Promise<boolean> {
-    const isUpdated: boolean = await this.blogsRepository.updateBlog(id, body);
+  async updateBlog(id: string, body: UpdateBlogDto) {
+    const isBlog: BlogDocument | null =
+      await this.blogsRepository.getBlogById(id);
 
-    if (!isUpdated) {
+    if (!isBlog) {
       throw new NotFoundError('Id is not found', 'blog');
     }
 
-    return isUpdated;
+    isBlog.name = body.name;
+    isBlog.description = body.description;
+    isBlog.websiteUrl = body.websiteUrl;
+
+    await this.blogsRepository.updateBlog(isBlog);
   }
 
-  async removeBlogById(id: string): Promise<boolean> {
-    const isDeleted: boolean = await this.blogsRepository.removeBlogById(id);
+  async removeBlogById(id: string) {
+    const isBlog: BlogDocument | null =
+      await this.blogsRepository.getBlogById(id);
 
-    if (!isDeleted) {
+    if (!isBlog) {
       throw new NotFoundError('Id is not found', 'blog');
     }
 
-    return isDeleted;
+    await this.blogsRepository.removeBlogById(isBlog);
   }
 }

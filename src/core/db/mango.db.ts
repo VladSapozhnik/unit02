@@ -8,7 +8,6 @@ import { SecurityDevicesDBType } from '../../modules/security-devices/types/secu
 import { RateLimitDBType } from '../../modules/rate-limit/types/rate-limit.type';
 import { PasswordRecoveryDBType } from '../../modules/password-recovery/types/password-recovery.type';
 import {
-  blogsSchema,
   commentsSchema,
   likesSchema,
   passwordRecoverySchema,
@@ -21,7 +20,6 @@ import { LikesDbType } from '../../modules/likes/types/likes.type';
 
 const dbName: string = settings.DB_NAME;
 
-const BLOG_COLLECTION_NAME = 'blogs';
 const POST_COLLECTION_NAME = 'posts';
 const USER_COLLECTION_NAME = 'users';
 const COMMENT_COLLECTION_NAME = 'comments';
@@ -30,7 +28,7 @@ const PASSWORD_RECOVERY_COLLECTION_NAME = 'password_recovery';
 const RATE_LIMIT = 'rate_limit';
 const LIKE_COLLECTION_NAME = 'likes';
 
-export const BlogsModel = model<BlogDBType>(BLOG_COLLECTION_NAME, blogsSchema);
+// export const BlogsModel = model<BlogDBType>(BLOG_COLLECTION_NAME, blogsSchema);
 export const PostsModel = model<PostDBType>(POST_COLLECTION_NAME, postsSchema);
 export const UsersModel = model<UserDbType>(USER_COLLECTION_NAME, usersSchema);
 export const CommentsModel = model<CommentDBType>(
