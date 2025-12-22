@@ -1,20 +1,20 @@
-import { SecurityDevicesDBType } from '../types/security-devices.type';
-import { SecurityDevicesModel } from '../../../core/db/mongo.db';
 import { Types, DeleteResult, UpdateResult } from 'mongoose';
 import { CreateSessionDto } from '../dto/create-session.dto';
 import { UpdateSessionDTO } from '../dto/update-session.dto';
 import { injectable } from 'inversify';
+import {
+  SecurityDevicesDocument,
+  SecurityDevicesModel,
+} from '../entities/security-devices.entity';
 
 @injectable()
 export class SecurityDevicesRepository {
-  async addDeviceSession(data: CreateSessionDto): Promise<string | null> {
-    const result: SecurityDevicesDBType = await SecurityDevicesModel.create({
-      _id: new Types.ObjectId(),
-      ...data,
-      userId: new Types.ObjectId(data.userId),
-    });
+  async addDeviceSession(
+    device: SecurityDevicesDocument,
+  ): Promise<string | null> {
+    await device.save();
 
-    return result._id.toString();
+    return device._id.toString();
   }
 
   async updateDeviceSession(
@@ -36,19 +36,19 @@ export class SecurityDevicesRepository {
   async findDeviceSessionByUserIdAndDeviceId(
     userId: string,
     deviceId: string,
-  ): Promise<SecurityDevicesDBType | null> {
+  ): Promise<SecurityDevicesDocument | null> {
     return SecurityDevicesModel.findOne({
       userId: new Types.ObjectId(userId),
       deviceId,
-    }).lean();
+    });
   }
 
   async findDeviceSessionByDeviceId(
     deviceId: string,
-  ): Promise<SecurityDevicesDBType | null> {
+  ): Promise<SecurityDevicesDocument | null> {
     return SecurityDevicesModel.findOne({
       deviceId,
-    }).lean();
+    });
   }
 
   async removeDeviceSession(

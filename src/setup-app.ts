@@ -8,11 +8,7 @@ import { blogsRouter } from './modules/blogs/routes/blogs.router';
 import { postsRouter } from './modules/posts/routes/posts.router';
 import { HTTP_STATUS } from './core/enums/http-status.enum';
 import { RouterPathConst } from './core/constants/router-path.const';
-import {
-  PasswordRecoveryModel,
-  RateLimitModel,
-  SecurityDevicesModel,
-} from './core/db/mongo.db';
+import { PasswordRecoveryModel, RateLimitModel } from './core/db/mongo.db';
 import { usersRouter } from './modules/users/routes/users.router';
 import { errorsHandler } from './core/errors/errors.handler';
 import { authRouter } from './modules/auth/routes/auth.router';
@@ -23,6 +19,7 @@ import { BlogModel } from './modules/blogs/entities/blog.entity';
 import { CommentModel } from './modules/comments/entities/comment.entity';
 import { PostModel } from './modules/posts/entities/post.entity';
 import { UsersModel } from './modules/users/entities/user.entity';
+import { SecurityDevicesModel } from './modules/security-devices/entities/security-devices.entity';
 // import crone from 'node-cron';
 // import { blacklistRepository } from './modules/blacklist/repositories/blacklist.repository';
 

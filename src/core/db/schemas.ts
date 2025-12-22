@@ -1,7 +1,6 @@
 import { Schema } from 'mongoose';
 import { PasswordRecoveryDBType } from '../../modules/password-recovery/types/password-recovery.type';
 import { RateLimitDBType } from '../../modules/rate-limit/types/rate-limit.type';
-import { SecurityDevicesDBType } from '../../modules/security-devices/types/security-devices.type';
 import { LikeStatusEnum } from '../../modules/likes/enums/like-status.enum';
 import { LikesDbType } from '../../modules/likes/types/likes.type';
 
@@ -46,17 +45,17 @@ export const rateLimitSchema = new Schema<RateLimitDBType>({
   date: { type: Date, required: true },
 });
 
-export const securityDevicesSchema = new Schema<SecurityDevicesDBType>({
-  _id: { type: Schema.Types.ObjectId, required: true },
-  userId: { type: Schema.Types.ObjectId, required: true },
-  deviceId: { type: String, required: true },
-  ip: { type: String, required: true },
-  title: { type: String, required: true },
-  lastActiveDate: { type: Date, required: true },
-  expiresAt: { type: Date, required: true },
-});
-
-securityDevicesSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+// export const securityDevicesSchema = new Schema<SecurityDevicesDBType>({
+//   _id: { type: Schema.Types.ObjectId, required: true },
+//   userId: { type: Schema.Types.ObjectId, required: true },
+//   deviceId: { type: String, required: true },
+//   ip: { type: String, required: true },
+//   title: { type: String, required: true },
+//   lastActiveDate: { type: Date, required: true },
+//   expiresAt: { type: Date, required: true },
+// });
+//
+// securityDevicesSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
 // const emailConfirmation = new Schema<EmailConfirmation>(
 //   {

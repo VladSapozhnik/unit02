@@ -1,19 +1,16 @@
 import mongoose, { model } from 'mongoose';
 import { settings } from '../settings/settings';
-import { SecurityDevicesDBType } from '../../modules/security-devices/types/security-devices.type';
 import { RateLimitDBType } from '../../modules/rate-limit/types/rate-limit.type';
 import { PasswordRecoveryDBType } from '../../modules/password-recovery/types/password-recovery.type';
 import {
   likesSchema,
   passwordRecoverySchema,
   rateLimitSchema,
-  securityDevicesSchema,
 } from './schemas';
 import { LikesDbType } from '../../modules/likes/types/likes.type';
 
 const dbName: string = settings.DB_NAME;
 
-const SECURITY_DEVICES_COLLECTION_NAME = 'device_sessions';
 const PASSWORD_RECOVERY_COLLECTION_NAME = 'password_recovery';
 const RATE_LIMIT = 'rate_limit';
 const LIKE_COLLECTION_NAME = 'likes';
@@ -24,10 +21,10 @@ const LIKE_COLLECTION_NAME = 'likes';
 //   COMMENT_COLLECTION_NAME,
 //   commentsSchema,
 // );
-export const SecurityDevicesModel = model<SecurityDevicesDBType>(
-  SECURITY_DEVICES_COLLECTION_NAME,
-  securityDevicesSchema,
-);
+// export const SecurityDevicesModel = model<SecurityDevicesDBType>(
+//   SECURITY_DEVICES_COLLECTION_NAME,
+//   securityDevicesSchema,
+// );
 export const PasswordRecoveryModel = model<PasswordRecoveryDBType>(
   PASSWORD_RECOVERY_COLLECTION_NAME,
   passwordRecoverySchema,

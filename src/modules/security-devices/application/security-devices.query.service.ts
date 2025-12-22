@@ -3,9 +3,9 @@ import { JwtPayload } from 'jsonwebtoken';
 import { jwtAdapter } from '../../../core/adapters/jwt.adapter';
 import { SecurityDevicesOutputType } from '../types/security-devices-output.type';
 import { securityDevicesMapper } from '../mappers/security-devices.mapper';
-import { SecurityDevicesDBType } from '../types/security-devices.type';
 import { inject, injectable } from 'inversify';
 import { SecurityDevicesQueryRepository } from '../repositories/security-devices.query.repository';
+import { SecurityDevicesDocument } from '../entities/security-devices.entity';
 
 @injectable()
 export class SecurityDevicesQueryService {
@@ -29,7 +29,7 @@ export class SecurityDevicesQueryService {
       throw new UnauthorizedError('Unauthorized', 'refreshToken');
     }
 
-    const sessions: SecurityDevicesDBType[] | null =
+    const sessions: SecurityDevicesDocument[] | null =
       await this.securityDevicesQueryRepository.findDeviceSessionByUserId(
         payload.userId,
       );

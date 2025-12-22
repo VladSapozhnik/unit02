@@ -14,8 +14,6 @@ import { emailExamples } from '../../../core/adapters/email.examples';
 import { AccessAndRefreshTokensType } from '../type/access-and-refresh-tokens.type';
 import { JwtPayload } from 'jsonwebtoken';
 import { randomUUID } from 'node:crypto';
-import { CreateSessionDto } from '../../security-devices/dto/create-session.dto';
-import { SecurityDevicesDBType } from '../../security-devices/types/security-devices.type';
 import { UpdateSessionDTO } from '../../security-devices/dto/update-session.dto';
 import { inject, injectable } from 'inversify';
 import { UsersRepository } from '../../users/repositories/users.repository';
@@ -23,6 +21,10 @@ import { SecurityDevicesRepository } from '../../security-devices/repositories/s
 import { PasswordRecoveryRepository } from '../../password-recovery/repositories/password-recovery.repository';
 import { PasswordRecoveryDBType } from '../../password-recovery/types/password-recovery.type';
 import { UsersDocument, UsersModel } from '../../users/entities/user.entity';
+import {
+  SecurityDevicesDocument,
+  SecurityDevicesModel,
+} from '../../security-devices/entities/security-devices.entity';
 
 @injectable()
 export class AuthService {
@@ -54,22 +56,6 @@ export class AuthService {
         isConfirmed: false,
       },
     });
-
-    // const newUser: UserDbType = new UserDbType(
-    //   new Types.ObjectId(),
-    //   dto.login,
-    //   dto.email,
-    //   hash,
-    //   new Date(),
-    //   new EmailConfirmation(
-    //     randomUUID,
-    //     add(new Date(), {
-    //       hours: 1,
-    //       minutes: 30,
-    //     }),
-    //     false,
-    //   ),
-    // );
 
     const isUser: UsersDocument | null =
       await this.usersRepository.getUserByLoginOrEmail(dto.login, dto.email);
@@ -241,14 +227,14 @@ export class AuthService {
     const lastActiveDate = new Date(payload.iat * 1000);
     const expiresAt = new Date(payload.exp * 1000);
 
-    const sessionDeviceData: CreateSessionDto = new CreateSessionDto(
-      payload.userId,
+    const sessionDeviceData = new SecurityDevicesModel({
+      userId: payload.userId,
       deviceId,
       ip,
       title,
       lastActiveDate,
       expiresAt,
-    );
+    });
 
     await this.securityDevicesRepository.addDeviceSession(sessionDeviceData);
 
@@ -294,7 +280,7 @@ export class AuthService {
     const userId: string = oldPayload.userId as string;
     const deviceId: string = oldPayload.deviceId as string;
 
-    const isActiveSession: SecurityDevicesDBType | null =
+    const isActiveSession: SecurityDevicesDocument | null =
       await this.securityDevicesRepository.findDeviceSessionByUserIdAndDeviceId(
         oldPayload.userId,
         oldPayload.deviceId,
@@ -389,7 +375,7 @@ export class AuthService {
     const userId: string = payload.userId;
     const deviceId: string = payload.deviceId;
 
-    const isActiveSession: SecurityDevicesDBType | null =
+    const isActiveSession: SecurityDevicesDocument | null =
       await this.securityDevicesRepository.findDeviceSessionByUserIdAndDeviceId(
         payload.userId,
         payload.deviceId,

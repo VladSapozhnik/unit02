@@ -1,11 +1,11 @@
 import { UnauthorizedError } from '../../../core/errors/unauthorized.error';
 import { JwtPayload } from 'jsonwebtoken';
 import { jwtAdapter } from '../../../core/adapters/jwt.adapter';
-import { SecurityDevicesDBType } from '../types/security-devices.type';
 import { Result } from '../../../core/types/result.type';
 import { ResultStatus } from '../../../core/enums/result-status.enum';
 import { inject, injectable } from 'inversify';
 import { SecurityDevicesRepository } from '../repositories/security-devices.repository';
+import { SecurityDevicesDocument } from '../entities/security-devices.entity';
 
 @injectable()
 export class SecurityDevicesService {
@@ -42,7 +42,7 @@ export class SecurityDevicesService {
       };
     }
 
-    const findDeviceId: SecurityDevicesDBType | null =
+    const findDeviceId: SecurityDevicesDocument | null =
       await this.securityDevicesRepository.findDeviceSessionByDeviceId(
         deviceId,
       );
