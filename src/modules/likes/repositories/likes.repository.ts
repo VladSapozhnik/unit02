@@ -1,9 +1,8 @@
 import { injectable } from 'inversify';
-import { LikesModel } from '../../../core/db/mongo.db';
 import { LikeStatusEnum } from '../enums/like-status.enum';
 import { Types, UpdateResult } from 'mongoose';
-import { LikesDbType } from '../types/likes.type';
 import { LikesAndDislikesType } from '../types/likes-and-dislikes.type';
+import { LikeModel, LikesDocument } from '../entities/likes.entity';
 
 @injectable()
 export class LikesRepository {
@@ -12,7 +11,7 @@ export class LikesRepository {
     commentId: string,
     likeStatus: LikeStatusEnum,
   ): Promise<boolean> {
-    const result: UpdateResult = await LikesModel.updateOne(
+    const result: UpdateResult = await LikeModel.updateOne(
       {
         userId: new Types.ObjectId(userId),
         commentId: new Types.ObjectId(commentId),
@@ -30,11 +29,11 @@ export class LikesRepository {
     commentId: string,
   ): Promise<LikesAndDislikesType> {
     const [likesCount, dislikesCount] = await Promise.all([
-      LikesModel.countDocuments({
+      LikeModel.countDocuments({
         commentId,
         status: LikeStatusEnum.Like,
       }),
-      LikesModel.countDocuments({
+      LikeModel.countDocuments({
         commentId,
         status: LikeStatusEnum.Dislike,
       }),
@@ -49,24 +48,10 @@ export class LikesRepository {
   async findLike(
     userId: string,
     commentId: string,
-  ): Promise<LikesDbType | null> {
-    return LikesModel.findOne({
+  ): Promise<LikesDocument | null> {
+    return LikeModel.findOne({
       userId: new Types.ObjectId(userId),
       commentId: new Types.ObjectId(commentId),
-    }).lean();
-  }
-
-  async countLikesComment(commentId: string): Promise<number> {
-    return LikesModel.countDocuments({
-      commentId,
-      status: LikeStatusEnum.Like,
-    });
-  }
-
-  async countDislikeComment(commentId: string): Promise<number> {
-    return LikesModel.countDocuments({
-      commentId,
-      status: LikeStatusEnum.Dislike,
     });
   }
 }
