@@ -25,10 +25,10 @@ import { BlogsQueryRepository } from '../../blogs/repositories/blogs.query.repos
 import { PostsRepository } from '../repositories/posts.repository';
 import { CommentsService } from '../../comments/application/comments.service';
 import { PostOutputType } from '../types/post-output.type';
-import { PostDBType } from '../types/post.type';
 import { CommentOutputType } from '../../comments/types/comment-output.type';
 import { BlogOutputType } from '../../blogs/types/blog-output.type';
 import { CommentsQueryService } from '../../comments/application/comments.query.service';
+import { PostsDocument } from '../entities/post.entity';
 
 @injectable()
 export class PostsController {
@@ -114,9 +114,8 @@ export class PostsController {
     const defaultQuery: PaginationAndSortingType<CommentSortFieldEnum> =
       setDefaultSortAndPaginationIfNotExistHelper(sanitizedQuery);
 
-    const isPost: PostDBType | null = await this.postsRepository.findPostById(
-      req.params.postId,
-    );
+    const isPost: PostsDocument | null =
+      await this.postsRepository.findPostById(req.params.postId);
 
     if (!isPost) {
       throw new NotFoundError(

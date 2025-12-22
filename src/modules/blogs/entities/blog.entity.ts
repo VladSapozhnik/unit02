@@ -2,7 +2,7 @@ import { HydratedDocument, Model, model, Schema } from 'mongoose';
 
 const BLOG_COLLECTION_NAME = 'blogs';
 
-export type BlogType = {
+type BlogType = {
   /**
    * response successfully dto
    */

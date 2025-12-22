@@ -1,6 +1,5 @@
 import mongoose, { model } from 'mongoose';
 import { settings } from '../settings/settings';
-import { PostDBType } from '../../modules/posts/types/post.type';
 import { UserDbType } from '../../modules/users/type/user.type';
 import { SecurityDevicesDBType } from '../../modules/security-devices/types/security-devices.type';
 import { RateLimitDBType } from '../../modules/rate-limit/types/rate-limit.type';
@@ -8,7 +7,6 @@ import { PasswordRecoveryDBType } from '../../modules/password-recovery/types/pa
 import {
   likesSchema,
   passwordRecoverySchema,
-  postsSchema,
   rateLimitSchema,
   securityDevicesSchema,
   usersSchema,
@@ -17,7 +15,6 @@ import { LikesDbType } from '../../modules/likes/types/likes.type';
 
 const dbName: string = settings.DB_NAME;
 
-const POST_COLLECTION_NAME = 'posts';
 const USER_COLLECTION_NAME = 'users';
 const SECURITY_DEVICES_COLLECTION_NAME = 'device_sessions';
 const PASSWORD_RECOVERY_COLLECTION_NAME = 'password_recovery';
@@ -25,7 +22,6 @@ const RATE_LIMIT = 'rate_limit';
 const LIKE_COLLECTION_NAME = 'likes';
 
 // export const BlogsModel = model<BlogDBType>(BLOG_COLLECTION_NAME, blogsSchema);
-export const PostsModel = model<PostDBType>(POST_COLLECTION_NAME, postsSchema);
 export const UsersModel = model<UserDbType>(USER_COLLECTION_NAME, usersSchema);
 // export const CommentsModel = model<CommentDBType>(
 //   COMMENT_COLLECTION_NAME,

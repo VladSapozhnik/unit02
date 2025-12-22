@@ -4,7 +4,6 @@ import { RouterPathConst } from '../../../../src/core/constants/router-path.cons
 import { HTTP_STATUS } from '../../../../src/core/enums/http-status.enum';
 import { CreateCommentDto } from '../../../../src/modules/comments/dto/create-comment.dto';
 import { ObjectIdValid } from '../../blogs.e2e.spec';
-import { createUserE2eUtil } from '../users/create-user.e2e.util';
 
 const exampleCreate: CreateCommentDto = {
   content: 'stringstringstringst',

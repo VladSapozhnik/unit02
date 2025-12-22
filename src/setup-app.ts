@@ -10,7 +10,6 @@ import { HTTP_STATUS } from './core/enums/http-status.enum';
 import { RouterPathConst } from './core/constants/router-path.const';
 import {
   PasswordRecoveryModel,
-  PostsModel,
   RateLimitModel,
   SecurityDevicesModel,
   UsersModel,
@@ -23,6 +22,7 @@ import cookieParser from 'cookie-parser';
 import { securityDevicesRouter } from './modules/security-devices/routes/security-devices.router';
 import { BlogModel } from './modules/blogs/entities/blog.entity';
 import { CommentModel } from './modules/comments/entities/comment.entity';
+import { PostModel } from './modules/posts/entities/post.entity';
 // import crone from 'node-cron';
 // import { blacklistRepository } from './modules/blacklist/repositories/blacklist.repository';
 
@@ -58,7 +58,7 @@ export const setupApp = (app: Express) => {
   app.delete(RouterPathConst.__tests__, async (req: Request, res: Response) => {
     await Promise.all([
       BlogModel.deleteMany(),
-      PostsModel.deleteMany(),
+      PostModel.deleteMany(),
       UsersModel.deleteMany(),
       CommentModel.deleteMany(),
       PasswordRecoveryModel.deleteMany(),

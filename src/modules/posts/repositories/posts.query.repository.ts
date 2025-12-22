@@ -1,6 +1,4 @@
-import { PostDBType } from '../types/post.type';
 import { Types } from 'mongoose';
-import { PostsModel } from '../../../core/db/mango.db';
 import { PostQueryInput } from '../routes/input/post-query.input';
 import { getSkipOffset } from '../../../core/helpers/get-skip-offset';
 import { postMapper } from '../mappers/posts.mapper';
@@ -9,6 +7,7 @@ import { buildPaginationHelper } from '../../../core/helpers/build-pagination.he
 import { paginatedListMapper } from '../../../core/mappers/paginated-list.mapper';
 import { injectable } from 'inversify';
 import { PostOutputType } from '../types/post-output.type';
+import { PostModel, PostsDocument } from '../entities/post.entity';
 
 @injectable()
 export class PostsQueryRepository {
@@ -21,13 +20,12 @@ export class PostsQueryRepository {
 
     const skip: number = getSkipOffset(queryDto.pageNumber, queryDto.pageSize);
 
-    const posts: PostDBType[] = await PostsModel.find(filter)
+    const posts: PostsDocument[] = await PostModel.find(filter)
       .sort({ [queryDto.sortBy]: queryDto.sortDirection })
       .limit(queryDto.pageSize)
-      .skip(skip)
-      .lean();
+      .skip(skip);
 
-    const totalCount: number = await PostsModel.countDocuments(filter);
+    const totalCount: number = await PostModel.countDocuments(filter);
 
     const pagination: PaginatedMetaType = buildPaginationHelper(
       totalCount,
@@ -35,7 +33,7 @@ export class PostsQueryRepository {
       queryDto.pageSize,
     );
 
-    return paginatedListMapper<PostDBType, PostOutputType>(
+    return paginatedListMapper<PostsDocument, PostOutputType>(
       posts,
       pagination,
       postMapper,
@@ -43,7 +41,7 @@ export class PostsQueryRepository {
   }
 
   async getPostById(id: string): Promise<PostOutputType | null> {
-    const post: PostDBType | null = await PostsModel.findOne({
+    const post: PostsDocument | null = await PostModel.findOne({
       _id: new Types.ObjectId(id),
     });
 

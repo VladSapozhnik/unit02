@@ -1,8 +1,8 @@
 import { Types } from 'mongoose';
-import { PostDBType } from '../types/post.type';
 import { PostOutputType } from '../types/post-output.type';
+import { PostsDocument } from '../entities/post.entity';
 
-export const postMapper = (post: PostDBType): PostOutputType => {
+export const postMapper = (post: PostsDocument): PostOutputType => {
   return {
     id: new Types.ObjectId(post._id).toString(),
     title: post.title,

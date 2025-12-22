@@ -4,7 +4,6 @@ import { Types } from 'mongoose';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { ForbiddenRequestError } from '../../../core/errors/forbidden-request.error';
 import { UpdateCommentDto } from '../dto/update-comment.dto';
-import { PostDBType } from '../../posts/types/post.type';
 import { UnauthorizedError } from '../../../core/errors/unauthorized.error';
 import { BadRequestError } from '../../../core/errors/bad-request.error';
 import { injectable, inject } from 'inversify';
@@ -12,6 +11,7 @@ import { CommentsRepository } from '../repositories/comments.repository';
 import { PostsRepository } from '../../posts/repositories/posts.repository';
 import { UsersRepository } from '../../users/repositories/users.repository';
 import { CommentDocument, CommentModel } from '../entities/comment.entity';
+import { PostsDocument } from '../../posts/entities/post.entity';
 
 @injectable()
 export class CommentsService {
@@ -34,7 +34,7 @@ export class CommentsService {
       throw new UnauthorizedError('Unauthorized');
     }
 
-    const existPost: PostDBType | null =
+    const existPost: PostsDocument | null =
       await this.postsRepository.findPostById(postId);
 
     if (!existPost) {

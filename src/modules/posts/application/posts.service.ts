@@ -1,4 +1,3 @@
-import { PostDBType } from '../types/post.type';
 import { CreatePostDto } from '../dto/create-post.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
@@ -8,6 +7,7 @@ import { BlogsRepository } from '../../blogs/repositories/blogs.repository';
 import { inject, injectable } from 'inversify';
 import { Types } from 'mongoose';
 import { BlogDocument } from '../../blogs/entities/blog.entity';
+import { PostModel } from '../entities/post.entity';
 
 @injectable()
 export class PostsService {
@@ -23,15 +23,23 @@ export class PostsService {
       throw new BadRequestError("Blog doesn't exist", 'blogId For Post');
     }
 
-    const postBody: PostDBType = {
-      _id: new Types.ObjectId(),
-      ...body,
+    const newPost = new PostModel({
+      title: body.title,
+      shortDescription: body.shortDescription,
+      content: body.content,
       blogId: new Types.ObjectId(body.blogId),
       blogName: existBlog.name,
-      createdAt: new Date(),
-    };
+    });
 
-    const postId: string = await this.postsRepository.createPost(postBody);
+    // const postBody: PostDBType = {
+    //   _id: new Types.ObjectId(),
+    //   ...body,
+    //   blogId: new Types.ObjectId(body.blogId),
+    //   blogName: existBlog.name,
+    //   createdAt: new Date(),
+    // };
+
+    const postId: string = await this.postsRepository.createPost(newPost);
 
     if (!postId) {
       throw new BadRequestError('Failed to create Post', 'post');
@@ -48,15 +56,23 @@ export class PostsService {
       throw new NotFoundError('Blog not found for post', 'BlogId for Post');
     }
 
-    const postBody: PostDBType = {
-      _id: new Types.ObjectId(),
-      ...body,
+    // const postBody: PostDBType = {
+    //   _id: new Types.ObjectId(),
+    //   ...body,
+    //   blogId: new Types.ObjectId(body.blogId),
+    //   blogName: existBlog.name,
+    //   createdAt: new Date(),
+    // };
+
+    const newPost = new PostModel({
+      title: body.title,
+      shortDescription: body.shortDescription,
+      content: body.content,
       blogId: new Types.ObjectId(body.blogId),
       blogName: existBlog.name,
-      createdAt: new Date(),
-    };
+    });
 
-    const postId: string = await this.postsRepository.createPost(postBody);
+    const postId: string = await this.postsRepository.createPost(newPost);
 
     if (!postId) {
       throw new BadRequestError('Failed to create Post', 'post');

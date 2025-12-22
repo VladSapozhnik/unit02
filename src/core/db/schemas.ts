@@ -1,6 +1,5 @@
 import { Schema } from 'mongoose';
 import { PasswordRecoveryDBType } from '../../modules/password-recovery/types/password-recovery.type';
-import { PostDBType } from '../../modules/posts/types/post.type';
 import { RateLimitDBType } from '../../modules/rate-limit/types/rate-limit.type';
 import { SecurityDevicesDBType } from '../../modules/security-devices/types/security-devices.type';
 import {
@@ -34,15 +33,15 @@ export const passwordRecoverySchema = new Schema<PasswordRecoveryDBType>({
   isUsed: { type: Boolean, required: true },
 });
 
-export const postsSchema = new Schema<PostDBType>({
-  _id: { type: Schema.Types.ObjectId, required: true },
-  title: { type: String, required: true },
-  shortDescription: { type: String, required: true },
-  content: { type: String, required: true },
-  blogId: { type: Schema.Types.ObjectId, required: true },
-  blogName: { type: String, required: true },
-  createdAt: { type: Date, required: true },
-});
+// export const postsSchema = new Schema<PostDBType>({
+//   _id: { type: Schema.Types.ObjectId, required: true },
+//   title: { type: String, required: true },
+//   shortDescription: { type: String, required: true },
+//   content: { type: String, required: true },
+//   blogId: { type: Schema.Types.ObjectId, required: true },
+//   blogName: { type: String, required: true },
+//   createdAt: { type: Date, required: true },
+// });
 
 export const rateLimitSchema = new Schema<RateLimitDBType>({
   _id: { type: Schema.Types.ObjectId, required: true },

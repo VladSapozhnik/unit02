@@ -1,10 +1,10 @@
 import { PaginatedMetaType } from '../../../core/types/paginated-meta.type';
-import { PostDBType } from '../types/post.type';
 import { postMapper } from './posts.mapper';
 import { PostOutputType } from '../types/post-output.type';
+import { PostsDocument } from '../entities/post.entity';
 
 export const postListPaginatedOutputMapper = (
-  posts: PostDBType[],
+  posts: PostsDocument[],
   meta: PaginatedMetaType,
 ) => {
   const items: PostOutputType[] = posts.map(postMapper);
