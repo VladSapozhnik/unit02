@@ -1,6 +1,6 @@
 import { injectable } from 'inversify';
 import { PasswordRecoveryDBType } from '../types/password-recovery.type';
-import { PasswordRecoveryModel } from '../../../core/db/mango.db';
+import { PasswordRecoveryModel } from '../../../core/db/mongo.db';
 import { Types, UpdateResult } from 'mongoose';
 
 @injectable()

@@ -15,7 +15,7 @@ import {
 import { removeBlogE2eUtil } from './utils/blogs/remove-blog.e2e.util';
 import { getBlogByIdE2eUtil } from './utils/blogs/get-blog-by-id.e2e.util';
 import { clearDbE2eUtil } from './utils/clear-db.e2e.util';
-import { runDB, stopDB } from '../../src/core/db/mango.db';
+import { runDB, stopDB } from '../../src/core/db/mongo.db';
 import { BlogSortFieldEnum } from '../../src/modules/blogs/enums/blog-sort-field.enum';
 import { SortDirectionEnum } from '../../src/core/enums/sort-direction.enum';
 import { BlogQueryInput } from '../../src/modules/blogs/routes/input/blog-query.input';

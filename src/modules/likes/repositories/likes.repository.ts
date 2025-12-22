@@ -1,5 +1,5 @@
 import { injectable } from 'inversify';
-import { LikesModel } from '../../../core/db/mango.db';
+import { LikesModel } from '../../../core/db/mongo.db';
 import { LikeStatusEnum } from '../enums/like-status.enum';
 import { Types, UpdateResult } from 'mongoose';
 import { LikesDbType } from '../types/likes.type';

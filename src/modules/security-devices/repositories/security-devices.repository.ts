@@ -1,5 +1,5 @@
 import { SecurityDevicesDBType } from '../types/security-devices.type';
-import { SecurityDevicesModel } from '../../../core/db/mango.db';
+import { SecurityDevicesModel } from '../../../core/db/mongo.db';
 import { Types, DeleteResult, UpdateResult } from 'mongoose';
 import { CreateSessionDto } from '../dto/create-session.dto';
 import { UpdateSessionDTO } from '../dto/update-session.dto';

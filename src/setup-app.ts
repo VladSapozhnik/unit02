@@ -13,7 +13,7 @@ import {
   RateLimitModel,
   SecurityDevicesModel,
   UsersModel,
-} from './core/db/mango.db';
+} from './core/db/mongo.db';
 import { usersRouter } from './modules/users/routes/users.router';
 import { errorsHandler } from './core/errors/errors.handler';
 import { authRouter } from './modules/auth/routes/auth.router';

@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import { setupApp } from './setup-app';
 import express, { type Express } from 'express';
-import { runDB } from './core/db/mango.db';
+import { runDB } from './core/db/mongo.db';
 import { settings } from './core/settings/settings';
 const PORT: string | number = process.env.PORT || 3000;
 

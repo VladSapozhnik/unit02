@@ -1,5 +1,5 @@
 import { RateLimitDBType } from '../types/rate-limit.type';
-import { RateLimitModel } from '../../../core/db/mango.db';
+import { RateLimitModel } from '../../../core/db/mongo.db';
 import { subSeconds } from 'date-fns/subSeconds';
 import { injectable } from 'inversify';
 

@@ -2,7 +2,7 @@ import { AuthService } from '../../src/modules/auth/application/auth.service';
 import { Result } from '../../src/core/types/result.type';
 import { ResultStatus } from '../../src/core/enums/result-status.enum';
 import { MongoMemoryServer } from 'mongodb-memory-server';
-import { runDB, stopDB } from '../../src/core/db/mango.db';
+import { runDB, stopDB } from '../../src/core/db/mongo.db';
 import { clearDbE2eUtil } from '../e2e/utils/clear-db.e2e.util';
 import express, { type Express } from 'express';
 import { setupApp } from '../../src/setup-app';

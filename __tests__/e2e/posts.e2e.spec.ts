@@ -12,7 +12,7 @@ import {
   updatePostE2eUtil,
 } from './utils/posts/update-post.e2e.util';
 import { RouterPathConst } from '../../src/core/constants/router-path.const';
-import { runDB, stopDB } from '../../src/core/db/mango.db';
+import { runDB, stopDB } from '../../src/core/db/mongo.db';
 import { settings } from '../../src/core/settings/settings';
 import { ObjectIdValid } from './blogs.e2e.spec';
 import { SortDirectionEnum } from '../../src/core/enums/sort-direction.enum';

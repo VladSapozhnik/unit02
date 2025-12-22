@@ -1,4 +1,4 @@
-import { UsersModel } from '../../../core/db/mango.db';
+import { UsersModel } from '../../../core/db/mongo.db';
 import { UserDbType } from '../type/user.type';
 import { Types, DeleteResult, UpdateResult } from 'mongoose';
 import { ResendEmailType } from '../../auth/type/resend-email.type';

@@ -1,7 +1,7 @@
 import { RouterPathConst } from '../../src/core/constants/router-path.const';
 import express from 'express';
 import { setupApp } from '../../src/setup-app';
-import { runDB, stopDB } from '../../src/core/db/mango.db';
+import { runDB, stopDB } from '../../src/core/db/mongo.db';
 import { clearDbE2eUtil } from './utils/clear-db.e2e.util';
 import {
   ADMIN_PASSWORD,

@@ -4,7 +4,7 @@ import { Response } from 'supertest';
 import express from 'express';
 import { clearDbE2eUtil } from './utils/clear-db.e2e.util';
 import { RouterPathConst } from '../../src/core/constants/router-path.const';
-import { runDB, stopDB } from '../../src/core/db/mango.db';
+import { runDB, stopDB } from '../../src/core/db/mongo.db';
 import {
   ACTION_CREATE_USER,
   createUserE2eUtil,

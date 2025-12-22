@@ -7,7 +7,7 @@ import { BlogsRepository } from '../../blogs/repositories/blogs.repository';
 import { inject, injectable } from 'inversify';
 import { Types } from 'mongoose';
 import { BlogDocument } from '../../blogs/entities/blog.entity';
-import { PostModel } from '../entities/post.entity';
+import { PostModel, PostsDocument } from '../entities/post.entity';
 
 @injectable()
 export class PostsService {
@@ -89,23 +89,29 @@ export class PostsService {
       throw new NotFoundError('BlogId not found for post', 'BlogId for Post');
     }
 
-    const updatedBody = { ...body, blogName: existBlog.name };
+    const existPost: PostsDocument | null =
+      await this.postsRepository.findPostById(id.toString());
 
-    const isUpdate: boolean = await this.postsRepository.updatePost(
-      id,
-      updatedBody,
-    );
-
-    if (!isUpdate) {
+    if (!existPost) {
       throw new NotFoundError('Failed to update Post', 'post');
     }
+
+    existPost.title = body.title;
+    existPost.shortDescription = body.shortDescription;
+    existPost.content = body.content;
+    existPost.blogName = existBlog.name;
+
+    await this.postsRepository.updatePost(existPost);
   }
 
   async removePost(id: string) {
-    const isRemove: boolean = await this.postsRepository.removePost(id);
+    const existPost: PostsDocument | null =
+      await this.postsRepository.findPostById(id.toString());
 
-    if (!isRemove) {
+    if (!existPost) {
       throw new NotFoundError('Failed to remove Post', 'post');
     }
+
+    await this.postsRepository.removePost(existPost);
   }
 }

@@ -1,4 +1,4 @@
-import { UsersModel } from '../../../core/db/mango.db';
+import { UsersModel } from '../../../core/db/mongo.db';
 import { Types } from 'mongoose';
 import { UserDbType } from '../type/user.type';
 import { UserQueryInput } from '../routes/input/user-query.input';

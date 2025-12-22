@@ -1,5 +1,5 @@
 import { SecurityDevicesDBType } from '../types/security-devices.type';
-import { SecurityDevicesModel } from '../../../core/db/mango.db';
+import { SecurityDevicesModel } from '../../../core/db/mongo.db';
 import { Types } from 'mongoose';
 import { injectable } from 'inversify';
 
