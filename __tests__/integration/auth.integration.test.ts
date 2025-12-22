@@ -15,13 +15,13 @@ import { sub } from 'date-fns/sub';
 import { SecurityDevicesRepository } from '../../src/modules/security-devices/repositories/security-devices.repository';
 import { PasswordRecoveryRepository } from '../../src/modules/password-recovery/repositories/password-recovery.repository';
 import { UsersRepository } from '../../src/modules/users/repositories/users.repository';
-import { PasswordRecoveryDBType } from '../../src/modules/password-recovery/types/password-recovery.type';
 import { Types } from 'mongoose';
 import { generateId } from '../../src/core/constants/generate-id';
 import {
   UsersDocument,
   UsersModel,
 } from '../../src/modules/users/entities/user.entity';
+import { PasswordRecoveryModel } from '../../src/modules/password-recovery/entities/password-recovery.entity';
 
 describe('auth-integration test', () => {
   const app: Express = express();
@@ -215,21 +215,6 @@ describe('auth-integration test', () => {
         },
       });
 
-      // const newUser: UsersDocument = {
-      //   _id: new Types.ObjectId(),
-      //   ...createUser,
-      //   password: 'user123hash',
-      //   createdAt: new Date(),
-      //   emailConfirmation: {
-      //     confirmationCode: code,
-      //     expirationDate: add(new Date(), {
-      //       hours: 1,
-      //       minutes: 30,
-      //     }),
-      //     isConfirmed: false,
-      //   },
-      // };
-
       await createdUserUseCase(newUser);
 
       const isConfirm: Result = await confirmedEmailUseCase(code);
@@ -324,15 +309,14 @@ describe('auth-integration test', () => {
 
       const existingUser = await testSeeder.insertUser(user);
 
-      const recoveryData: PasswordRecoveryDBType = {
-        _id: new Types.ObjectId(),
+      const recoveryData = new PasswordRecoveryModel({
         userId: new Types.ObjectId(existingUser._id),
         recoveryCode: recoveryCode,
         expirationDate: add(new Date(), {
           minutes: 30,
         }),
         isUsed: false,
-      };
+      });
 
       await passwordRecoveryRepositoryUseCase.addPasswordRecoveryCode(
         recoveryData,
@@ -351,13 +335,12 @@ describe('auth-integration test', () => {
 
       const existingUser = await testSeeder.insertUser(user);
 
-      const recoveryData: PasswordRecoveryDBType = {
-        _id: new Types.ObjectId(),
+      const recoveryData = new PasswordRecoveryModel({
         userId: new Types.ObjectId(existingUser._id),
         recoveryCode: recoveryCode,
         expirationDate: new Date(),
         isUsed: false,
-      };
+      });
 
       await passwordRecoveryRepositoryUseCase.addPasswordRecoveryCode(
         recoveryData,
@@ -376,15 +359,14 @@ describe('auth-integration test', () => {
 
       const existingUser = await testSeeder.insertUser(user);
 
-      const recoveryData: PasswordRecoveryDBType = {
-        _id: new Types.ObjectId(),
+      const recoveryData = new PasswordRecoveryModel({
         userId: new Types.ObjectId(existingUser._id),
         recoveryCode: recoveryCode,
         expirationDate: add(new Date(), {
           minutes: 30,
         }),
         isUsed: true,
-      };
+      });
 
       await passwordRecoveryRepositoryUseCase.addPasswordRecoveryCode(
         recoveryData,

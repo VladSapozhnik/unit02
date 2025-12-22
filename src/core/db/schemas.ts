@@ -1,6 +1,4 @@
 import { Schema } from 'mongoose';
-import { PasswordRecoveryDBType } from '../../modules/password-recovery/types/password-recovery.type';
-import { RateLimitDBType } from '../../modules/rate-limit/types/rate-limit.type';
 import { LikeStatusEnum } from '../../modules/likes/enums/like-status.enum';
 import { LikesDbType } from '../../modules/likes/types/likes.type';
 
@@ -20,13 +18,13 @@ import { LikesDbType } from '../../modules/likes/types/likes.type';
 //   createdAt: { type: Date, required: true },
 // });
 
-export const passwordRecoverySchema = new Schema<PasswordRecoveryDBType>({
-  _id: { type: Schema.Types.ObjectId, required: true },
-  userId: { type: Schema.Types.ObjectId, required: true },
-  recoveryCode: { type: String, required: true },
-  expirationDate: { type: Date, required: true },
-  isUsed: { type: Boolean, required: true },
-});
+// export const passwordRecoverySchema = new Schema<PasswordRecoveryDBType>({
+//   _id: { type: Schema.Types.ObjectId, required: true },
+//   userId: { type: Schema.Types.ObjectId, required: true },
+//   recoveryCode: { type: String, required: true },
+//   expirationDate: { type: Date, required: true },
+//   isUsed: { type: Boolean, required: true },
+// });
 
 // export const postsSchema = new Schema<PostDBType>({
 //   _id: { type: Schema.Types.ObjectId, required: true },
@@ -38,12 +36,12 @@ export const passwordRecoverySchema = new Schema<PasswordRecoveryDBType>({
 //   createdAt: { type: Date, required: true },
 // });
 
-export const rateLimitSchema = new Schema<RateLimitDBType>({
-  _id: { type: Schema.Types.ObjectId, required: true },
-  ip: { type: String, required: true },
-  url: { type: String, required: true },
-  date: { type: Date, required: true },
-});
+// export const rateLimitSchema = new Schema<RateLimitDBType>({
+//   _id: { type: Schema.Types.ObjectId, required: true },
+//   ip: { type: String, required: true },
+//   url: { type: String, required: true },
+//   date: { type: Date, required: true },
+// });
 
 // export const securityDevicesSchema = new Schema<SecurityDevicesDBType>({
 //   _id: { type: Schema.Types.ObjectId, required: true },

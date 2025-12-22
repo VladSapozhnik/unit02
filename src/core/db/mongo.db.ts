@@ -1,18 +1,10 @@
 import mongoose, { model } from 'mongoose';
 import { settings } from '../settings/settings';
-import { RateLimitDBType } from '../../modules/rate-limit/types/rate-limit.type';
-import { PasswordRecoveryDBType } from '../../modules/password-recovery/types/password-recovery.type';
-import {
-  likesSchema,
-  passwordRecoverySchema,
-  rateLimitSchema,
-} from './schemas';
+import { likesSchema } from './schemas';
 import { LikesDbType } from '../../modules/likes/types/likes.type';
 
 const dbName: string = settings.DB_NAME;
 
-const PASSWORD_RECOVERY_COLLECTION_NAME = 'password_recovery';
-const RATE_LIMIT = 'rate_limit';
 const LIKE_COLLECTION_NAME = 'likes';
 
 // export const BlogsModel = model<BlogDBType>(BLOG_COLLECTION_NAME, blogsSchema);
@@ -25,15 +17,15 @@ const LIKE_COLLECTION_NAME = 'likes';
 //   SECURITY_DEVICES_COLLECTION_NAME,
 //   securityDevicesSchema,
 // );
-export const PasswordRecoveryModel = model<PasswordRecoveryDBType>(
-  PASSWORD_RECOVERY_COLLECTION_NAME,
-  passwordRecoverySchema,
-);
+// export const PasswordRecoveryModel = model<PasswordRecoveryDBType>(
+//   PASSWORD_RECOVERY_COLLECTION_NAME,
+//   passwordRecoverySchema,
+// );
 
-export const RateLimitModel = model<RateLimitDBType>(
-  RATE_LIMIT,
-  rateLimitSchema,
-);
+// export const RateLimitModel = model<RateLimitDBType>(
+//   RATE_LIMIT,
+//   rateLimitSchema,
+// );
 
 export const LikesModel = model<LikesDbType>(LIKE_COLLECTION_NAME, likesSchema);
 

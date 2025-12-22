@@ -1,33 +1,32 @@
 import { injectable } from 'inversify';
-import { PasswordRecoveryDBType } from '../types/password-recovery.type';
-import { PasswordRecoveryModel } from '../../../core/db/mongo.db';
-import { Types, UpdateResult } from 'mongoose';
+import {
+  PasswordRecoveryDocument,
+  PasswordRecoveryModel,
+} from '../entities/password-recovery.entity';
 
 @injectable()
 export class PasswordRecoveryRepository {
   async addPasswordRecoveryCode(
-    recovery: PasswordRecoveryDBType,
+    passwordRecovery: PasswordRecoveryDocument,
   ): Promise<string> {
-    const result: PasswordRecoveryDBType =
-      await PasswordRecoveryModel.create(recovery);
+    await passwordRecovery.save();
 
-    return result._id.toString();
+    return passwordRecovery._id.toString();
   }
 
   async getPasswordRecoveryByCode(
     recoveryCode: string,
-  ): Promise<PasswordRecoveryDBType | null> {
+  ): Promise<PasswordRecoveryDocument | null> {
     return PasswordRecoveryModel.findOne({
       recoveryCode,
-    }).lean();
+    });
   }
 
-  async markAsUsedById(id: string): Promise<boolean> {
-    const result: UpdateResult = await PasswordRecoveryModel.updateOne(
-      { _id: new Types.ObjectId(id) },
-      { $set: { isUsed: true } },
-    );
+  async markAsUsedById(
+    passwordRecovery: PasswordRecoveryDocument,
+  ): Promise<string> {
+    await passwordRecovery.save();
 
-    return result.modifiedCount === 1;
+    return passwordRecovery._id.toString();
   }
 }

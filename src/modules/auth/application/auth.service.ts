@@ -19,12 +19,15 @@ import { inject, injectable } from 'inversify';
 import { UsersRepository } from '../../users/repositories/users.repository';
 import { SecurityDevicesRepository } from '../../security-devices/repositories/security-devices.repository';
 import { PasswordRecoveryRepository } from '../../password-recovery/repositories/password-recovery.repository';
-import { PasswordRecoveryDBType } from '../../password-recovery/types/password-recovery.type';
 import { UsersDocument, UsersModel } from '../../users/entities/user.entity';
 import {
   SecurityDevicesDocument,
   SecurityDevicesModel,
 } from '../../security-devices/entities/security-devices.entity';
+import {
+  PasswordRecoveryDocument,
+  PasswordRecoveryModel,
+} from '../../password-recovery/entities/password-recovery.entity';
 
 @injectable()
 export class AuthService {
@@ -407,15 +410,14 @@ export class AuthService {
       await this.usersRepository.findUserByEmail(email);
 
     if (existUser) {
-      const recoveryData: PasswordRecoveryDBType = {
-        _id: new Types.ObjectId(),
+      const recoveryData = new PasswordRecoveryModel({
         userId: new Types.ObjectId(existUser._id),
         recoveryCode: randomUUID,
         expirationDate: add(new Date(), {
           minutes: 30,
         }),
         isUsed: false,
-      };
+      });
 
       try {
         await emailAdapter.sendEmail(
@@ -440,7 +442,7 @@ export class AuthService {
   }
 
   async newPassword(newPassword: string, code: string): Promise<Result> {
-    const isPasswordRecovery: PasswordRecoveryDBType | null =
+    const isPasswordRecovery: PasswordRecoveryDocument | null =
       await this.passwordRecoveryRepository.getPasswordRecoveryByCode(code);
 
     if (
@@ -475,9 +477,9 @@ export class AuthService {
       };
     }
 
-    await this.passwordRecoveryRepository.markAsUsedById(
-      isPasswordRecovery._id.toString(),
-    );
+    isPasswordRecovery.isUsed = true;
+
+    await this.passwordRecoveryRepository.markAsUsedById(isPasswordRecovery);
 
     return {
       status: ResultStatus.Success,
