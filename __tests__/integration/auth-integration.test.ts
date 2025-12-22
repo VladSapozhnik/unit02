@@ -18,7 +18,10 @@ import { UsersRepository } from '../../src/modules/users/repositories/users.repo
 import { PasswordRecoveryDBType } from '../../src/modules/password-recovery/types/password-recovery.type';
 import { Types } from 'mongoose';
 import { generateId } from '../../src/core/constants/generate-id';
-import { UserDbType } from '../../src/modules/users/type/user.type';
+import {
+  UsersDocument,
+  UsersModel,
+} from '../../src/modules/users/entities/user.entity';
 
 describe('auth-integration test', () => {
   const app: Express = express();
@@ -62,7 +65,7 @@ describe('auth-integration test', () => {
         email: 'example@example.com',
       };
 
-      const result: Result<UserDbType | null> =
+      const result: Result<UsersDocument | null> =
         await registrationUserUseCase(emailSend);
 
       expect(result.status).toEqual(ResultStatus.Success);
@@ -82,7 +85,7 @@ describe('auth-integration test', () => {
 
       await testSeeder.insertUser(user);
 
-      const resultDuplicateLogin: Result<UserDbType | null> =
+      const resultDuplicateLogin: Result<UsersDocument | null> =
         await registrationUserUseCase(emailSendDuplicateLogin);
 
       expect(resultDuplicateLogin.status).toEqual(ResultStatus.BadRequest);
@@ -102,7 +105,7 @@ describe('auth-integration test', () => {
 
       await testSeeder.insertUser(user);
 
-      const resultDuplicateLogin: Result<UserDbType | null> =
+      const resultDuplicateLogin: Result<UsersDocument | null> =
         await registrationUserUseCase(emailSendDuplicateLogin);
 
       expect(resultDuplicateLogin.status).toEqual(ResultStatus.BadRequest);
@@ -139,11 +142,9 @@ describe('auth-integration test', () => {
     it('should not confirm email with expired code', async () => {
       const createUser: CreateUserDto = testSeeder.createUserDto();
 
-      const newUser: UserDbType = {
-        _id: new Types.ObjectId(),
+      const newUser = new UsersModel({
         ...createUser,
         password: 'user123hash',
-        createdAt: new Date(),
         emailConfirmation: {
           confirmationCode: code,
           expirationDate: sub(new Date(), {
@@ -152,7 +153,7 @@ describe('auth-integration test', () => {
           }),
           isConfirmed: false,
         },
-      };
+      });
 
       await createdUserUseCase(newUser);
 
@@ -171,11 +172,9 @@ describe('auth-integration test', () => {
     it('should not confirm email which is confirmed', async () => {
       const createUser: CreateUserDto = testSeeder.createUserDto();
 
-      const newUser: UserDbType = {
-        _id: new Types.ObjectId(),
+      const newUser = new UsersModel({
         ...createUser,
         password: 'user123hash',
-        createdAt: new Date(),
         emailConfirmation: {
           confirmationCode: code,
           expirationDate: add(new Date(), {
@@ -184,7 +183,7 @@ describe('auth-integration test', () => {
           }),
           isConfirmed: true,
         },
-      };
+      });
 
       await createdUserUseCase(newUser);
 
@@ -203,11 +202,9 @@ describe('auth-integration test', () => {
     it('should confirm user for correct code', async () => {
       const createUser: CreateUserDto = testSeeder.createUserDto();
 
-      const newUser: UserDbType = {
-        _id: new Types.ObjectId(),
+      const newUser = new UsersModel({
         ...createUser,
         password: 'user123hash',
-        createdAt: new Date(),
         emailConfirmation: {
           confirmationCode: code,
           expirationDate: add(new Date(), {
@@ -216,7 +213,22 @@ describe('auth-integration test', () => {
           }),
           isConfirmed: false,
         },
-      };
+      });
+
+      // const newUser: UsersDocument = {
+      //   _id: new Types.ObjectId(),
+      //   ...createUser,
+      //   password: 'user123hash',
+      //   createdAt: new Date(),
+      //   emailConfirmation: {
+      //     confirmationCode: code,
+      //     expirationDate: add(new Date(), {
+      //       hours: 1,
+      //       minutes: 30,
+      //     }),
+      //     isConfirmed: false,
+      //   },
+      // };
 
       await createdUserUseCase(newUser);
 

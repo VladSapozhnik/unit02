@@ -1,9 +1,8 @@
 import { hashAdapter } from '../../src/core/adapters/hash.adapter';
 import { UsersRepository } from '../../src/modules/users/repositories/users.repository';
-import { UserDbType } from '../../src/modules/users/type/user.type';
 import { add } from 'date-fns/add';
 import { randomUUID } from 'node:crypto';
-import { Types } from 'mongoose';
+import { UsersModel } from '../../src/modules/users/entities/user.entity';
 
 export type RegisterUserPayloadType = {
   login: string;
@@ -35,12 +34,10 @@ export const testSeeder = {
 
     const hash: string = await hashAdapter.hashPassword(password);
 
-    const user: UserDbType = {
-      _id: new Types.ObjectId(),
+    const user = new UsersModel({
       login,
       email,
       password: hash,
-      createdAt: new Date(),
       emailConfirmation: {
         confirmationCode: code ?? randomUUID(),
         expirationDate:
@@ -51,7 +48,7 @@ export const testSeeder = {
           }),
         isConfirmed: isConfirmed ?? false,
       },
-    };
+    });
 
     await usersRepository.createUser(user);
 

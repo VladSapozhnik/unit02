@@ -3,7 +3,6 @@ import { HTTP_STATUS } from '../../../../src/core/enums/http-status.enum';
 import request from 'supertest';
 import { RouterPathConst } from '../../../../src/core/constants/router-path.const';
 import { Response } from 'supertest';
-import { UserDbType } from '../../../../src/modules/users/type/user.type';
 import {
   ADMIN_PASSWORD,
   ADMIN_USERNAME,
@@ -11,6 +10,7 @@ import {
 import { SortDirectionEnum } from '../../../../src/core/enums/sort-direction.enum';
 import { UserSortFieldEnum } from '../../../../src/modules/users/enums/user-sort-field.enum';
 import { UserQueryInput } from '../../../../src/modules/users/routes/input/user-query.input';
+import { UsersDocument } from '../../../../src/modules/users/entities/user.entity';
 
 const paginationInputDefault: UserQueryInput = {
   sortBy: UserSortFieldEnum.CreatedAt,
@@ -45,14 +45,14 @@ const paginationAndSearchOutputDefault = {
 export const getUsersE2eUtil = async (
   app: Express,
   statusCode: HTTP_STATUS,
-  user: UserDbType | null = null,
+  user: UsersDocument | null = null,
   isSearchInPagination: boolean = false,
 ): Promise<Response> => {
   let username: string = ADMIN_USERNAME;
   let password: string = ADMIN_PASSWORD;
   let paginationInput: UserQueryInput = paginationInputDefault;
   let paginationOutput = paginationOutputDefault;
-  let items: UserDbType[] = user ? [user] : [];
+  let items: UsersDocument[] = user ? [user] : [];
 
   if (isSearchInPagination && HTTP_STATUS.OK_200) {
     paginationInput = paginationAndSearchInputDefault;

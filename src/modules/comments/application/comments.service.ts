@@ -1,4 +1,3 @@
-import { UserDbType } from '../../users/type/user.type';
 import { CreateCommentDto } from '../dto/create-comment.dto';
 import { Types } from 'mongoose';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
@@ -12,6 +11,7 @@ import { PostsRepository } from '../../posts/repositories/posts.repository';
 import { UsersRepository } from '../../users/repositories/users.repository';
 import { CommentDocument, CommentModel } from '../entities/comment.entity';
 import { PostsDocument } from '../../posts/entities/post.entity';
+import { UsersDocument } from '../../users/entities/user.entity';
 
 @injectable()
 export class CommentsService {
@@ -27,7 +27,7 @@ export class CommentsService {
     postId: string,
     body: CreateCommentDto,
   ): Promise<string> {
-    const existUser: UserDbType | null =
+    const existUser: UsersDocument | null =
       await this.usersRepository.getUserById(userId);
 
     if (!existUser) {

@@ -1,5 +1,4 @@
 import { LoginDto } from '../dto/login.dto';
-import { EmailConfirmation, UserDbType } from '../../users/type/user.type';
 import { hashAdapter } from '../../../core/adapters/hash.adapter';
 import { CreateUserDto } from '../../users/dto/create-user.dto';
 import { Types } from 'mongoose';
@@ -23,6 +22,7 @@ import { UsersRepository } from '../../users/repositories/users.repository';
 import { SecurityDevicesRepository } from '../../security-devices/repositories/security-devices.repository';
 import { PasswordRecoveryRepository } from '../../password-recovery/repositories/password-recovery.repository';
 import { PasswordRecoveryDBType } from '../../password-recovery/types/password-recovery.type';
+import { UsersDocument, UsersModel } from '../../users/entities/user.entity';
 
 @injectable()
 export class AuthService {
@@ -34,28 +34,44 @@ export class AuthService {
     private readonly passwordRecoveryRepository: PasswordRecoveryRepository,
   ) {}
 
-  async registration(dto: CreateUserDto): Promise<Result<UserDbType | null>> {
+  async registration(
+    dto: CreateUserDto,
+  ): Promise<Result<UsersDocument | null>> {
     const hash: string = await hashAdapter.hashPassword(dto.password);
 
     const randomUUID = generateId();
 
-    const newUser: UserDbType = new UserDbType(
-      new Types.ObjectId(),
-      dto.login,
-      dto.email,
-      hash,
-      new Date(),
-      new EmailConfirmation(
-        randomUUID,
-        add(new Date(), {
+    const newUser = new UsersModel({
+      login: dto.login,
+      email: dto.email,
+      password: hash,
+      emailConfirmation: {
+        confirmationCode: randomUUID,
+        expirationDate: add(new Date(), {
           hours: 1,
           minutes: 30,
         }),
-        false,
-      ),
-    );
+        isConfirmed: false,
+      },
+    });
 
-    const isUser: UserDbType | null =
+    // const newUser: UserDbType = new UserDbType(
+    //   new Types.ObjectId(),
+    //   dto.login,
+    //   dto.email,
+    //   hash,
+    //   new Date(),
+    //   new EmailConfirmation(
+    //     randomUUID,
+    //     add(new Date(), {
+    //       hours: 1,
+    //       minutes: 30,
+    //     }),
+    //     false,
+    //   ),
+    // );
+
+    const isUser: UsersDocument | null =
       await this.usersRepository.getUserByLoginOrEmail(dto.login, dto.email);
 
     if (isUser) {
@@ -96,7 +112,7 @@ export class AuthService {
   }
 
   async confirmEmail(code: string): Promise<Result> {
-    const user: UserDbType | null =
+    const user: UsersDocument | null =
       await this.usersRepository.findUserByCode(code);
 
     if (!user) {
@@ -120,7 +136,9 @@ export class AuthService {
       };
     }
 
-    await this.usersRepository.updateConfirmation(user._id.toString());
+    user.emailConfirmation.isConfirmed = true;
+
+    await this.usersRepository.updateConfirmation(user);
 
     return {
       status: ResultStatus.Success,
@@ -138,10 +156,8 @@ export class AuthService {
       'emailConfirmation.expirationDate': newExpiration,
     };
 
-    const isUpdated: UserDbType | null = await this.usersRepository.resendEmail(
-      email,
-      updateData,
-    );
+    const isUpdated: UsersDocument | null =
+      await this.usersRepository.resendEmail(email, updateData);
 
     if (!isUpdated) {
       return {
@@ -179,7 +195,7 @@ export class AuthService {
     ip: string,
     title: string,
   ): Promise<AccessAndRefreshTokensType> {
-    const user: UserDbType | null =
+    const user: UsersDocument | null =
       await this.usersRepository.findByLoginOrEmail(dto.loginOrEmail);
 
     const deviceId: string = randomUUID();
@@ -401,7 +417,7 @@ export class AuthService {
   async passwordRecovery(email: string): Promise<Result> {
     const randomUUID = generateId();
 
-    const existUser: UserDbType | null =
+    const existUser: UsersDocument | null =
       await this.usersRepository.findUserByEmail(email);
 
     if (existUser) {

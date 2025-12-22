@@ -2,10 +2,6 @@ import { Schema } from 'mongoose';
 import { PasswordRecoveryDBType } from '../../modules/password-recovery/types/password-recovery.type';
 import { RateLimitDBType } from '../../modules/rate-limit/types/rate-limit.type';
 import { SecurityDevicesDBType } from '../../modules/security-devices/types/security-devices.type';
-import {
-  EmailConfirmation,
-  UserDbType,
-} from '../../modules/users/type/user.type';
 import { LikeStatusEnum } from '../../modules/likes/enums/like-status.enum';
 import { LikesDbType } from '../../modules/likes/types/likes.type';
 
@@ -62,23 +58,23 @@ export const securityDevicesSchema = new Schema<SecurityDevicesDBType>({
 
 securityDevicesSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });
 
-const emailConfirmation = new Schema<EmailConfirmation>(
-  {
-    confirmationCode: { type: String, required: true },
-    expirationDate: { type: Date, required: true },
-    isConfirmed: { type: Boolean, default: false },
-  },
-  { _id: false },
-);
-
-export const usersSchema = new Schema<UserDbType>({
-  _id: { type: Schema.Types.ObjectId, required: true },
-  login: { type: String, required: true },
-  email: { type: String, required: true },
-  password: { type: String, required: true },
-  createdAt: { type: Date, required: true },
-  emailConfirmation: emailConfirmation,
-});
+// const emailConfirmation = new Schema<EmailConfirmation>(
+//   {
+//     confirmationCode: { type: String, required: true },
+//     expirationDate: { type: Date, required: true },
+//     isConfirmed: { type: Boolean, default: false },
+//   },
+//   { _id: false },
+// );
+//
+// export const usersSchema = new Schema<UserDbType>({
+//   _id: { type: Schema.Types.ObjectId, required: true },
+//   login: { type: String, required: true },
+//   email: { type: String, required: true },
+//   password: { type: String, required: true },
+//   createdAt: { type: Date, required: true },
+//   emailConfirmation: emailConfirmation,
+// });
 
 export const likesSchema = new Schema<LikesDbType>({
   _id: { type: Schema.Types.ObjectId, required: true },

@@ -1,10 +1,10 @@
 import { PaginatedMetaType } from '../../../core/types/paginated-meta.type';
-import { UserDbType } from '../type/user.type';
 import { userMapper } from './user.mapper';
 import { UserOutputType } from '../type/user-output.type';
+import { UsersDocument } from '../entities/user.entity';
 
 export const userListPaginatedOutputMapper = (
-  users: UserDbType[],
+  users: UsersDocument[],
   meta: PaginatedMetaType,
 ) => {
   const items: UserOutputType[] = users.map(userMapper);

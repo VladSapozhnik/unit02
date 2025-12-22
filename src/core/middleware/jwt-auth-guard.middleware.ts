@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express';
 import { HTTP_STATUS } from '../enums/http-status.enum';
-import { UserDbType } from '../../modules/users/type/user.type';
 import { jwtAdapter } from '../adapters/jwt.adapter';
 import { inject, injectable } from 'inversify';
 import { UsersRepository } from '../../modules/users/repositories/users.repository';
+import { UsersDocument } from '../../modules/users/entities/user.entity';
 
 @injectable()
 export class AuthGuardMiddleware {
@@ -34,7 +34,7 @@ export class AuthGuardMiddleware {
         return;
       }
 
-      const isUser: UserDbType | null =
+      const isUser: UsersDocument | null =
         await this.usersRepository.getUserById(userId);
 
       if (!isUser || !isUser._id) {
@@ -72,7 +72,7 @@ export class AuthGuardMiddleware {
         return next();
       }
 
-      const isUser: UserDbType | null =
+      const isUser: UsersDocument | null =
         await this.usersRepository.getUserById(userId);
 
       if (!isUser || !isUser._id) {

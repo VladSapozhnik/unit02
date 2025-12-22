@@ -12,7 +12,6 @@ import {
   PasswordRecoveryModel,
   RateLimitModel,
   SecurityDevicesModel,
-  UsersModel,
 } from './core/db/mongo.db';
 import { usersRouter } from './modules/users/routes/users.router';
 import { errorsHandler } from './core/errors/errors.handler';
@@ -23,6 +22,7 @@ import { securityDevicesRouter } from './modules/security-devices/routes/securit
 import { BlogModel } from './modules/blogs/entities/blog.entity';
 import { CommentModel } from './modules/comments/entities/comment.entity';
 import { PostModel } from './modules/posts/entities/post.entity';
+import { UsersModel } from './modules/users/entities/user.entity';
 // import crone from 'node-cron';
 // import { blacklistRepository } from './modules/blacklist/repositories/blacklist.repository';
 

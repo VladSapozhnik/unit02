@@ -1,6 +1,4 @@
-import { UsersModel } from '../../../core/db/mongo.db';
 import { Types } from 'mongoose';
-import { UserDbType } from '../type/user.type';
 import { UserQueryInput } from '../routes/input/user-query.input';
 import { getSkipOffset } from '../../../core/helpers/get-skip-offset';
 import { userMapper } from '../mappers/user.mapper';
@@ -12,6 +10,7 @@ import { profileMapper } from '../mappers/profile.mapper';
 import { ProfileType } from '../type/profile.type';
 import { UserOutputType } from '../type/user-output.type';
 import { injectable } from 'inversify';
+import { UsersDocument, UsersModel } from '../entities/user.entity';
 
 @injectable()
 export class UsersQueryRepository {
@@ -19,11 +18,10 @@ export class UsersQueryRepository {
     const skip: number = getSkipOffset(queryDto.pageNumber, queryDto.pageSize);
     const filter: any = buildUserFilter(queryDto);
 
-    const users: UserDbType[] = await UsersModel.find(filter)
+    const users: UsersDocument[] = await UsersModel.find(filter)
       .sort({ [queryDto.sortBy]: queryDto.sortDirection, _id: 1 })
       .skip(skip)
-      .limit(queryDto.pageSize)
-      .lean();
+      .limit(queryDto.pageSize);
 
     const totalCount: number = await UsersModel.countDocuments(filter);
 
@@ -33,7 +31,7 @@ export class UsersQueryRepository {
       queryDto.pageSize,
     );
 
-    return paginatedListMapper<UserDbType, UserOutputType>(
+    return paginatedListMapper<UsersDocument, UserOutputType>(
       users,
       pagination,
       userMapper,
@@ -41,7 +39,7 @@ export class UsersQueryRepository {
   }
 
   async getUserById(id: string): Promise<UserOutputType | null> {
-    const user: UserDbType | null = await UsersModel.findOne({
+    const user: UsersDocument | null = await UsersModel.findOne({
       _id: new Types.ObjectId(id),
     });
 
@@ -53,7 +51,7 @@ export class UsersQueryRepository {
   }
 
   async getProfile(id: string): Promise<ProfileType | null> {
-    const user: UserDbType | null = await UsersModel.findOne({
+    const user: UsersDocument | null = await UsersModel.findOne({
       _id: new Types.ObjectId(id),
     });
 
