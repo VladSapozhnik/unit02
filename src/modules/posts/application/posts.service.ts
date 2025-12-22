@@ -7,7 +7,7 @@ import { PostsRepository } from '../repositories/posts.repository';
 import { BlogsRepository } from '../../blogs/repositories/blogs.repository';
 import { inject, injectable } from 'inversify';
 import { Types } from 'mongoose';
-import { BlogDocument } from '../../blogs/domain/blog.entity';
+import { BlogDocument } from '../../blogs/entities/blog.entity';
 
 @injectable()
 export class PostsService {

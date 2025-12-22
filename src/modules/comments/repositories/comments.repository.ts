@@ -1,21 +1,20 @@
-import { CommentsModel } from '../../../core/db/mango.db';
-import { CommentDBType } from '../types/comment.type';
-import { Types, DeleteResult, UpdateResult } from 'mongoose';
-import { UpdateCommentDto } from '../dto/update-comment.dto';
+import { CommentDocument, CommentModel } from '../entities/comment.entity';
+import { Types, DeleteResult } from 'mongoose';
 import { injectable } from 'inversify';
 
 @injectable()
 export class CommentsRepository {
-  async createComment(dto: CommentDBType): Promise<string> {
-    const result: CommentDBType = await CommentsModel.create(dto);
+  async createComment(comment: CommentDocument): Promise<string> {
+    // const result: CommentDocument = await CommentModel.create(dto);
+    const result: CommentDocument = await comment.save();
 
     return result._id.toString();
   }
 
   async getCommentById(
     id: string | Types.ObjectId,
-  ): Promise<CommentDBType | null> {
-    const comment: CommentDBType | null = await CommentsModel.findOne({
+  ): Promise<CommentDocument | null> {
+    const comment: CommentDocument | null = await CommentModel.findOne({
       _id: new Types.ObjectId(id),
     });
 
@@ -25,18 +24,22 @@ export class CommentsRepository {
 
     return comment;
   }
-  async updateComment(id: string, dto: UpdateCommentDto): Promise<boolean> {
-    const result: UpdateResult = await CommentsModel.updateOne(
-      { _id: new Types.ObjectId(id) },
-      { $set: dto },
-    );
+  async updateComment(comment: CommentDocument): Promise<string> {
+    // const result: UpdateResult = await CommentModel.updateOne(
+    //   { _id: new Types.ObjectId(id) },
+    //   { $set: dto },
+    // );
 
-    return result.matchedCount === 1;
+    const result: CommentDocument = await comment.save();
+
+    return result._id.toString();
   }
-  async removeComment(id: string): Promise<boolean> {
-    const result: DeleteResult = await CommentsModel.deleteOne({
-      _id: new Types.ObjectId(id),
-    });
+  async removeComment(comment: CommentDocument): Promise<boolean> {
+    // const result: DeleteResult = await CommentModel.deleteOne({
+    //   _id: new Types.ObjectId(id),
+    // });
+
+    const result: DeleteResult = await comment.deleteOne();
 
     return result.deletedCount === 1;
   }

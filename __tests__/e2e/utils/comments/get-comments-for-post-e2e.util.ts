@@ -5,8 +5,8 @@ import { RouterPathConst } from '../../../../src/core/constants/router-path.cons
 import { SortDirectionEnum } from '../../../../src/core/enums/sort-direction.enum';
 import { CommentQueryInput } from '../../../../src/modules/comments/routes/input/comment-query.input';
 import { CommentSortFieldEnum } from '../../../../src/modules/comments/enums/comment-sort-field.enum';
-import { CommentDBType } from '../../../../src/modules/comments/types/comment.type';
 import { ObjectIdValid } from '../../blogs.e2e.spec';
+import { CommentDocument } from '../../../../src/modules/comments/entities/comment.entity';
 
 const paginationInputDefault: CommentQueryInput = {
   sortBy: CommentSortFieldEnum.CreatedAt,
@@ -39,13 +39,13 @@ const paginationAndSearchOutputDefault = {
 export const getCommentsForPostE2eUtil = async (
   app: Express,
   statusCode: HTTP_STATUS,
-  comments: CommentDBType | null = null,
+  comments: CommentDocument | null = null,
   postId: string = ObjectIdValid,
   isSearchInPagination: boolean = false,
 ): Promise<Response> => {
   let paginationInput: CommentQueryInput = paginationInputDefault;
   let paginationOutput = paginationOutputDefault;
-  let items: CommentDBType[] = comments ? [comments] : [];
+  let items: CommentDocument[] = comments ? [comments] : [];
 
   if (isSearchInPagination && HTTP_STATUS.OK_200) {
     paginationInput = paginationAndSearchInputDefault;

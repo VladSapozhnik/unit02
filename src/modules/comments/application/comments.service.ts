@@ -1,7 +1,6 @@
 import { UserDbType } from '../../users/type/user.type';
 import { CreateCommentDto } from '../dto/create-comment.dto';
 import { Types } from 'mongoose';
-import { CommentDBType } from '../types/comment.type';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { ForbiddenRequestError } from '../../../core/errors/forbidden-request.error';
 import { UpdateCommentDto } from '../dto/update-comment.dto';
@@ -12,6 +11,7 @@ import { injectable, inject } from 'inversify';
 import { CommentsRepository } from '../repositories/comments.repository';
 import { PostsRepository } from '../../posts/repositories/posts.repository';
 import { UsersRepository } from '../../users/repositories/users.repository';
+import { CommentDocument, CommentModel } from '../entities/comment.entity';
 
 @injectable()
 export class CommentsService {
@@ -41,19 +41,28 @@ export class CommentsService {
       throw new NotFoundError('Not Found Post', 'post');
     }
 
-    const payload: CommentDBType = new CommentDBType(
-      new Types.ObjectId(),
-      new Types.ObjectId(postId),
-      body.content,
-      {
+    const newComment = new CommentModel({
+      postId: new Types.ObjectId(postId),
+      content: body.content,
+      commentatorInfo: {
         userId: new Types.ObjectId(existUser._id),
         userLogin: existUser.login,
       },
-      new Date(),
-    );
+    });
+
+    // const payload: CommentDBType = new CommentDBType(
+    //   new Types.ObjectId(),
+    //   new Types.ObjectId(postId),
+    //   body.content,
+    //   {
+    //     userId: new Types.ObjectId(existUser._id),
+    //     userLogin: existUser.login,
+    //   },
+    //   new Date(),
+    // );
 
     const commentId: string =
-      await this.commentsRepository.createComment(payload);
+      await this.commentsRepository.createComment(newComment);
 
     if (!commentId) {
       throw new BadRequestError('Failed to create comment', 'comment');
@@ -62,12 +71,8 @@ export class CommentsService {
     return commentId;
   }
 
-  async updateComment(
-    userId: string,
-    id: string,
-    body: UpdateCommentDto,
-  ): Promise<boolean> {
-    const findComment: CommentDBType | null =
+  async updateComment(userId: string, id: string, body: UpdateCommentDto) {
+    const findComment: CommentDocument | null =
       await this.commentsRepository.getCommentById(id);
 
     if (!findComment) {
@@ -81,20 +86,13 @@ export class CommentsService {
       );
     }
 
-    const isUpdated: boolean = await this.commentsRepository.updateComment(
-      id,
-      body,
-    );
+    findComment.content = body.content;
 
-    if (!isUpdated) {
-      throw new BadRequestError(`Comment with id not found`, 'comment');
-    }
-
-    return isUpdated;
+    await this.commentsRepository.updateComment(findComment);
   }
 
-  async removeComment(userId: string, id: string): Promise<boolean> {
-    const findComment: CommentDBType | null =
+  async removeComment(userId: string, id: string) {
+    const findComment: CommentDocument | null =
       await this.commentsRepository.getCommentById(id);
 
     if (!findComment) {
@@ -108,12 +106,6 @@ export class CommentsService {
       );
     }
 
-    const isRemove: boolean = await this.commentsRepository.removeComment(id);
-
-    if (!isRemove) {
-      throw new NotFoundError(`Comment with id not found`, 'comments');
-    }
-
-    return isRemove;
+    await this.commentsRepository.removeComment(findComment);
   }
 }

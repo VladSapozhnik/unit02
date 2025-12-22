@@ -9,7 +9,6 @@ import { postsRouter } from './modules/posts/routes/posts.router';
 import { HTTP_STATUS } from './core/enums/http-status.enum';
 import { RouterPathConst } from './core/constants/router-path.const';
 import {
-  CommentsModel,
   PasswordRecoveryModel,
   PostsModel,
   RateLimitModel,
@@ -22,7 +21,8 @@ import { authRouter } from './modules/auth/routes/auth.router';
 import { commentsRouter } from './modules/comments/routes/comments.router';
 import cookieParser from 'cookie-parser';
 import { securityDevicesRouter } from './modules/security-devices/routes/security-devices.router';
-import { BlogModel } from './modules/blogs/domain/blog.entity';
+import { BlogModel } from './modules/blogs/entities/blog.entity';
+import { CommentModel } from './modules/comments/entities/comment.entity';
 // import crone from 'node-cron';
 // import { blacklistRepository } from './modules/blacklist/repositories/blacklist.repository';
 
@@ -60,7 +60,7 @@ export const setupApp = (app: Express) => {
       BlogModel.deleteMany(),
       PostsModel.deleteMany(),
       UsersModel.deleteMany(),
-      CommentsModel.deleteMany(),
+      CommentModel.deleteMany(),
       PasswordRecoveryModel.deleteMany(),
       SecurityDevicesModel.deleteMany(),
       RateLimitModel.deleteMany(),

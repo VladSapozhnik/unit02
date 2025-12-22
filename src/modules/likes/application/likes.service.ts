@@ -2,9 +2,9 @@ import { inject, injectable } from 'inversify';
 import { LikesRepository } from '../repositories/likes.repository';
 import { LikeStatusEnum } from '../enums/like-status.enum';
 import { CommentsRepository } from '../../comments/repositories/comments.repository';
-import { CommentDBType } from '../../comments/types/comment.type';
 import { Result } from '../../../core/types/result.type';
 import { ResultStatus } from '../../../core/enums/result-status.enum';
+import { CommentDocument } from '../../comments/entities/comment.entity';
 
 @injectable()
 export class LikesService {
@@ -19,7 +19,7 @@ export class LikesService {
     commentId: string,
     likeStatus: LikeStatusEnum,
   ): Promise<Result> {
-    const isComments: CommentDBType | null =
+    const isComments: CommentDocument | null =
       await this.commentsRepository.getCommentById(commentId);
 
     if (!isComments) {

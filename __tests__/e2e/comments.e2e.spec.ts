@@ -20,8 +20,8 @@ import {
 import { ObjectIdValid } from './blogs.e2e.spec';
 import { removeCommentE2eUtil } from './utils/comments/remove-comment.e2e.util';
 import { getCommentsForPostE2eUtil } from './utils/comments/get-comments-for-post-e2e.util';
-import { CommentDBType } from '../../src/modules/comments/types/comment.type';
 import { MongoMemoryServer } from 'mongodb-memory-server';
+import { CommentDocument } from '../../src/modules/comments/entities/comment.entity';
 
 describe('test' + RouterPathConst.comments, () => {
   const app = express();
@@ -204,7 +204,7 @@ describe('test' + RouterPathConst.comments, () => {
         userToken,
       );
 
-      const commentTwo: CommentDBType = response.body;
+      const commentTwo: CommentDocument = response.body;
 
       await getCommentsForPostE2eUtil(
         app,

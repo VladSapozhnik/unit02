@@ -3,7 +3,7 @@ import { HTTP_STATUS } from '../../../../src/core/enums/http-status.enum';
 import request from 'supertest';
 import { RouterPathConst } from '../../../../src/core/constants/router-path.const';
 import { Response } from 'supertest';
-import { BlogDocument } from '../../../../src/modules/blogs/domain/blog.entity';
+import { BlogDocument } from '../../../../src/modules/blogs/entities/blog.entity';
 
 export const getBlogByIdE2eUtil = async (
   app: Express,

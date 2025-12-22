@@ -1,6 +1,5 @@
 import { inject, injectable } from 'inversify';
 import { CommentsQueryRepository } from '../repositories/comments.query.repository';
-import { CommentDBType } from '../types/comment.type';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { commentMapper } from '../mappers/comment.mapper';
 import { CommentQueryInput } from '../routes/input/comment-query.input';
@@ -11,6 +10,7 @@ import {
 import { LikesRepository } from '../../likes/repositories/likes.repository';
 import { LikeStatusEnum } from '../../likes/enums/like-status.enum';
 import { CommentAndLikesMapper } from '../mappers/comment-and-likes.mapper';
+import { CommentDocument } from '../entities/comment.entity';
 
 @injectable()
 export class CommentsQueryService {
@@ -21,7 +21,7 @@ export class CommentsQueryService {
   ) {}
 
   async getCommentById(id: string, userId: string | undefined) {
-    const comment: CommentDBType | null =
+    const comment: CommentDocument | null =
       await this.commentsQueryRepository.getCommentById(id);
 
     if (!comment) {
@@ -61,7 +61,7 @@ export class CommentsQueryService {
       await this.commentsQueryRepository.getCommentsByPostId(queryDto, postId);
 
     const commentsOutput: CommentOutputType[] = await Promise.all(
-      comments.map(async (comment: CommentDBType) => {
+      comments.map(async (comment: CommentDocument) => {
         const { likesCount, dislikesCount } =
           await this.likesRepository.getLikesAndDislikesComment(
             comment._id.toString(),

@@ -1,4 +1,4 @@
-import { HydratedDocument, Model, model, Schema, Types } from 'mongoose';
+import { HydratedDocument, Model, model, Schema } from 'mongoose';
 
 const BLOG_COLLECTION_NAME = 'blogs';
 
@@ -20,9 +20,9 @@ export type BlogDocument = HydratedDocument<BlogType>;
 
 const blogsSchema = new Schema<BlogType>(
   {
-    name: { type: String, required: true },
-    description: { type: String, required: true },
-    websiteUrl: { type: String, required: true },
+    name: { type: String, required: true, min: 1, max: 255 },
+    description: { type: String, required: true, min: 1 },
+    websiteUrl: { type: String, required: true, min: 1 },
     isMembership: { type: Boolean, default: false, required: true },
   },
   { timestamps: true },

@@ -1,4 +1,4 @@
-import { UserType } from '../../modules/users/domain/user.type';
+import { UserType } from '../../modules/users/entities/user.type';
 import { WithId } from 'mongodb';
 
 declare global {

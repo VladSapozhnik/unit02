@@ -1,6 +1,6 @@
 import { Types } from 'mongoose';
 import { BlogOutputType } from '../types/blog-output.type';
-import { BlogDocument } from '../domain/blog.entity';
+import { BlogDocument } from '../entities/blog.entity';
 
 export const blogMapper = (blog: BlogDocument): BlogOutputType => {
   return {

@@ -1,5 +1,4 @@
 import { Schema } from 'mongoose';
-import { CommentDBType } from '../../modules/comments/types/comment.type';
 import { PasswordRecoveryDBType } from '../../modules/password-recovery/types/password-recovery.type';
 import { PostDBType } from '../../modules/posts/types/post.type';
 import { RateLimitDBType } from '../../modules/rate-limit/types/rate-limit.type';
@@ -11,30 +10,21 @@ import {
 import { LikeStatusEnum } from '../../modules/likes/enums/like-status.enum';
 import { LikesDbType } from '../../modules/likes/types/likes.type';
 
-// export const blogsSchema = new Schema<BlogDBType>({
+// const commentsInfoSchema = new Schema(
+//   {
+//     userId: { type: Schema.Types.ObjectId, required: true },
+//     userLogin: { type: String, required: true, trim: true },
+//   },
+//   { _id: false },
+// );
+//
+// export const commentsSchema = new Schema<CommentDBType>({
 //   _id: { type: Schema.Types.ObjectId, required: true },
-//   name: { type: String, required: true },
-//   description: { type: String, required: true },
-//   websiteUrl: { type: String, required: true },
+//   postId: { type: Schema.Types.ObjectId, required: true },
+//   content: { type: String, required: true },
+//   commentatorInfo: commentsInfoSchema,
 //   createdAt: { type: Date, required: true },
-//   isMembership: { type: Boolean, default: false },
 // });
-
-const commentsInfoSchema = new Schema(
-  {
-    userId: { type: Schema.Types.ObjectId, required: true },
-    userLogin: { type: String, required: true, trim: true },
-  },
-  { _id: false },
-);
-
-export const commentsSchema = new Schema<CommentDBType>({
-  _id: { type: Schema.Types.ObjectId, required: true },
-  postId: { type: Schema.Types.ObjectId, required: true },
-  content: { type: String, required: true },
-  commentatorInfo: commentsInfoSchema,
-  createdAt: { type: Date, required: true },
-});
 
 export const passwordRecoverySchema = new Schema<PasswordRecoveryDBType>({
   _id: { type: Schema.Types.ObjectId, required: true },
