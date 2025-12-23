@@ -8,10 +8,13 @@ import { CommentDocument } from '../../comments/entities/comment.entity';
 import { LikeTargetEnum } from '../enums/like-target.enum';
 import { PostsRepository } from '../../posts/repositories/posts.repository';
 import { PostsDocument } from '../../posts/entities/post.entity';
+import { UsersRepository } from '../../users/repositories/users.repository';
+import { UsersDocument } from '../../users/entities/user.entity';
 
 @injectable()
 export class LikesService {
   constructor(
+    @inject(UsersRepository) private usersRepository: UsersRepository,
     @inject(LikesRepository) private readonly likesRepository: LikesRepository,
     @inject(CommentsRepository)
     private readonly commentsRepository: CommentsRepository,
@@ -23,6 +26,18 @@ export class LikesService {
     targetId: string,
     likeStatus: LikeStatusEnum,
   ): Promise<Result> {
+    const findUser: UsersDocument | null =
+      await this.usersRepository.getUserById(userId);
+
+    if (!findUser) {
+      return {
+        status: ResultStatus.Unauthorized,
+        errorMessage: 'Comment not found',
+        extensions: [{ field: 'auth', message: 'User not found.' }],
+        data: null,
+      };
+    }
+
     const isComments: CommentDocument | null =
       await this.commentsRepository.getCommentById(targetId);
 
@@ -36,7 +51,7 @@ export class LikesService {
     }
 
     await this.likesRepository.updateLikeStatus(
-      userId,
+      findUser,
       targetId,
       LikeTargetEnum.Comment,
       likeStatus,
@@ -54,6 +69,18 @@ export class LikesService {
     postId: string,
     likeStatus: LikeStatusEnum,
   ): Promise<Result> {
+    const findUser: UsersDocument | null =
+      await this.usersRepository.getUserById(userId);
+
+    if (!findUser) {
+      return {
+        status: ResultStatus.Unauthorized,
+        errorMessage: 'Comment not found',
+        extensions: [{ field: 'auth', message: 'User not found.' }],
+        data: null,
+      };
+    }
+
     const isPosts: PostsDocument | null =
       await this.postsRepository.findPostById(postId);
 
@@ -67,7 +94,7 @@ export class LikesService {
     }
 
     await this.likesRepository.updateLikeStatus(
-      userId,
+      findUser,
       postId,
       LikeTargetEnum.Post,
       likeStatus,

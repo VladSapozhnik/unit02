@@ -6,6 +6,7 @@ const LIKE_COLLECTION_NAME = 'likes';
 
 type LikesType = {
   userId: Types.ObjectId;
+  login: string;
   targetId: Types.ObjectId;
   targetType: LikeTargetEnum;
   status: LikeStatusEnum;
@@ -19,6 +20,7 @@ export type LikesDocument = HydratedDocument<LikesType>;
 export const likesSchema = new Schema<LikesType>(
   {
     userId: { type: Schema.Types.ObjectId, required: true },
+    login: { type: String, required: true },
     targetId: { type: Schema.Types.ObjectId, required: true },
     targetType: {
       type: String,

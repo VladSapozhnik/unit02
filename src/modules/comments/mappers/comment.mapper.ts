@@ -1,8 +1,6 @@
-import {
-  LikesInfoOutputType,
-  CommentOutputType,
-} from '../types/comment-output.type';
+import { CommentOutputType } from '../types/comment-output.type';
 import { CommentDocument } from '../entities/comment.entity';
+import { LikesInfoOutputType } from '../../likes/types/likes-info-output.type';
 
 export const commentMapper = (
   comment: CommentDocument,

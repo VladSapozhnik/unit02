@@ -1,19 +1,4 @@
-import { LikeStatusEnum } from '../../likes/enums/like-status.enum';
-
-export class LikesInfoOutputType {
-  likesCount: number;
-  dislikesCount: number;
-  myStatus: LikeStatusEnum;
-  constructor(
-    likesCount: number,
-    dislikesCount: number,
-    myStatus: LikeStatusEnum,
-  ) {
-    this.likesCount = likesCount;
-    this.dislikesCount = dislikesCount;
-    this.myStatus = myStatus;
-  }
-}
+import { LikesInfoOutputType } from '../../likes/types/likes-info-output.type';
 
 export class CommentOutputType {
   /**

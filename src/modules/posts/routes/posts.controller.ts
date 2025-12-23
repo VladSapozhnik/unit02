@@ -31,6 +31,8 @@ import { CommentsQueryService } from '../../comments/application/comments.query.
 import { PostsDocument } from '../entities/post.entity';
 import { LikesService } from '../../likes/application/likes.service';
 import { LikeStatusEnum } from '../../likes/enums/like-status.enum';
+import { ResultStatus } from '../../../core/enums/result-status.enum';
+import { Result } from '../../../core/types/result.type';
 
 @injectable()
 export class PostsController {
@@ -192,7 +194,15 @@ export class PostsController {
     const postId: string = req.params.postId;
     const likeStatus = req.body.likeStatus as LikeStatusEnum;
 
-    await this.likesService.updatePostLikeStatus(userId, postId, likeStatus);
+    const result: Result = await this.likesService.updatePostLikeStatus(
+      userId,
+      postId,
+      likeStatus,
+    );
+
+    if (result.status === ResultStatus.NotFound) {
+      return res.status(HTTP_STATUS.NOT_FOUND_404).json(result.extensions);
+    }
 
     res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   }

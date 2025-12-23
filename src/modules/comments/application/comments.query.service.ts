@@ -3,17 +3,11 @@ import { CommentsQueryRepository } from '../repositories/comments.query.reposito
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { commentMapper } from '../mappers/comment.mapper';
 import { CommentQueryInput } from '../routes/input/comment-query.input';
-import {
-  CommentOutputType,
-  LikesInfoOutputType,
-} from '../types/comment-output.type';
-import { LikesRepository } from '../../likes/repositories/likes.repository';
-import { LikeStatusEnum } from '../../likes/enums/like-status.enum';
+import { CommentOutputType } from '../types/comment-output.type';
 import { CommentAndLikesMapper } from '../mappers/comment-and-likes.mapper';
 import { CommentDocument } from '../entities/comment.entity';
-import { LikesQueryRepository } from '../../likes/repositories/likes.query.repository';
-import { LikesService } from '../../likes/application/likes.service';
 import { LikesQueryService } from '../../likes/application/likes.query.service';
+import { LikesInfoOutputType } from '../../likes/types/likes-info-output.type';
 
 @injectable()
 export class CommentsQueryService {
@@ -24,7 +18,10 @@ export class CommentsQueryService {
     private likesQueryService: LikesQueryService,
   ) {}
 
-  async getCommentById(id: string, userId: string | undefined) {
+  async getCommentById(
+    id: string,
+    userId: string | undefined,
+  ): Promise<CommentOutputType> {
     const comment: CommentDocument | null =
       await this.commentsQueryRepository.getCommentById(id);
 
@@ -54,7 +51,10 @@ export class CommentsQueryService {
     // );
 
     const likesInfo: LikesInfoOutputType =
-      await this.likesQueryService.likesInfoForComment(comment, userId);
+      await this.likesQueryService.likesInfoForComment(
+        comment._id.toString(),
+        userId,
+      );
 
     return commentMapper(comment, likesInfo);
   }
@@ -68,33 +68,17 @@ export class CommentsQueryService {
       await this.commentsQueryRepository.getCommentsByPostId(queryDto, postId);
 
     const commentsOutput: CommentOutputType[] = await Promise.all(
-      comments.map(async (comment: CommentDocument) => {
-        // const { likesCount, dislikesCount } =
-        //   await this.likesQueryRepository.getLikesAndDislikesComment(
-        //     comment._id.toString(),
-        //   );
-        //
-        // let myStatus: LikeStatusEnum = LikeStatusEnum.None;
-        //
-        // if (userId) {
-        //   const myLike = await this.likesQueryRepository.findLike(
-        //     userId,
-        //     comment._id.toString(),
-        //   );
-        //   myStatus = myLike ? myLike.status : LikeStatusEnum.None;
-        // }
-        //
-        // const likesInfo: LikesInfoOutputType = new LikesInfoOutputType(
-        //   likesCount,
-        //   dislikesCount,
-        //   myStatus,
-        // );
+      comments.map(
+        async (comment: CommentDocument): Promise<CommentOutputType> => {
+          const likesInfo: LikesInfoOutputType =
+            await this.likesQueryService.likesInfoForComment(
+              comment._id.toString(),
+              userId,
+            );
 
-        const likesInfo: LikesInfoOutputType =
-          await this.likesQueryService.likesInfoForComment(comment, userId);
-
-        return commentMapper(comment, likesInfo);
-      }),
+          return commentMapper(comment, likesInfo);
+        },
+      ),
     );
 
     return CommentAndLikesMapper<CommentOutputType>(pagination, commentsOutput);

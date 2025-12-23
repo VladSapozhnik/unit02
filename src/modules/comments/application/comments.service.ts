@@ -50,17 +50,6 @@ export class CommentsService {
       },
     });
 
-    // const payload: CommentDBType = new CommentDBType(
-    //   new Types.ObjectId(),
-    //   new Types.ObjectId(postId),
-    //   body.content,
-    //   {
-    //     userId: new Types.ObjectId(existUser._id),
-    //     userLogin: existUser.login,
-    //   },
-    //   new Date(),
-    // );
-
     const commentId: string =
       await this.commentsRepository.createComment(newComment);
 

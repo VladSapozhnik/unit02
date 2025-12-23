@@ -41,4 +41,18 @@ export class LikesQueryRepository {
       targetType,
     });
   }
+
+  async findNewestLikes(
+    targetId: string,
+    targetType: LikeTargetEnum,
+    likeCounts: number = 3,
+  ): Promise<LikesDocument[]> {
+    return LikeModel.find({
+      targetId,
+      targetType,
+      status: LikeStatusEnum.Like,
+    })
+      .sort({ createdAt: -1 })
+      .limit(likeCounts);
+  }
 }

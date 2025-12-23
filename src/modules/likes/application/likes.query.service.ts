@@ -1,11 +1,10 @@
 import { LikeTargetEnum } from '../enums/like-target.enum';
 import { LikeStatusEnum } from '../enums/like-status.enum';
 import { LikesDocument } from '../entities/likes.entity';
-import { LikesInfoOutputType } from '../../comments/types/comment-output.type';
 import { inject, injectable } from 'inversify';
 import { LikesQueryRepository } from '../repositories/likes.query.repository';
-import { CommentDocument } from '../../comments/entities/comment.entity';
-import { PostsDocument } from '../../posts/entities/post.entity';
+import { LikesInfoOutputType } from '../types/likes-info-output.type';
+import { LikeInfoForPostMapper } from '../mappers/like-info-for-post.mapper';
 
 @injectable()
 export class LikesQueryService {
@@ -14,12 +13,12 @@ export class LikesQueryService {
     private readonly likesQueryRepository: LikesQueryRepository,
   ) {}
   async likesInfoForComment(
-    comment: CommentDocument,
+    commentId: string,
     userId: string | undefined,
   ): Promise<LikesInfoOutputType> {
     const { likesCount, dislikesCount } =
       await this.likesQueryRepository.getLikesAndDislikesComment(
-        comment._id.toString(),
+        commentId,
         LikeTargetEnum.Comment,
       );
 
@@ -29,7 +28,7 @@ export class LikesQueryService {
       const myLike: LikesDocument | null =
         await this.likesQueryRepository.findLike(
           userId,
-          comment._id.toString(),
+          commentId,
           LikeTargetEnum.Comment,
         );
       myStatus = myLike ? myLike.status : LikeStatusEnum.None;
@@ -38,5 +37,36 @@ export class LikesQueryService {
     return new LikesInfoOutputType(likesCount, dislikesCount, myStatus);
   }
 
-  async likesInfoForPosts(posts: PostsDocument, userId: string | undefined) {}
+  async likesInfoForPosts(postsId: string, userId: string | undefined) {
+    const { likesCount, dislikesCount } =
+      await this.likesQueryRepository.getLikesAndDislikesComment(
+        postsId,
+        LikeTargetEnum.Post,
+      );
+
+    let myStatus: LikeStatusEnum = LikeStatusEnum.None;
+
+    if (userId) {
+      const myLike: LikesDocument | null =
+        await this.likesQueryRepository.findLike(
+          userId,
+          postsId,
+          LikeTargetEnum.Comment,
+        );
+      myStatus = myLike ? myLike.status : LikeStatusEnum.None;
+    }
+
+    const newestLikes: LikesDocument[] =
+      await this.likesQueryRepository.findNewestLikes(
+        postsId,
+        LikeTargetEnum.Post,
+      );
+
+    return LikeInfoForPostMapper(
+      likesCount,
+      dislikesCount,
+      myStatus,
+      newestLikes,
+    );
+  }
 }

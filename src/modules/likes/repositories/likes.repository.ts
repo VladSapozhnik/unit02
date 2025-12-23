@@ -1,21 +1,22 @@
 import { injectable } from 'inversify';
 import { LikeStatusEnum } from '../enums/like-status.enum';
 import { Types, UpdateResult } from 'mongoose';
-import { LikesAndDislikesType } from '../types/likes-and-dislikes.type';
-import { LikeModel, LikesDocument } from '../entities/likes.entity';
+import { LikeModel } from '../entities/likes.entity';
 import { LikeTargetEnum } from '../enums/like-target.enum';
+import { UsersDocument } from '../../users/entities/user.entity';
 
 @injectable()
 export class LikesRepository {
   async updateLikeStatus(
-    userId: string,
+    user: UsersDocument,
     targetId: string,
     targetType: LikeTargetEnum,
     likeStatus: LikeStatusEnum,
   ): Promise<boolean> {
     const result: UpdateResult = await LikeModel.updateOne(
       {
-        userId: new Types.ObjectId(userId),
+        userId: new Types.ObjectId(user._id),
+        login: user.login,
         targetId: new Types.ObjectId(targetId),
         targetType,
       },
