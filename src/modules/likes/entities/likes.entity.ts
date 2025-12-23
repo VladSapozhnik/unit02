@@ -1,11 +1,13 @@
 import { HydratedDocument, model, Model, Schema, Types } from 'mongoose';
 import { LikeStatusEnum } from '../enums/like-status.enum';
+import { LikeTargetEnum } from '../enums/like-target.enum';
 
 const LIKE_COLLECTION_NAME = 'likes';
 
 type LikesType = {
   userId: Types.ObjectId;
-  commentId: Types.ObjectId;
+  targetId: Types.ObjectId;
+  targetType: LikeTargetEnum;
   status: LikeStatusEnum;
   createdAt: Date;
 };
@@ -17,10 +19,15 @@ export type LikesDocument = HydratedDocument<LikesType>;
 export const likesSchema = new Schema<LikesType>(
   {
     userId: { type: Schema.Types.ObjectId, required: true },
-    commentId: { type: Schema.Types.ObjectId, required: true },
+    targetId: { type: Schema.Types.ObjectId, required: true },
+    targetType: {
+      type: String,
+      enum: LikeTargetEnum,
+      required: true,
+    },
     status: {
       type: String,
-      enum: Object.values(LikeStatusEnum),
+      enum: LikeStatusEnum,
       required: true,
     },
   },

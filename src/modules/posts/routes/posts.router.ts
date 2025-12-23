@@ -75,3 +75,11 @@ postsRouter.delete(
   inputValidationErrorsMiddleware,
   postsController.removePost.bind(postsController),
 );
+
+postsRouter.put(
+  '/:postId/like-status',
+  authGuardMiddleware.jwtAuth.bind(authGuardMiddleware),
+  postIdParamValidation,
+  inputValidationErrorsMiddleware,
+  postsController.updatePostLikeStatus.bind(postsController),
+);

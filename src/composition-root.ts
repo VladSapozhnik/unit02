@@ -30,6 +30,8 @@ import { PasswordRecoveryRepository } from './modules/password-recovery/reposito
 import { CommentsQueryService } from './modules/comments/application/comments.query.service';
 import { LikesService } from './modules/likes/application/likes.service';
 import { LikesRepository } from './modules/likes/repositories/likes.repository';
+import { LikesQueryService } from './modules/likes/application/likes.query.service';
+import { LikesQueryRepository } from './modules/likes/repositories/likes.query.repository';
 
 // const blogsRepository = new BlogsRepository();
 // const blogsQueryRepository = new BlogsQueryRepository();
@@ -87,7 +89,9 @@ container.bind(RateLimitRepository).to(RateLimitRepository);
 
 //likes
 container.bind(LikesService).to(LikesService);
+container.bind(LikesQueryService).to(LikesQueryService);
 container.bind(LikesRepository).to(LikesRepository);
+container.bind(LikesQueryRepository).to(LikesQueryRepository);
 
 //middleware
 container.bind(AuthGuardMiddleware).to(AuthGuardMiddleware);

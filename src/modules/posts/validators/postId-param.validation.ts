@@ -2,8 +2,8 @@ import { param, ValidationChain } from 'express-validator';
 
 export const postIdParamValidation: ValidationChain = param('postId')
   .exists()
-  .withMessage('blogId is required')
+  .withMessage('postId is required')
   .isString()
-  .withMessage('blogId must be a string')
+  .withMessage('postId must be a string')
   .isMongoId()
-  .withMessage('blogId must be a valid ObjectId');
+  .withMessage('postId must be a valid ObjectId');

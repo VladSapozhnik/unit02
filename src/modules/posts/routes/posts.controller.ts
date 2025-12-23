@@ -29,6 +29,8 @@ import { CommentOutputType } from '../../comments/types/comment-output.type';
 import { BlogOutputType } from '../../blogs/types/blog-output.type';
 import { CommentsQueryService } from '../../comments/application/comments.query.service';
 import { PostsDocument } from '../entities/post.entity';
+import { LikesService } from '../../likes/application/likes.service';
+import { LikeStatusEnum } from '../../likes/enums/like-status.enum';
 
 @injectable()
 export class PostsController {
@@ -42,6 +44,7 @@ export class PostsController {
     @inject(CommentsService) private readonly commentsService: CommentsService,
     @inject(CommentsQueryService)
     private readonly commentsQueryService: CommentsQueryService,
+    @inject(LikesService) private readonly likesService: LikesService,
   ) {}
   async createCommentForPost(req: Request, res: Response) {
     const userId: string = req.userId as string;
@@ -180,6 +183,16 @@ export class PostsController {
     res: Response,
   ) {
     await this.postsService.updatePost(req.params.id, req.body);
+
+    res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
+  }
+
+  async updatePostLikeStatus(req: Request, res: Response) {
+    const userId: string = req.userId as string;
+    const postId: string = req.params.postId;
+    const likeStatus = req.body.likeStatus as LikeStatusEnum;
+
+    await this.likesService.updatePostLikeStatus(userId, postId, likeStatus);
 
     res.sendStatus(HTTP_STATUS.NO_CONTENT_204);
   }

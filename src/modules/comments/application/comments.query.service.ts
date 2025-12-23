@@ -11,13 +11,17 @@ import { LikesRepository } from '../../likes/repositories/likes.repository';
 import { LikeStatusEnum } from '../../likes/enums/like-status.enum';
 import { CommentAndLikesMapper } from '../mappers/comment-and-likes.mapper';
 import { CommentDocument } from '../entities/comment.entity';
+import { LikesQueryRepository } from '../../likes/repositories/likes.query.repository';
+import { LikesService } from '../../likes/application/likes.service';
+import { LikesQueryService } from '../../likes/application/likes.query.service';
 
 @injectable()
 export class CommentsQueryService {
   constructor(
     @inject(CommentsQueryRepository)
     private commentsQueryRepository: CommentsQueryRepository,
-    @inject(LikesRepository) private likesRepository: LikesRepository,
+    @inject(LikesQueryService)
+    private likesQueryService: LikesQueryService,
   ) {}
 
   async getCommentById(id: string, userId: string | undefined) {
@@ -28,26 +32,29 @@ export class CommentsQueryService {
       throw new NotFoundError(`Comment with id ${id} not found`, 'comment');
     }
 
-    const { likesCount, dislikesCount } =
-      await this.likesRepository.getLikesAndDislikesComment(
-        comment._id.toString(),
-      );
+    // const { likesCount, dislikesCount } =
+    //   await this.likesQueryRepository.getLikesAndDislikesComment(
+    //     comment._id.toString(),
+    //   );
+    //
+    // let myStatus: LikeStatusEnum = LikeStatusEnum.None;
+    //
+    // if (userId) {
+    //   const myLike = await this.likesQueryRepository.findLike(
+    //     userId,
+    //     comment._id.toString(),
+    //   );
+    //   myStatus = myLike ? myLike.status : LikeStatusEnum.None;
+    // }
+    //
+    // const likesInfo: LikesInfoOutputType = new LikesInfoOutputType(
+    //   likesCount,
+    //   dislikesCount,
+    //   myStatus,
+    // );
 
-    let myStatus: LikeStatusEnum = LikeStatusEnum.None;
-
-    if (userId) {
-      const myLike = await this.likesRepository.findLike(
-        userId,
-        comment._id.toString(),
-      );
-      myStatus = myLike ? myLike.status : LikeStatusEnum.None;
-    }
-
-    const likesInfo: LikesInfoOutputType = new LikesInfoOutputType(
-      likesCount,
-      dislikesCount,
-      myStatus,
-    );
+    const likesInfo: LikesInfoOutputType =
+      await this.likesQueryService.likesInfoForComment(comment, userId);
 
     return commentMapper(comment, likesInfo);
   }
@@ -62,26 +69,29 @@ export class CommentsQueryService {
 
     const commentsOutput: CommentOutputType[] = await Promise.all(
       comments.map(async (comment: CommentDocument) => {
-        const { likesCount, dislikesCount } =
-          await this.likesRepository.getLikesAndDislikesComment(
-            comment._id.toString(),
-          );
+        // const { likesCount, dislikesCount } =
+        //   await this.likesQueryRepository.getLikesAndDislikesComment(
+        //     comment._id.toString(),
+        //   );
+        //
+        // let myStatus: LikeStatusEnum = LikeStatusEnum.None;
+        //
+        // if (userId) {
+        //   const myLike = await this.likesQueryRepository.findLike(
+        //     userId,
+        //     comment._id.toString(),
+        //   );
+        //   myStatus = myLike ? myLike.status : LikeStatusEnum.None;
+        // }
+        //
+        // const likesInfo: LikesInfoOutputType = new LikesInfoOutputType(
+        //   likesCount,
+        //   dislikesCount,
+        //   myStatus,
+        // );
 
-        let myStatus: LikeStatusEnum = LikeStatusEnum.None;
-
-        if (userId) {
-          const myLike = await this.likesRepository.findLike(
-            userId,
-            comment._id.toString(),
-          );
-          myStatus = myLike ? myLike.status : LikeStatusEnum.None;
-        }
-
-        const likesInfo: LikesInfoOutputType = new LikesInfoOutputType(
-          likesCount,
-          dislikesCount,
-          myStatus,
-        );
+        const likesInfo: LikesInfoOutputType =
+          await this.likesQueryService.likesInfoForComment(comment, userId);
 
         return commentMapper(comment, likesInfo);
       }),
