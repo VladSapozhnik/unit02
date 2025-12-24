@@ -11,6 +11,7 @@ import { CommentSortFieldEnum } from '../../comments/enums/comment-sort-field.en
 import { container } from '../../../composition-root';
 import { PostsController } from './posts.controller';
 import { AuthGuardMiddleware } from '../../../core/middleware/jwt-auth-guard.middleware';
+import { likeStatusValidation } from '../../comments/validators/like-status.validation';
 
 const authGuardMiddleware: AuthGuardMiddleware =
   container.get(AuthGuardMiddleware);
@@ -82,6 +83,7 @@ postsRouter.put(
   '/:postId/like-status',
   authGuardMiddleware.jwtAuth.bind(authGuardMiddleware),
   postIdParamValidation,
+  likeStatusValidation,
   inputValidationErrorsMiddleware,
   postsController.updatePostLikeStatus.bind(postsController),
 );
