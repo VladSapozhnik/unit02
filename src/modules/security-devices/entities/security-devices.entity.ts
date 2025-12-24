@@ -16,8 +16,8 @@ type SecurityDeviceModelType = Model<SecurityDevicesType>;
 export type SecurityDevicesDocument = HydratedDocument<SecurityDevicesType>;
 
 export const securityDevicesSchema = new Schema<SecurityDevicesType>({
-  userId: { type: Schema.Types.ObjectId, required: true, min: 1, max: 255 },
-  deviceId: { type: String, required: true, min: 1, max: 255 },
+  userId: { type: Schema.Types.ObjectId, required: true },
+  deviceId: { type: String, required: true },
   ip: { type: String, required: true, min: 1, max: 255 },
   title: { type: String, required: true, min: 1, max: 255 },
   lastActiveDate: { type: Date, required: true, min: 1, max: 255 },

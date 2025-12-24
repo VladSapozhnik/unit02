@@ -27,7 +27,6 @@ const postsSchema = new Schema<PostsType>(
     blogId: {
       type: Schema.Types.ObjectId,
       required: true,
-      min: 1,
     },
     blogName: { type: String, required: true, min: 1, max: 255 },
   },
