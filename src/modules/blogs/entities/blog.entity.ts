@@ -21,8 +21,8 @@ export type BlogDocument = HydratedDocument<BlogType>;
 const blogsSchema = new Schema<BlogType>(
   {
     name: { type: String, required: true, min: 1, max: 255 },
-    description: { type: String, required: true, min: 1 },
-    websiteUrl: { type: String, required: true, min: 1 },
+    description: { type: String, required: true, min: 1, max: 1000 },
+    websiteUrl: { type: String, required: true, min: 1, max: 255 },
     isMembership: { type: Boolean, default: false, required: true },
   },
   { timestamps: true },

@@ -21,11 +21,15 @@ export type PostsDocument = HydratedDocument<PostsType>;
 
 const postsSchema = new Schema<PostsType>(
   {
-    title: { type: String, required: true },
-    shortDescription: { type: String, required: true },
-    content: { type: String, required: true },
-    blogId: { type: Schema.Types.ObjectId, required: true },
-    blogName: { type: String, required: true },
+    title: { type: String, required: true, min: 1, max: 255 },
+    shortDescription: { type: String, required: true, min: 1, max: 1000 },
+    content: { type: String, required: true, min: 1, max: 1000 },
+    blogId: {
+      type: Schema.Types.ObjectId,
+      required: true,
+      min: 1,
+    },
+    blogName: { type: String, required: true, min: 1, max: 255 },
   },
   { timestamps: true },
 );

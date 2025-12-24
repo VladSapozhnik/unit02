@@ -15,8 +15,8 @@ type PasswordRecoveryModelType = Model<PasswordRecoveryDocument>;
 
 export const passwordRecoverySchema = new Schema<PasswordRecoveryType>({
   userId: { type: Schema.Types.ObjectId, required: true },
-  recoveryCode: { type: String, required: true },
-  expirationDate: { type: Date, required: true },
+  recoveryCode: { type: String, required: true, min: 1, max: 255 },
+  expirationDate: { type: Date, required: true, min: 1, max: 255 },
   isUsed: { type: Boolean, required: true },
 });
 

@@ -16,12 +16,12 @@ type SecurityDeviceModelType = Model<SecurityDevicesType>;
 export type SecurityDevicesDocument = HydratedDocument<SecurityDevicesType>;
 
 export const securityDevicesSchema = new Schema<SecurityDevicesType>({
-  userId: { type: Schema.Types.ObjectId, required: true },
-  deviceId: { type: String, required: true },
-  ip: { type: String, required: true },
-  title: { type: String, required: true },
-  lastActiveDate: { type: Date, required: true },
-  expiresAt: { type: Date, required: true },
+  userId: { type: Schema.Types.ObjectId, required: true, min: 1, max: 255 },
+  deviceId: { type: String, required: true, min: 1, max: 255 },
+  ip: { type: String, required: true, min: 1, max: 255 },
+  title: { type: String, required: true, min: 1, max: 255 },
+  lastActiveDate: { type: Date, required: true, min: 1, max: 255 },
+  expiresAt: { type: Date, required: true, min: 1, max: 255 },
 });
 
 securityDevicesSchema.index({ expiresAt: 1 }, { expireAfterSeconds: 0 });

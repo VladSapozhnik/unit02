@@ -13,9 +13,9 @@ type RateLimitModelType = Model<RateLimitType>;
 export type RateLimitDocument = HydratedDocument<RateLimitType>;
 
 export const rateLimitSchema = new Schema<RateLimitType>({
-  ip: { type: String, required: true },
-  url: { type: String, required: true },
-  date: { type: Date, required: true },
+  ip: { type: String, required: true, min: 1, max: 255 },
+  url: { type: String, required: true, min: 1, max: 255 },
+  date: { type: Date, required: true, min: 1, max: 255 },
 });
 
 export const RateLimitModel: RateLimitModelType = mongoose.model<

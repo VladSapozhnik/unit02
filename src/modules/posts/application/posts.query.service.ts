@@ -44,7 +44,7 @@ export class PostsQueryService {
   async getPostById(
     id: string,
     userId: string | undefined,
-  ): Promise<PostOutputType> {
+  ): Promise<PostOutputType | null> {
     const likesInfo: ExtendedLikesInfoType =
       await this.likesQueryService.likesInfoForPosts(id, userId);
 
@@ -52,7 +52,7 @@ export class PostsQueryService {
       await this.postsQueryRepository.getPostById(id);
 
     if (!post) {
-      throw new NotFoundError('Post is not found.', 'post');
+      return null;
     }
 
     return postMapper(post, likesInfo);

@@ -21,8 +21,8 @@ export type CommentDocument = HydratedDocument<CommentType>;
 
 const commentsInfoSchema = new Schema<CommentsInfoType>(
   {
-    userId: { type: Schema.Types.ObjectId, required: true, min: 1 },
-    userLogin: { type: String, required: true, trim: true, min: 1, max: 16 },
+    userId: { type: Schema.Types.ObjectId, required: true },
+    userLogin: { type: String, required: true, trim: true, min: 1, max: 255 },
   },
   { _id: false },
 );
@@ -30,7 +30,7 @@ const commentsInfoSchema = new Schema<CommentsInfoType>(
 const commentsSchema = new Schema<CommentType>(
   {
     postId: { type: Schema.Types.ObjectId, required: true },
-    content: { type: String, required: true, min: 1, trim: true },
+    content: { type: String, required: true, min: 1, max: 1000, trim: true },
     commentatorInfo: commentsInfoSchema,
   },
   { timestamps: true },

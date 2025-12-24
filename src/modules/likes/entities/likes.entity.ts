@@ -20,17 +20,21 @@ export type LikesDocument = HydratedDocument<LikesType>;
 export const likesSchema = new Schema<LikesType>(
   {
     userId: { type: Schema.Types.ObjectId, required: true },
-    login: { type: String, required: true },
+    login: { type: String, required: true, min: 1, max: 255 },
     targetId: { type: Schema.Types.ObjectId, required: true },
     targetType: {
       type: String,
       enum: LikeTargetEnum,
       required: true,
+      min: 1,
+      max: 255,
     },
     status: {
       type: String,
       enum: LikeStatusEnum,
       required: true,
+      min: 1,
+      max: 255,
     },
   },
   { timestamps: true },
