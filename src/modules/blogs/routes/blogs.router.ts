@@ -12,8 +12,11 @@ import { blogIdParamValidation } from '../validators/blogId-param.validation';
 import { BlogsController } from './blogs.controller';
 import { container } from '../../../composition-root';
 import { postsController } from '../../posts/routes/posts.router';
+import { AuthGuardMiddleware } from '../../../core/middleware/jwt-auth-guard.middleware';
 
 const blogsController: BlogsController = container.get(BlogsController);
+const authGuardMiddleware: AuthGuardMiddleware =
+  container.get(AuthGuardMiddleware);
 
 export const blogsRouter: Router = Router();
 
@@ -44,6 +47,7 @@ blogsRouter.post(
 
 blogsRouter.get(
   '/:blogId/posts',
+  authGuardMiddleware.optionalJwtAuth.bind(authGuardMiddleware),
   blogIdParamValidation,
   paginationAndSortingValidation(PostSortFieldEnum),
   inputValidationErrorsMiddleware,

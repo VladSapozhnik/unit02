@@ -45,14 +45,14 @@ export class LikesQueryService {
       );
 
     let myStatus: LikeStatusEnum = LikeStatusEnum.None;
-
     if (userId) {
       const myLike: LikesDocument | null =
         await this.likesQueryRepository.findLike(
           userId,
           postsId,
-          LikeTargetEnum.Comment,
+          LikeTargetEnum.Post,
         );
+
       myStatus = myLike ? myLike.status : LikeStatusEnum.None;
     }
 

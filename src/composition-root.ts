@@ -32,6 +32,7 @@ import { LikesService } from './modules/likes/application/likes.service';
 import { LikesRepository } from './modules/likes/repositories/likes.repository';
 import { LikesQueryService } from './modules/likes/application/likes.query.service';
 import { LikesQueryRepository } from './modules/likes/repositories/likes.query.repository';
+import { PostsQueryService } from './modules/posts/application/posts.query.service';
 
 // const blogsRepository = new BlogsRepository();
 // const blogsQueryRepository = new BlogsQueryRepository();
@@ -52,6 +53,7 @@ container.bind(BlogsQueryRepository).to(BlogsQueryRepository);
 //posts
 container.bind(PostsController).to(PostsController);
 container.bind(PostsService).to(PostsService);
+container.bind(PostsQueryService).to(PostsQueryService);
 container.bind(PostsRepository).to(PostsRepository);
 container.bind(PostsQueryRepository).to(PostsQueryRepository);
 

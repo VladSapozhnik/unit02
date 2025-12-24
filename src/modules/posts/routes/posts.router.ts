@@ -21,6 +21,7 @@ export const postsRouter: Router = Router();
 
 postsRouter.get(
   '/',
+  authGuardMiddleware.optionalJwtAuth.bind(authGuardMiddleware),
   paginationAndSortingValidation(PostSortFieldEnum),
   inputValidationErrorsMiddleware,
   postsController.getAllPosts.bind(postsController),
@@ -54,6 +55,7 @@ postsRouter.get(
 
 postsRouter.get(
   '/:id',
+  authGuardMiddleware.optionalJwtAuth.bind(authGuardMiddleware),
   idParamValidator,
   inputValidationErrorsMiddleware,
   postsController.getPostById.bind(postsController),

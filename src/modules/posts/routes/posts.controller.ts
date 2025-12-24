@@ -20,7 +20,6 @@ import { IdPostParamDto } from '../dto/id-post-param.dto';
 import { UpdatePostDto } from '../dto/update-post.dto';
 import { inject, injectable } from 'inversify';
 import { PostsService } from '../application/posts.service';
-import { PostsQueryRepository } from '../repositories/posts.query.repository';
 import { BlogsQueryRepository } from '../../blogs/repositories/blogs.query.repository';
 import { PostsRepository } from '../repositories/posts.repository';
 import { CommentsService } from '../../comments/application/comments.service';
@@ -33,14 +32,15 @@ import { LikesService } from '../../likes/application/likes.service';
 import { LikeStatusEnum } from '../../likes/enums/like-status.enum';
 import { ResultStatus } from '../../../core/enums/result-status.enum';
 import { Result } from '../../../core/types/result.type';
+import { PostsQueryService } from '../application/posts.query.service';
 
 @injectable()
 export class PostsController {
   constructor(
     @inject(PostsService) private readonly postsService: PostsService,
     @inject(PostsRepository) private readonly postsRepository: PostsRepository,
-    @inject(PostsQueryRepository)
-    private readonly postsQueryRepository: PostsQueryRepository,
+    @inject(PostsQueryService)
+    private readonly postsQueryService: PostsQueryService,
     @inject(BlogsQueryRepository)
     private readonly blogsQueryRepository: BlogsQueryRepository,
     @inject(CommentsService) private readonly commentsService: CommentsService,
@@ -65,10 +65,12 @@ export class PostsController {
   }
 
   async createPost(req: RequestWithBody<CreatePostDto>, res: Response) {
+    const userId: string | undefined = req.userId;
+
     const id: string = await this.postsService.createPost(req.body);
 
     const post: PostOutputType | null =
-      await this.postsQueryRepository.getPostById(id);
+      await this.postsQueryService.getPostById(id, userId);
 
     res.status(HTTP_STATUS.CREATED_201).send(post);
   }
@@ -77,6 +79,7 @@ export class PostsController {
     req: RequestWithParamAndBody<BlogIdQueryDto, CreatePostForBlogDto>,
     res: Response,
   ) {
+    const userId: string | undefined = req.userId;
     const blogId: string = req.params.blogId;
 
     const id: string = await this.postsService.createPostForBlog({
@@ -85,12 +88,14 @@ export class PostsController {
     });
 
     const post: PostOutputType | null =
-      await this.postsQueryRepository.getPostById(id);
+      await this.postsQueryService.getPostById(id, userId);
 
     res.status(HTTP_STATUS.CREATED_201).send(post);
   }
 
   async getAllPosts(req: Request, res: Response) {
+    const userId: string | undefined = req.userId;
+
     try {
       const sanitizedQuery: PostQueryInput = matchedData<PostQueryInput>(req, {
         locations: ['query'],
@@ -99,8 +104,10 @@ export class PostsController {
       const defaultQuery: PaginationAndSortingType<PostSortFieldEnum> =
         setDefaultSortAndPaginationIfNotExistHelper(sanitizedQuery);
 
-      const postsOutput =
-        await this.postsQueryRepository.getPosts(defaultQuery);
+      const postsOutput = await this.postsQueryService.getPosts(
+        defaultQuery,
+        userId,
+      );
 
       res.json(postsOutput);
     } catch (e) {
@@ -139,8 +146,10 @@ export class PostsController {
   }
 
   async getPostById(req: RequestWithParam<IdPostParamDto>, res: Response) {
+    const userId: string | undefined = req.userId;
+
     const existPost: PostOutputType | null =
-      await this.postsQueryRepository.getPostById(req.params.id);
+      await this.postsQueryService.getPostById(req.params.id, userId);
 
     if (!existPost) {
       throw new NotFoundError('Post is not found.', 'post');
@@ -150,6 +159,8 @@ export class PostsController {
   }
 
   async getPostsByBlogId(req: Request, res: Response) {
+    const userId: string | undefined = req.userId;
+
     const blogId: string = req.params.blogId;
 
     const sanitizedQuery: PostQueryInput = matchedData<PostQueryInput>(req, {
@@ -166,8 +177,9 @@ export class PostsController {
       throw new NotFoundError('Blog not found for post', 'BlogId for Post');
     }
 
-    const postsOutput = await this.postsQueryRepository.getPosts(
+    const postsOutput = await this.postsQueryService.getPosts(
       defaultQuery,
+      userId,
       blogId,
     );
 

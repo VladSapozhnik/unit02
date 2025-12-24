@@ -32,7 +32,7 @@ export class LikesService {
     if (!findUser) {
       return {
         status: ResultStatus.Unauthorized,
-        errorMessage: 'Comment not found',
+        errorMessage: 'User not found',
         extensions: [{ field: 'auth', message: 'User not found.' }],
         data: null,
       };
@@ -45,7 +45,7 @@ export class LikesService {
       return {
         status: ResultStatus.NotFound,
         errorMessage: 'Comment not found',
-        extensions: [{ field: 'commentId', message: 'CommentId not found.' }],
+        extensions: [{ field: 'commentId', message: 'Comment not found.' }],
         data: null,
       };
     }
@@ -75,7 +75,7 @@ export class LikesService {
     if (!findUser) {
       return {
         status: ResultStatus.Unauthorized,
-        errorMessage: 'Comment not found',
+        errorMessage: 'User not found',
         extensions: [{ field: 'auth', message: 'User not found.' }],
         data: null,
       };
@@ -87,8 +87,8 @@ export class LikesService {
     if (!isPosts) {
       return {
         status: ResultStatus.NotFound,
-        errorMessage: 'Comment not found',
-        extensions: [{ field: 'commentId', message: 'CommentId not found.' }],
+        errorMessage: 'Post not found',
+        extensions: [{ field: 'postId', message: 'Post not found.' }],
         data: null,
       };
     }
