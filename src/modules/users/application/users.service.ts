@@ -37,10 +37,13 @@ export class UsersService {
   }
 
   async removeUser(id: string) {
-    const isRemove: boolean = await this.usersRepository.removeUser(id);
+    const existUser: UsersDocument | null =
+      await this.usersRepository.getUserById(id);
 
-    if (!isRemove) {
+    if (!existUser) {
       throw new NotFoundError('User is not found!', 'user');
     }
+
+    await this.usersRepository.removeUser(existUser);
   }
 }

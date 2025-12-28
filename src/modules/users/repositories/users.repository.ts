@@ -78,11 +78,7 @@ export class UsersRepository {
     );
   }
 
-  async removeUser(id: string): Promise<boolean> {
-    const result: DeleteResult = await UsersModel.deleteOne({
-      _id: new Types.ObjectId(id),
-    });
-
-    return result.deletedCount === 1;
+  async removeUser(user: UsersDocument) {
+    await user.deleteOne();
   }
 }
