@@ -1,7 +1,6 @@
 import { CreateUserDto } from '../dto/create-user.dto';
 import { BadRequestError } from '../../../core/errors/bad-request.error';
 import { hashAdapter } from '../../../core/adapters/hash.adapter';
-import { Types } from 'mongoose';
 import { NotFoundError } from '../../../core/errors/repository-not-found.error';
 import { inject, injectable } from 'inversify';
 import { UsersRepository } from '../repositories/users.repository';
@@ -33,15 +32,6 @@ export class UsersService {
         isConfirmed: true,
       },
     });
-
-    // const newUser: UserDbType = new UserDbType(
-    //   new Types.ObjectId(),
-    //   dto.login,
-    //   dto.email,
-    //   hash,
-    //   new Date(),
-    //   new EmailConfirmation('superAdmin', new Date(), true),
-    // );
 
     return this.usersRepository.createUser(newUser);
   }

@@ -21,8 +21,8 @@ export type UsersType = {
 
 const emailConfirmation = new Schema<EmailConfirmation>(
   {
-    confirmationCode: { type: String, required: true, min: 1, max: 255 },
-    expirationDate: { type: Date, required: true, min: 1, max: 255 },
+    confirmationCode: { type: String, required: true },
+    expirationDate: { type: Date, required: true },
     isConfirmed: { type: Boolean, default: false },
   },
   { _id: false },
@@ -30,9 +30,9 @@ const emailConfirmation = new Schema<EmailConfirmation>(
 
 export const usersSchema = new Schema<UsersType>(
   {
-    login: { type: String, required: true, min: 1, max: 255, unique: true },
-    email: { type: String, required: true, min: 1, max: 255, unique: true },
-    password: { type: String, required: true, min: 1, max: 255 },
+    login: { type: String, required: true },
+    email: { type: String, required: true },
+    password: { type: String, required: true },
     emailConfirmation: emailConfirmation,
   },
   { timestamps: true },

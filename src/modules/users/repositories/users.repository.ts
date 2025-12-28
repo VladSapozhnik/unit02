@@ -6,7 +6,6 @@ import { UsersDocument, UsersModel } from '../entities/user.entity';
 @injectable()
 export class UsersRepository {
   async createUser(user: UsersDocument): Promise<string> {
-    // const result: UserDbType = await UsersModel.create(dto);
     const result: UsersDocument = await user.save();
     return result._id.toString();
   }
